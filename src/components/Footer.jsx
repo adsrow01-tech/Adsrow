@@ -1,7 +1,109 @@
+
 import { Link } from 'react-router-dom'
+import { ArrowUpRight, Mail, MapPin, Phone } from 'lucide-react'
+
+const quickLinks = [
+  { name: 'Home', path: '/' },
+  { name: 'About Us', path: '/about' },
+  { name: 'How It Works', path: '/how-it-works' },
+  { name: 'Locations', path: '/locations' },
+  { name: 'Services', path: '/services' },
+  { name: 'Why Adsrow', path: '/why-adsrow' },
+]
+
+const contactLinks = [
+  { name: 'Contact Us', path: '/contact' },
+  { name: 'Host a Screen', path: '/host-a-screen' },
+  { name: 'FAQs', path: '/faqs' },
+]
 
 export default function Footer() {
   return (
-      <footer className="bg-[#10243c] text-white"><div className="mx-auto max-w-7xl px-6 py-14 lg:px-10"><div className="flex flex-col justify-between gap-10 border-b border-white/15 pb-12 md:flex-row"><div><Link to="/" className="flex items-center gap-2.5"><span className="grid size-8 place-items-center bg-[#e4a82b] text-[#10243c]"><span className="text-sm font-black">A</span></span><span className="text-xl font-semibold tracking-[-0.04em]">adsrow</span></Link><p className="mt-5 max-w-xs text-sm leading-6 text-[#aebac4]">Billboard advertising across Vijayawada. Submit an enquiry and our team will contact you.</p></div><div className="grid grid-cols-2 gap-x-14 gap-y-4 text-sm text-[#aebac4]"><Link to="/how-it-works" className="hover:text-white">How It Works</Link><Link to="/locations" className="hover:text-white">Locations</Link><Link to="/services" className="hover:text-white">Services</Link><Link to="/advertise" className="hover:text-white">Advertise With Us</Link></div></div><div className="flex flex-col justify-between gap-3 pt-6 text-xs text-[#7f8f9d] sm:flex-row"><span>© {new Date().getFullYear()} Adsrow. Vijayawada, India.</span><span>Outdoor advertising, thoughtfully placed.</span></div></div></footer>
+    <footer className="bg-slate-950 text-white">
+      <div className="mx-auto max-w-7xl px-5 py-14 lg:px-8">
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+          <div>
+            <Link to="/" className="text-3xl font-extrabold tracking-tight">
+              adsrow<span className="text-amber-400">.</span>
+            </Link>
+
+            <p className="mt-5 max-w-xs text-sm leading-7 text-slate-400">
+              Connecting brands with communities through digital advertising
+              screens in residential spaces.
+            </p>
+
+            <Link
+              to="/contact"
+              className="mt-6 inline-flex items-center gap-2 rounded-full bg-amber-400 px-5 py-3 text-sm font-bold text-slate-950 transition hover:bg-amber-300"
+            >
+              Let's Talk <ArrowUpRight size={16} />
+            </Link>
+          </div>
+
+          <div>
+            <h3 className="text-base font-bold">Explore</h3>
+            <ul className="mt-5 space-y-3">
+              {quickLinks.map((link) => (
+                <li key={link.path}>
+                  <Link
+                    to={link.path}
+                    className="text-sm text-slate-400 transition hover:text-amber-400"
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="text-base font-bold">Get Involved</h3>
+            <ul className="mt-5 space-y-3">
+              {contactLinks.map((link) => (
+                <li key={link.path}>
+                  <Link
+                    to={link.path}
+                    className="text-sm text-slate-400 transition hover:text-amber-400"
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="text-base font-bold">Contact</h3>
+
+            <ul className="mt-5 space-y-4 text-sm text-slate-400">
+              <li className="flex items-start gap-3">
+                <MapPin size={18} className="mt-0.5 shrink-0 text-amber-400" />
+                <span>Vijayawada, Andhra Pradesh, India</span>
+              </li>
+
+              <li className="flex items-start gap-3">
+                <Mail size={18} className="mt-0.5 shrink-0 text-amber-400" />
+                <Link
+                  to="/contact"
+                  className="transition hover:text-amber-400"
+                >
+                  Send an enquiry
+                </Link>
+              </li>
+
+              <li className="flex items-start gap-3">
+                <Phone size={18} className="mt-0.5 shrink-0 text-amber-400" />
+                <span>Contact us through our enquiry form</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="mt-12 flex flex-col gap-4 border-t border-white/10 pt-6 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between">
+          <p>© {new Date().getFullYear()} Adsrow. All rights reserved.</p>
+          <p>Connecting brands. Reaching communities.</p>
+        </div>
+      </div>
+    </footer>
   )
 }
