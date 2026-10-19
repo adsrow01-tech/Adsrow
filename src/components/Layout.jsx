@@ -1,20 +1,18 @@
-import { useEffect } from 'react'
-import { Outlet, useLocation } from 'react-router-dom'
+
+import { Outlet } from 'react-router-dom'
 import Header from './Header'
 import Footer from './Footer'
 
 export default function Layout() {
-  const { pathname } = useLocation()
-
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [pathname])
-
   return (
-    <main className="min-h-screen overflow-hidden bg-[#f7f5ef] text-[#10243c]">
+    <div className="flex min-h-screen w-full flex-col overflow-x-hidden bg-white">
       <Header />
-      <Outlet />
+
+      <main className="w-full flex-1">
+        <Outlet />
+      </main>
+
       <Footer />
-    </main>
+    </div>
   )
 }

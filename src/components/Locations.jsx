@@ -1,9 +1,131 @@
-import { CircleDot } from 'lucide-react'
 
-const locations = ['Benz Circle', 'Mangalagiri Road', 'Patamata', 'Gunadala', 'Poranki']
+import { Link } from 'react-router-dom'
+import { MapPin, ArrowRight, Navigation } from 'lucide-react'
+
+const locations = [
+  {
+    name: 'Benz Circle',
+    description:
+      'Explore advertising opportunities around this prominent Vijayawada area.',
+    number: '01',
+  },
+  {
+    name: 'Patamata',
+    description:
+      'Discuss potential residential community screen placements in the area.',
+    number: '02',
+  },
+  {
+    name: 'Poranki',
+    description:
+      'Explore local advertising possibilities for nearby residential communities.',
+    number: '03',
+  },
+  {
+    name: 'Gunadala',
+    description:
+      'Connect with Adsrow to discuss suitable screen placement options.',
+    number: '04',
+  },
+  {
+    name: 'Mangalagiri Road',
+    description:
+      'Discuss potential location-based campaigns along this Vijayawada corridor.',
+    number: '05',
+  },
+]
 
 export default function Locations() {
   return (
-      <section id="locations" className="bg-[#10243c] text-white"><div className="mx-auto grid max-w-7xl gap-14 px-6 py-24 lg:grid-cols-[0.7fr_1.3fr] lg:px-10 lg:py-32"><div><p className="eyebrow text-[#e4a82b]">Locations</p><h2 className="section-title text-white">Closer to<br /><span className="text-[#e4a82b]">your audience.</span></h2><p className="mt-7 max-w-sm text-base leading-7 text-[#b8c1ca]">Billboard advertising across Vijayawada. Submit an enquiry and our team will contact you with current availability and suitable placements.</p><div className="mt-10 divide-y divide-white/15 border-y border-white/15">{locations.map((location, index) => <div key={location} className="flex items-center justify-between py-4 text-sm"><span>{location}</span><span className="text-xs text-[#8796a4]">{String(index + 1).padStart(2, '0')}</span></div>)}</div></div><div className="relative min-h-[420px] overflow-hidden border border-white/15 bg-[#18344f] p-6 sm:p-10" aria-label="Representative Vijayawada billboard locations map"><div className="absolute inset-0 opacity-35" style={{backgroundImage: 'linear-gradient(28deg, transparent 48%, #7890a1 49%, transparent 50%), linear-gradient(118deg, transparent 48%, #7890a1 49%, transparent 50%), linear-gradient(0deg, transparent 48%, #7890a1 49%, transparent 50%)', backgroundSize: '120px 95px, 170px 150px, 100% 82px'}} /><div className="absolute left-[30%] top-[25%] h-32 w-64 rotate-12 border-b border-l border-[#e4a82b]/60" /><div className="absolute right-[17%] top-[37%] h-44 w-28 -rotate-12 border-r border-t border-[#e4a82b]/60" />{locations.map((location, index) => <div key={location} className={`absolute ${['left-[24%] top-[26%]', 'left-[49%] top-[40%]', 'left-[69%] top-[24%]', 'left-[34%] top-[68%]', 'right-[17%] bottom-[13%]'][index]} group`}><span className="absolute -inset-2 animate-ping rounded-full bg-[#e4a82b]/20" /><span className="relative grid size-4 place-items-center rounded-full border-2 border-[#10243c] bg-[#e4a82b]"><span className="size-1 rounded-full bg-[#10243c]" /></span><span className="absolute left-6 top-0 hidden whitespace-nowrap text-xs text-white/75 group-hover:block">{location}</span></div>)}<div className="absolute bottom-6 left-6 flex items-center gap-2 text-[10px] uppercase tracking-[0.16em] text-[#aab7c2]"><CircleDot size={13} className="text-[#e4a82b]" /> Representative locations · Vijayawada</div></div></div></section>
+    <section className="bg-slate-50 px-5 py-16 md:py-24">
+      <div className="mx-auto max-w-7xl">
+        <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+          <div className="max-w-2xl">
+            <p className="text-sm font-bold uppercase tracking-[0.2em] text-amber-600">
+              Our Locations
+            </p>
+
+            <h2 className="mt-4 text-3xl font-extrabold leading-tight text-slate-950 md:text-5xl">
+              Connecting local brands across Vijayawada.
+            </h2>
+
+            <p className="mt-5 leading-8 text-slate-600">
+              Explore the areas we are considering for community-focused
+              advertising. Contact us to discuss current placement availability
+              and campaign suitability.
+            </p>
+          </div>
+
+          <Link
+            to="/contact"
+            className="inline-flex shrink-0 items-center gap-2 font-bold text-slate-950 transition hover:text-amber-600"
+          >
+            Enquire About Locations <ArrowRight size={18} />
+          </Link>
+        </div>
+
+        <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {locations.map((location) => (
+            <article
+              key={location.name}
+              className="group rounded-2xl border border-slate-200 bg-white p-6 transition duration-300 hover:-translate-y-1 hover:border-amber-300 hover:shadow-lg"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-100 text-amber-700 transition group-hover:bg-amber-400 group-hover:text-slate-950">
+                  <MapPin size={24} />
+                </div>
+
+                <span className="text-sm font-extrabold tracking-widest text-slate-300">
+                  {location.number}
+                </span>
+              </div>
+
+              <h3 className="mt-5 text-xl font-extrabold text-slate-950">
+                {location.name}
+              </h3>
+
+              <p className="mt-3 text-sm leading-7 text-slate-600">
+                {location.description}
+              </p>
+
+              <Link
+                to="/contact"
+                className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-amber-700 hover:text-slate-950"
+              >
+                Ask About This Area <ArrowRight size={16} />
+              </Link>
+            </article>
+          ))}
+        </div>
+
+        <div className="mt-10 rounded-3xl bg-slate-950 p-7 text-white md:p-10">
+          <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+            <div className="flex items-start gap-4">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-amber-400 text-slate-950">
+                <Navigation size={24} />
+              </div>
+
+              <div>
+                <h3 className="text-xl font-extrabold md:text-2xl">
+                  Looking for a different location?
+                </h3>
+
+                <p className="mt-2 max-w-2xl leading-7 text-slate-300">
+                  Tell us your preferred area in or around Vijayawada. We can
+                  discuss whether a suitable placement may be available.
+                </p>
+              </div>
+            </div>
+
+            <Link
+              to="/contact"
+              className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-amber-400 px-6 py-3 font-bold text-slate-950 transition hover:bg-amber-300"
+            >
+              Contact Us <ArrowRight size={17} />
+            </Link>
+          </div>
+        </div>
+      </div>
+    </section>
   )
 }

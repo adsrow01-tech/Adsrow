@@ -8,13 +8,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "lucide-react": "^1.16.0",
+    "lucide-react": "^1.59.0",
     "react": "^19",
     "react-dom": "^19",
-    "react-router-dom": "^7"
+    "react-router-dom": "^7.18.4"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.3",
+    "@tailwindcss/vite": "^4.3.3",
     "@vitejs/plugin-react": "^5",
     "postcss": "^8.5",
     "tailwindcss": "^4.3.3",

@@ -1,19 +1,260 @@
-import { ArrowUpRight, ChevronRight } from 'lucide-react'
+
 import { Link } from 'react-router-dom'
+import {
+  ArrowRight,
+  ArrowUpRight,
+  Monitor,
+  MapPin,
+  Palette,
+  BarChart3,
+  CheckCircle2,
+} from 'lucide-react'
+
+const services = [
+  {
+    icon: Monitor,
+    title: 'Digital Screen Advertising',
+    description:
+      'Explore digital screen advertising opportunities for your business.',
+  },
+  {
+    icon: MapPin,
+    title: 'Location-Based Campaigns',
+    description:
+      'Discuss suitable locations for your advertising campaign.',
+  },
+  {
+    icon: Palette,
+    title: 'Ad Creative Support',
+    description:
+      'Prepare clear, engaging creative content for digital screens.',
+  },
+  {
+    icon: BarChart3,
+    title: 'Campaign Planning',
+    description:
+      'Define your campaign goals, audience and preferred locations.',
+  },
+]
 
 export default function HomePage() {
   return (
-    <>
-      <section id="top" className="relative mx-auto grid min-h-[720px] max-w-7xl items-center gap-12 px-6 pb-16 pt-36 lg:grid-cols-[0.9fr_1.1fr] lg:px-10 lg:pb-24 lg:pt-32">
-        <div className="relative z-10 max-w-xl">
-          <p className="mb-6 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.22em] text-[#b27d11]"><span className="h-px w-8 bg-[#e4a82b]" /> Billboard advertising across Vijayawada</p>
-          <h1 className="max-w-[620px] text-[clamp(3.5rem,7vw,6.7rem)] font-semibold leading-[0.92] tracking-[-0.075em] text-[#10243c]">Your business.<br /><span className="text-[#b27d11]">Seen where people live.</span></h1>
-          <p className="mt-8 max-w-md text-lg leading-8 text-[#617080]">Promote your business with billboard advertising in Vijayawada. Submit an enquiry and our team will contact you to take it forward.</p>
-          <div className="mt-10 flex flex-wrap items-center gap-5"><Link to="/advertise" className="inline-flex items-center gap-3 bg-[#10243c] px-6 py-4 text-sm font-medium text-white transition-transform hover:-translate-y-0.5">Enquire About Advertising <ArrowUpRight size={16} /></Link><Link to="/locations" className="inline-flex items-center gap-2 text-sm font-semibold text-[#10243c]">Explore Our Network <ChevronRight size={16} className="text-[#b27d11]" /></Link></div>
+    <div className="w-full overflow-x-hidden bg-white">
+      {/* HERO */}
+      <section className="relative isolate overflow-hidden bg-[#05091b] text-white">
+        <div className="pointer-events-none absolute -right-24 -top-24 -z-10 h-96 w-96 rounded-full bg-amber-400/10 blur-3xl" />
+
+        <div className="mx-auto grid w-full max-w-7xl items-center gap-12 px-5 py-16 sm:px-8 md:py-20 lg:grid-cols-2 lg:gap-16 lg:px-10 lg:py-24">
+          {/* LEFT SIDE */}
+          <div className="min-w-0">
+            <div className="inline-flex items-center gap-3 rounded-full border border-amber-400/30 bg-amber-400/10 px-4 py-2">
+              <span className="h-2 w-2 rounded-full bg-amber-400" />
+              <span className="text-xs font-bold uppercase tracking-[0.16em] text-amber-400 sm:text-sm">
+                Digital Screen Advertising
+              </span>
+            </div>
+
+            <h1 className="mt-7 text-4xl font-black leading-[1.12] tracking-tight sm:text-5xl md:text-6xl xl:text-7xl">
+              Your Brand.
+              <span className="mt-2 block text-amber-400">
+                Their Community.
+              </span>
+            </h1>
+
+            <p className="mt-6 max-w-xl text-base leading-8 text-slate-300 sm:text-lg">
+              Connect your brand with residential communities through
+              location-focused digital screen advertising opportunities.
+            </p>
+
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+              <Link
+                to="/advertise"
+                className="inline-flex min-h-14 items-center justify-center gap-3 rounded-full bg-amber-400 px-6 py-4 font-bold !text-slate-950 transition hover:bg-amber-300"
+              >
+                Advertise With Us
+                <ArrowRight size={19} />
+              </Link>
+
+              <Link
+                to="/host-a-screen"
+                className="inline-flex min-h-14 items-center justify-center gap-3 rounded-full border border-slate-600 px-6 py-4 font-bold !text-white transition hover:border-amber-400 hover:bg-white/5"
+              >
+                Host a Screen
+                <ArrowUpRight size={19} />
+              </Link>
+            </div>
+
+            <div className="mt-7 flex items-start gap-3 text-sm leading-6 text-slate-400">
+              <MapPin className="mt-1 shrink-0 text-amber-400" size={17} />
+              <p>
+                Exploring digital advertising opportunities in Vijayawada,
+                Andhra Pradesh.
+              </p>
+            </div>
+          </div>
+
+          {/* RIGHT SIDE: DISPLAY MOCKUP */}
+          <div className="mx-auto w-full max-w-xl min-w-0">
+            <div className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-3 shadow-2xl sm:p-5">
+              <div className="rounded-[1.5rem] border border-white/10 bg-[#111a30] p-4 sm:p-6">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-widest text-slate-400">
+                      Adsrow
+                    </p>
+                    <p className="mt-1 text-lg font-extrabold text-white">
+                      DIGITAL DISPLAY
+                    </p>
+                  </div>
+
+                  <span className="shrink-0 rounded-full bg-amber-400 px-4 py-2 text-xs font-extrabold text-slate-950">
+                    AD SPACE
+                  </span>
+                </div>
+
+                <div className="relative mt-6 overflow-hidden rounded-2xl bg-gradient-to-br from-amber-300 via-amber-400 to-orange-500 p-5 text-slate-950 sm:p-8">
+                  <div className="pointer-events-none absolute -right-8 -top-8 h-36 w-36 rounded-full border-[22px] border-white/15" />
+
+                  <div className="relative">
+                    <p className="text-xs font-extrabold uppercase tracking-[0.18em] sm:text-sm">
+                      Make Your Brand Seen
+                    </p>
+
+                    <h2 className="mt-5 text-3xl font-black leading-[1.05] tracking-tight sm:text-4xl">
+                      HELLO,
+                      <br />
+                      NEIGHBOUR!
+                    </h2>
+
+                    <p className="mt-5 max-w-xs text-sm font-medium leading-6 sm:text-base">
+                      Advertising that brings brands and communities closer.
+                    </p>
+
+                    <div className="mt-7 inline-flex items-center gap-2 rounded-full bg-slate-950 px-4 py-3 text-sm font-bold !text-white">
+                      Your Brand Here
+                      <ArrowUpRight size={17} />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-5 flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-sm font-bold text-white">
+                      Community advertising
+                    </p>
+                    <p className="mt-1 text-xs text-slate-400">
+                      Digital screen concept preview
+                    </p>
+                  </div>
+
+                  <Monitor className="shrink-0 text-amber-400" size={25} />
+                </div>
+              </div>
+            </div>
+
+            {/* NO OVERLAP: CARD IS IN NORMAL DOCUMENT FLOW */}
+            <div className="mt-4 flex items-center gap-3 rounded-2xl border border-white/10 bg-[#111a30] px-5 py-4 shadow-xl sm:mt-5">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-400 text-slate-950">
+                <CheckCircle2 size={22} />
+              </div>
+
+              <div>
+                <p className="text-xs text-slate-400">Advertising focus</p>
+                <p className="mt-1 font-bold text-white">
+                  Local Communities
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="relative lg:translate-x-4"><div className="absolute -inset-5 border border-[#e4a82b]/35" /><div className="relative aspect-[1.12/1] overflow-hidden bg-[#d6d1c7]"><img src="/adsrow-lobby.png" alt="Digital advertising screen in a modern public space" className="size-full object-cover" /><div className="absolute bottom-5 left-5 flex items-center gap-3 bg-[#f7f5ef] px-4 py-3 text-xs text-[#10243c]"><span className="size-2 rounded-full bg-[#e4a82b]" /> A real-world audience, in context</div></div><p className="mt-4 text-right text-[11px] uppercase tracking-[0.18em] text-[#87909a]">Advertising in context / Vijayawada</p></div>
       </section>
-      <section className="bg-[#e8e4da]"><div className="mx-auto grid max-w-7xl gap-14 px-6 py-24 lg:grid-cols-[0.85fr_1.15fr] lg:px-10 lg:py-32"><div><p className="eyebrow">Make the comparison</p><h2 className="section-title">Context matters.<br /><span>So does control.</span></h2><p className="mt-7 max-w-md leading-7 text-[#617080]">Billboard advertising is not a replacement for every medium. It is a more considered choice when context, location, and flexibility matter.</p></div><div className="border-t border-[#a9a79f]"><div className="grid grid-cols-[1fr_1fr] border-b border-[#a9a79f] py-4 text-xs font-semibold uppercase tracking-[0.16em] text-[#617080]"><span>Conventional advertising</span><span className="text-[#10243c]">Adsrow network</span></div>{[['Placement context', 'Broad roadside visibility', 'Chosen, high-visibility locations'], ['Targeting', 'Fixed physical placement', 'Area-level selection'], ['Creative', 'Self-managed production', 'Creative support from our team'], ['Coordination', 'You manage the details', 'Our team coordinates everything']].map(([label, old, adsrow]) => <div key={label} className="grid grid-cols-[1fr_1fr] gap-5 border-b border-[#a9a79f] py-6 text-sm"><div><p className="mb-2 text-xs font-semibold uppercase tracking-[0.14em] text-[#b27d11]">{label}</p><p className="text-[#617080]">{old}</p></div><p className="font-medium text-[#10243c]">{adsrow}</p></div>)}</div></div></section>
-    </>
+
+      {/* SERVICES */}
+      <section className="px-5 py-16 sm:px-8 md:py-24 lg:px-10">
+        <div className="mx-auto max-w-7xl">
+          <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+            <div className="max-w-2xl">
+              <p className="text-sm font-extrabold uppercase tracking-[0.2em] text-amber-600">
+                What We Do
+              </p>
+
+              <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-slate-950 sm:text-4xl md:text-5xl">
+                Advertising made more local.
+              </h2>
+
+              <p className="mt-5 max-w-xl leading-8 text-slate-600">
+                Explore digital screen advertising services and potential
+                community partnerships with Adsrow.
+              </p>
+            </div>
+
+            <Link
+              to="/services"
+              className="inline-flex w-fit items-center gap-2 font-bold text-slate-950 transition hover:text-amber-600"
+            >
+              Explore Services
+              <ArrowRight size={18} />
+            </Link>
+          </div>
+
+          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {services.map(({ icon: Icon, title, description }) => (
+              <article
+                key={title}
+                className="group rounded-2xl border border-slate-200 bg-white p-6 transition duration-300 hover:-translate-y-1 hover:border-amber-300 hover:shadow-xl"
+              >
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-100 text-amber-700 transition group-hover:bg-amber-400 group-hover:text-slate-950">
+                  <Icon size={25} />
+                </div>
+
+                <h3 className="mt-5 text-lg font-extrabold leading-7 text-slate-950">
+                  {title}
+                </h3>
+
+                <p className="mt-3 text-sm leading-7 text-slate-600">
+                  {description}
+                </p>
+
+                <Link
+                  to="/contact"
+                  className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-slate-950 transition hover:text-amber-700"
+                >
+                  Enquire Now
+                  <ArrowRight size={16} />
+                </Link>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* HOST A SCREEN CTA */}
+      <section className="bg-amber-400 px-5 py-14 sm:px-8 md:py-20 lg:px-10">
+        <div className="mx-auto flex max-w-7xl flex-col gap-7 md:flex-row md:items-center md:justify-between">
+          <div className="max-w-2xl">
+            <p className="text-sm font-extrabold uppercase tracking-[0.2em] text-slate-800">
+              Partner With Adsrow
+            </p>
+
+            <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-slate-950 sm:text-4xl">
+              Have a screen-hosting opportunity?
+            </h2>
+
+            <p className="mt-4 max-w-xl leading-7 text-slate-800">
+              Apartment associations and property managers can enquire about
+              potential digital screen partnerships.
+            </p>
+          </div>
+
+          <Link
+            to="/host-a-screen"
+            className="inline-flex shrink-0 items-center justify-center gap-3 rounded-full bg-slate-950 px-7 py-4 font-bold !text-white transition hover:bg-slate-800"
+          >
+            Host a Screen
+            <ArrowRight size={19} />
+          </Link>
+        </div>
+      </section>
+    </div>
   )
 }
