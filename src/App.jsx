@@ -25,6 +25,7 @@ import {
   ChevronDown,
   Mail,
 } from "lucide-react";
+import { submitEnquiry } from "./lib/enquire";
 
 /* -------------------- NAVBAR -------------------- */
 
@@ -197,39 +198,54 @@ function FeatureCard({ icon: Icon, title, description, number }) {
 
 /* -------------------- ENQUIRY FORM -------------------- */
 
+const initialEnquiry = {
+  name: "",
+  email: "",
+  phone: "",
+  interest: "Advertising on screens",
+  message: "",
+};
+
 function EnquiryForm() {
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    interest: "Advertising on screens",
-    message: "",
-  });
+  const [form, setForm] = useState(initialEnquiry);
+  const [status, setStatus] = useState("idle"); // idle | sending | success | error
+  const [errorMessage, setErrorMessage] = useState("");
 
   function updateForm(event) {
     setForm({
       ...form,
       [event.target.name]: event.target.value,
     });
+
+    if (status === "success") {
+      setStatus("idle");
+    }
   }
 
-  function submitForm(event) {
+  async function submitForm(event) {
     event.preventDefault();
 
-    const subject = encodeURIComponent(
-      `Adsrow enquiry - ${form.interest}`
-    );
+    // Prevent duplicate submissions while a request is in flight.
+    if (status === "sending") {
+      return;
+    }
 
-    const body = encodeURIComponent(
-      `Name: ${form.name}\n` +
-      `Email: ${form.email}\n` +
-      `Phone: ${form.phone}\n` +
-      `Interest: ${form.interest}\n` +
-      `Message: ${form.message}`
-    );
+    setStatus("sending");
+    setErrorMessage("");
 
-    window.location.href =
-      `mailto:hello@adsrow.com?subject=${subject}&body=${body}`;
+    try {
+      await submitEnquiry({ ...form, enquiryType: form.interest });
+
+      setForm({ ...initialEnquiry });
+      setStatus("success");
+    } catch (error) {
+      setStatus("error");
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "We couldn't submit your enquiry. Please check your connection and try again."
+      );
+    }
   }
 
   return (
@@ -296,13 +312,35 @@ function EnquiryForm() {
         />
       </label>
 
-      <button className="button" type="submit">
-        Send Enquiry <ArrowUpRight size={16} />
+      {status === "success" && (
+        <p className="form-status form-success" role="status">
+          Thank you for contacting Adsrow! Your enquiry has been submitted
+          successfully.
+        </p>
+      )}
+
+      {status === "error" && (
+        <p className="form-status form-error" role="alert">
+          {errorMessage}
+        </p>
+      )}
+
+      <button
+        className="button"
+        type="submit"
+        disabled={status === "sending"}
+      >
+        {status === "sending" ? (
+          "Sending..."
+        ) : (
+          <>
+            Send Enquiry <ArrowUpRight size={16} />
+          </>
+        )}
       </button>
 
       <p className="form-hint">
-        The form prepares an email. A backend is needed to save enquiries
-        directly on the website.
+        Your enquiry is sent directly to the Adsrow team.
       </p>
     </form>
   );
@@ -929,7 +967,7 @@ function ContactPage() {
           <article className="contact-info-card">
             <span className="feature-icon"><Mail size={20} /></span>
             <h3>Email Enquiry</h3>
-            <p>Use the enquiry form to prepare a message with your details.</p>
+            <p>Send us your details using the enquiry form below.</p>
           </article>
 
           <article className="contact-info-card">

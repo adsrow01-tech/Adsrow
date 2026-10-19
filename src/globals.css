@@ -673,6 +673,31 @@ main {
   margin: 0;
 }
 
+.enquiry-form .button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.form-status {
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 4px;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.form-success {
+  background: #edf8f1;
+  border: 1px solid #b9e2c8;
+  color: #14663a;
+}
+
+.form-error {
+  background: #fdeded;
+  border: 1px solid #f4c2c2;
+  color: #9b1c1c;
+}
+
 /* ABOUT PAGE */
 
 .about-grid {
