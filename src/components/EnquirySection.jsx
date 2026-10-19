@@ -1,7 +1,14 @@
-
 import { useState } from 'react'
-import { ArrowRight, CheckCircle2, LoaderCircle, Send } from 'lucide-react'
-import { submitEnquiry, validateEnquiry } from '../lib/enquire'
+import {
+  ArrowRight,
+  CheckCircle2,
+  LoaderCircle,
+  Send,
+} from 'lucide-react'
+import {
+  submitEnquiry,
+  validateEnquiry,
+} from '../lib/enquire'
 
 const initialValues = {
   name: '',
@@ -39,7 +46,12 @@ export default function EnquirySection() {
   async function handleSubmit(event) {
     event.preventDefault()
 
+    if (status === 'sending') {
+      return
+    }
+
     const validationErrors = validateEnquiry(values)
+
     setErrors(validationErrors)
 
     if (Object.keys(validationErrors).length > 0) {
@@ -52,42 +64,61 @@ export default function EnquirySection() {
 
     try {
       await submitEnquiry(values)
-      setStatus('success')
-      setValues(initialValues)
+
+      setValues({ ...initialValues })
       setErrors({})
+      setStatus('success')
     } catch (error) {
       setStatus('error')
+
       setServerError(
         error instanceof Error
           ? error.message
-          : 'Something went wrong. Please try again.'
+          : 'We could not submit your enquiry. Please try again.'
       )
     }
   }
 
+  function handleAnotherEnquiry() {
+    setValues({ ...initialValues })
+    setErrors({})
+    setServerError('')
+    setStatus('idle')
+  }
+
   if (status === 'success') {
     return (
-      <div className="rounded-3xl border border-green-200 bg-green-50 p-8 text-center md:p-12">
+      <section
+        role="status"
+        aria-live="polite"
+        className="rounded-3xl border border-green-200 bg-green-50 p-8 text-center md:p-12"
+      >
         <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-100 text-green-700">
           <CheckCircle2 size={34} />
         </div>
 
         <h2 className="mt-5 text-2xl font-extrabold text-slate-950">
-          Enquiry submitted successfully!
+          Thank You for Contacting Adsrow!
         </h2>
 
         <p className="mx-auto mt-3 max-w-md leading-7 text-slate-600">
-          Thank you for contacting Adsrow. Your enquiry has been submitted.
+          Your enquiry has been submitted successfully. Our team
+          will review your requirements and contact you soon.
+        </p>
+
+        <p className="mt-4 text-sm text-slate-500">
+          We appreciate your interest in Adsrow.
         </p>
 
         <button
           type="button"
-          onClick={() => setStatus('idle')}
-          className="mt-7 rounded-full bg-slate-950 px-6 py-3 font-bold text-white transition hover:bg-slate-800"
+          onClick={handleAnotherEnquiry}
+          className="mt-7 inline-flex items-center justify-center gap-2 rounded-full bg-slate-950 px-6 py-3 font-bold text-white transition hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2"
         >
           Submit Another Enquiry
+          <ArrowRight size={18} />
         </button>
-      </div>
+      </section>
     )
   }
 
@@ -95,12 +126,14 @@ export default function EnquirySection() {
     <form
       onSubmit={handleSubmit}
       noValidate
+      aria-busy={status === 'sending'}
       className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-9"
     >
       <div className="mb-8">
         <h2 className="text-2xl font-extrabold text-slate-950">
           Send an Enquiry
         </h2>
+
         <p className="mt-2 text-sm leading-6 text-slate-500">
           Fields marked with * are required.
         </p>
@@ -125,12 +158,18 @@ export default function EnquirySection() {
             onChange={handleChange}
             className={fieldClass}
             aria-invalid={Boolean(errors.name)}
-            aria-describedby={errors.name ? 'name-error' : undefined}
+            aria-describedby={
+              errors.name ? 'name-error' : undefined
+            }
             required
+            disabled={status === 'sending'}
           />
 
           {errors.name && (
-            <p id="name-error" className="mt-2 text-sm text-red-600">
+            <p
+              id="name-error"
+              className="mt-2 text-sm text-red-600"
+            >
               {errors.name}
             </p>
           )}
@@ -154,12 +193,18 @@ export default function EnquirySection() {
             onChange={handleChange}
             className={fieldClass}
             aria-invalid={Boolean(errors.email)}
-            aria-describedby={errors.email ? 'email-error' : undefined}
+            aria-describedby={
+              errors.email ? 'email-error' : undefined
+            }
             required
+            disabled={status === 'sending'}
           />
 
           {errors.email && (
-            <p id="email-error" className="mt-2 text-sm text-red-600">
+            <p
+              id="email-error"
+              className="mt-2 text-sm text-red-600"
+            >
               {errors.email}
             </p>
           )}
@@ -183,12 +228,18 @@ export default function EnquirySection() {
             onChange={handleChange}
             className={fieldClass}
             aria-invalid={Boolean(errors.phone)}
-            aria-describedby={errors.phone ? 'phone-error' : undefined}
+            aria-describedby={
+              errors.phone ? 'phone-error' : undefined
+            }
             required
+            disabled={status === 'sending'}
           />
 
           {errors.phone && (
-            <p id="phone-error" className="mt-2 text-sm text-red-600">
+            <p
+              id="phone-error"
+              className="mt-2 text-sm text-red-600"
+            >
               {errors.phone}
             </p>
           )}
@@ -213,16 +264,26 @@ export default function EnquirySection() {
               errors.enquiryType ? 'type-error' : undefined
             }
             required
+            disabled={status === 'sending'}
           >
             <option value="">Select an enquiry type</option>
-            <option value="Advertising">Advertise With Adsrow</option>
-            <option value="Host a Screen">Host a Screen</option>
-            <option value="Partnership">Business Partnership</option>
+            <option value="Advertising">
+              Advertise With Adsrow
+            </option>
+            <option value="Host a Screen">
+              Host a Screen
+            </option>
+            <option value="Partnership">
+              Business Partnership
+            </option>
             <option value="Other">Other Enquiry</option>
           </select>
 
           {errors.enquiryType && (
-            <p id="type-error" className="mt-2 text-sm text-red-600">
+            <p
+              id="type-error"
+              className="mt-2 text-sm text-red-600"
+            >
               {errors.enquiryType}
             </p>
           )}
@@ -245,12 +306,18 @@ export default function EnquirySection() {
             onChange={handleChange}
             className={`${fieldClass} resize-y`}
             aria-invalid={Boolean(errors.message)}
-            aria-describedby={errors.message ? 'message-error' : undefined}
+            aria-describedby={
+              errors.message ? 'message-error' : undefined
+            }
             required
+            disabled={status === 'sending'}
           />
 
           {errors.message && (
-            <p id="message-error" className="mt-2 text-sm text-red-600">
+            <p
+              id="message-error"
+              className="mt-2 text-sm text-red-600"
+            >
               {errors.message}
             </p>
           )}
@@ -269,22 +336,26 @@ export default function EnquirySection() {
       <button
         type="submit"
         disabled={status === 'sending'}
-        className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-full bg-slate-950 px-6 py-4 font-bold text-white transition hover:bg-amber-400 hover:text-slate-950 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+        className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-full bg-slate-950 px-6 py-4 font-bold text-white transition hover:bg-amber-400 hover:text-slate-950 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
       >
         {status === 'sending' ? (
           <>
-            <LoaderCircle className="animate-spin" size={19} />
+            <LoaderCircle
+              className="animate-spin"
+              size={19}
+            />
             Submitting...
           </>
         ) : (
           <>
-            Submit Enquiry <Send size={18} />
+            Submit Enquiry
+            <Send size={18} />
           </>
         )}
       </button>
 
       <p className="mt-4 text-xs leading-5 text-slate-500">
-        Your enquiry will be sent when the Adsrow enquiry service is configured.
+        Your information will be used to respond to your enquiry.
       </p>
     </form>
   )
