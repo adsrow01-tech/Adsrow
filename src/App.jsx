@@ -31,6 +31,14 @@ import { submitEnquiry } from "./lib/enquire";
 
 /* -------------------- NAVBAR -------------------- */
 
+function BrandWordmark() {
+  return (
+    <span className="header-wordmark" aria-hidden="true">
+      <span className="wordmark-ads">ads</span><span className="wordmark-row">row</span><span className="wordmark-dot">.</span><sup>®</sup>
+    </span>
+  );
+}
+
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -64,9 +72,7 @@ function Header() {
           aria-label="Adsrow home"
           onClick={() => setMenuOpen(false)}
         >
-          <span className="header-wordmark" aria-hidden="true">
-            <span className="wordmark-ads">ads</span><span className="wordmark-row">row</span><span className="wordmark-dot">.</span><sup>®</sup>
-          </span>
+          <BrandWordmark />
         </Link>
 
         <nav id="primary-navigation" className={`nav-links ${menuOpen ? "is-open" : ""}`}>
@@ -122,9 +128,8 @@ function Footer() {
     <footer className="site-footer">
       <div className="container footer-grid">
         <div className="footer-brand-column">
-          <Link to="/" className="brand">
-            <span className="brand-mark">a</span>
-            <span>adsrow</span>
+          <Link to="/" className="brand footer-brand" aria-label="Adsrow home">
+            <BrandWordmark />
           </Link>
 
           <p>

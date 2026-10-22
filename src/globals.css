@@ -1501,6 +1501,7 @@ section {
 .header-wordmark .wordmark-row { color: var(--sky); }
 .header-wordmark .wordmark-dot { margin-left: 1px; color: var(--mint); }
 .header-wordmark sup { position: relative; top: -11px; margin-left: 2px; color: #104493; font-family: Arial, sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 0; }
+.footer-brand-column .header-wordmark { font-size: 30px; }
 .site-header .nav-links { flex: 0 1 auto; justify-content: flex-end; gap: clamp(12px, 1.45vw, 21px); }
 .site-header .nav-link { color: #28344b; font-size: 12px; font-weight: 700; white-space: nowrap; }
 .site-header .nav-link:hover, .site-header .nav-link.active { color: var(--blue); }
