@@ -1,4 +1,6 @@
-import { useEffect, useState } from "react";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import { useEffect, useRef, useState } from "react";
 import {
   Routes,
   Route,
@@ -7,6 +9,8 @@ import {
   Navigate,
   Outlet,
   useLocation,
+  useNavigate,
+  useSearchParams,
 } from "react-router-dom";
 import {
   Menu,
@@ -26,10 +30,57 @@ import {
   ClipboardCheck,
   ChevronDown,
   Mail,
+  UserRound,
+  LogOut,
 } from "lucide-react";
 import { submitEnquiry } from "./lib/enquire";
+import { useAuth } from "./context/AuthContext";
+import RequireAuth from "./components/RequireAuth";
+import { supabase, supabaseConfig } from "./lib/supabase";
 
 /* -------------------- NAVBAR -------------------- */
+
+function AuthCallback() {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    let active = true;
+
+    async function completeAuthentication() {
+      const callbackError = searchParams.get("error_description") || searchParams.get("error");
+      if (callbackError) {
+        navigate("/login", { replace: true, state: { message: callbackError } });
+        return;
+      }
+
+      if (!supabaseConfig) {
+        navigate("/login", { replace: true, state: { message: "Supabase is not configured." } });
+        return;
+      }
+
+      const { data, error } = await supabase.auth.getSession();
+      if (!active) return;
+
+      if (error || !data.session) {
+        navigate("/login", {
+          replace: true,
+          state: { message: error?.message || "Google authentication could not be completed." },
+        });
+        return;
+      }
+
+      const next = searchParams.get("next");
+      const destination = next && next.startsWith("/") && !next.startsWith("//") ? next : "/";
+      navigate(destination, { replace: true });
+    }
+
+    completeAuthentication();
+    return () => { active = false; };
+  }, [navigate, searchParams]);
+
+  return <div className="route-loading" role="status" aria-live="polite">Completing Google sign-in…</div>;
+}
 
 function BrandWordmark() {
   return (
@@ -41,6 +92,10 @@ function BrandWordmark() {
 
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [accountOpen, setAccountOpen] = useState(false);
+  const [logoutError, setLogoutError] = useState("");
+  const accountRef = useRef(null);
+  const { user, loading } = useAuth();
 
   const links = [
     { name: "Home", path: "/" },
@@ -62,6 +117,37 @@ function Header() {
     window.addEventListener("keydown", closeOnEscape);
     return () => window.removeEventListener("keydown", closeOnEscape);
   }, [menuOpen]);
+
+  useEffect(() => {
+    if (!accountOpen) return undefined;
+    function closeOnOutsideClick(event) {
+      if (!accountRef.current?.contains(event.target)) setAccountOpen(false);
+    }
+    document.addEventListener("mousedown", closeOnOutsideClick);
+    return () => document.removeEventListener("mousedown", closeOnOutsideClick);
+  }, [accountOpen]);
+
+  useEffect(() => {
+    if (!accountOpen) return undefined;
+    function closeOnEscape(event) {
+      if (event.key === "Escape") setAccountOpen(false);
+    }
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [accountOpen]);
+
+  async function handleLogout() {
+    setLogoutError("");
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      setLogoutError(error.message);
+      return;
+    }
+    setAccountOpen(false);
+    setMenuOpen(false);
+  }
+
+  const displayName = user?.user_metadata?.full_name || user?.user_metadata?.name;
 
   return (
     <header className="site-header">
@@ -105,6 +191,42 @@ function Header() {
         <Link to="/advertise" className="button desktop-contact">
           Advertise With Us <ArrowUpRight size={16} />
         </Link>
+
+        <div className="account-menu" ref={accountRef}>
+          <button
+            type="button"
+            className="account-trigger"
+            aria-label={user ? "Open account menu" : "Open login and signup menu"}
+            aria-haspopup="menu"
+            aria-expanded={accountOpen}
+            onClick={() => setAccountOpen((open) => !open)}
+          >
+            <UserRound size={19} aria-hidden="true" />
+          </button>
+
+          {accountOpen && (
+            <div className="account-dropdown" role="menu">
+              {loading ? (
+                <p className="account-loading">Checking account…</p>
+              ) : user ? (
+                <>
+                  {displayName && <strong className="account-name">{displayName}</strong>}
+                  <span className="account-email">{user.email}</span>
+                  <Link to="/advertise" role="menuitem" onClick={() => setAccountOpen(false)}>Advertise With Us</Link>
+                  {logoutError && <span className="account-error" role="alert">{logoutError}</span>}
+                  <button type="button" role="menuitem" className="account-logout" onClick={handleLogout}>
+                    <LogOut size={15} /> Log out
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link to="/login" role="menuitem" onClick={() => setAccountOpen(false)}>Log in</Link>
+                  <Link to="/signup" role="menuitem" onClick={() => setAccountOpen(false)}>Sign Up</Link>
+                </>
+              )}
+            </div>
+          )}
+        </div>
 
         <button
           type="button"
@@ -1229,6 +1351,9 @@ export default function App() {
   return (
     <Routes>
       <Route element={<Layout />}>
+        <Route path="/auth/callback" element={<AuthCallback />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
         <Route path="/" element={<HomePage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/services" element={<ServicesPage />} />
@@ -1236,7 +1361,7 @@ export default function App() {
         <Route path="/how-it-works" element={<HowItWorksPage />} />
         <Route path="/why-adsrow" element={<WhyAdsrowPage />} />
         <Route path="/faqs" element={<FaqsPage />} />
-        <Route path="/advertise" element={<AdvertisePage />} />
+        <Route path="/advertise" element={<RequireAuth><AdvertisePage /></RequireAuth>} />
         <Route path="/host-a-screen" element={<HostAScreenPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
