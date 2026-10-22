@@ -1,3 +1,4 @@
+
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function validateEnquiry(values = {}) {
@@ -9,9 +10,7 @@ export function validateEnquiry(values = {}) {
   const enquiryType = String(values.enquiryType ?? "").trim();
   const message = String(values.message ?? "").trim();
 
-  if (!name) {
-    errors.name = "Please enter your name.";
-  }
+  if (!name) errors.name = "Please enter your name.";
 
   if (!email) {
     errors.email = "Please enter your email address.";
@@ -19,17 +18,9 @@ export function validateEnquiry(values = {}) {
     errors.email = "Please enter a valid email address.";
   }
 
-  if (!phone) {
-    errors.phone = "Please enter your phone number.";
-  }
-
-  if (!enquiryType) {
-    errors.enquiryType = "Please select an enquiry type.";
-  }
-
-  if (!message) {
-    errors.message = "Please tell us about your requirements.";
-  }
+  if (!phone) errors.phone = "Please enter your phone number.";
+  if (!enquiryType) errors.enquiryType = "Please select an enquiry type.";
+  if (!message) errors.message = "Please tell us about your requirements.";
 
   return errors;
 }
@@ -39,7 +30,7 @@ export async function submitEnquiry(values) {
 
   if (!accessKey) {
     throw new Error(
-      "Web3Forms is not configured. Please check your environment variables."
+      "Web3Forms is not configured. Please check your .env file."
     );
   }
 
@@ -51,10 +42,7 @@ export async function submitEnquiry(values) {
   formData.append("name", String(values.name ?? "").trim());
   formData.append("email", String(values.email ?? "").trim());
   formData.append("phone", String(values.phone ?? "").trim());
-  formData.append(
-    "enquiry_type",
-    String(values.enquiryType ?? "").trim()
-  );
+  formData.append("enquiry_type", String(values.enquiryType ?? "").trim());
   formData.append("message", String(values.message ?? "").trim());
 
   let response;
@@ -66,7 +54,7 @@ export async function submitEnquiry(values) {
     });
   } catch {
     throw new Error(
-      "Unable to connect to the enquiry service. Check your internet connection and try again."
+      "Unable to connect to the enquiry service. Check your internet connection."
     );
   }
 
@@ -75,9 +63,7 @@ export async function submitEnquiry(values) {
   try {
     data = await response.json();
   } catch {
-    throw new Error(
-      "The enquiry service returned an invalid response. Please try again."
-    );
+    throw new Error("Invalid response from the enquiry service.");
   }
 
   if (!response.ok || data.success !== true) {
