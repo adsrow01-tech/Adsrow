@@ -13,12 +13,10 @@ const navLinks = [
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const closeMenu = () => setMenuOpen(false);
-
   return (
     <header className="adsrow-header">
       <div className="container adsrow-nav">
-        <Link to="/" className="adsrow-logo" onClick={closeMenu}>
+        <Link to="/" className="adsrow-logo">
           <span className="logo-icon">a</span>
           adsrow
         </Link>
@@ -29,61 +27,29 @@ export default function Header() {
               key={link.path}
               to={link.path}
               end={link.path === '/'}
-              onClick={closeMenu}
+              onClick={() => setMenuOpen(false)}
             >
               {link.name}
             </NavLink>
           ))}
 
-          {/* Mobile authentication links */}
-          <Link
-            to="/login"
-            className="nav-link mobile-auth-link"
-            onClick={closeMenu}
-          >
-            Log in
-          </Link>
-
-          <Link
-            to="/signup"
-            className="button mobile-auth"
-            onClick={closeMenu}
-          >
-            Get Started <ArrowUpRight size={16} />
-          </Link>
-
-          {/* Mobile Contact Us */}
           <Link
             to="/contact"
             className="button mobile-contact"
-            onClick={closeMenu}
+            onClick={() => setMenuOpen(false)}
           >
             Contact Us <ArrowUpRight size={16} />
           </Link>
         </nav>
 
-        {/* Desktop authentication buttons */}
-        <div className="desktop-auth">
-          <Link to="/login" className="nav-link">
-            Log in
-          </Link>
-
-          <Link to="/signup" className="button">
-            Get Started <ArrowUpRight size={16} />
-          </Link>
-        </div>
-
-        {/* Existing desktop Contact Us button */}
         <Link to="/contact" className="button desktop-contact">
           Contact Us <ArrowUpRight size={16} />
         </Link>
 
         <button
-          type="button"
           className="menu-toggle"
-          onClick={() => setMenuOpen((open) => !open)}
-          aria-label={menuOpen ? 'Close navigation' : 'Open navigation'}
-          aria-expanded={menuOpen}
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-label="Toggle navigation"
         >
           {menuOpen ? <X /> : <Menu />}
         </button>
@@ -91,4 +57,3 @@ export default function Header() {
     </header>
   );
 }
-
