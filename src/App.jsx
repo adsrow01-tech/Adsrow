@@ -26,8 +26,15 @@ import {
   ClipboardCheck,
   ChevronDown,
   Mail,
+  CircleUserRound,
 } from "lucide-react";
 import { submitEnquiry } from "./lib/enquire";
+import { LoginPage, SignupPage } from "./pages/AuthPages";
+import { PrivacyPage, TermsPage } from "./pages/LegalPages";
+import DashboardPage from "./pages/DashboardPage";
+import { useAuth } from "./context/AuthContext";
+import { supabase } from "./lib/supabase";
+import { recordSubmittedEnquiry } from "./lib/dashboard";
 
 /* -------------------- NAVBAR -------------------- */
 
@@ -41,6 +48,15 @@ function BrandWordmark() {
 
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { user } = useAuth();
+
+  function handleSignOut() {
+    if (!supabase) return;
+    void supabase.auth.signOut().catch(() => {
+      // Auth state remains unchanged when sign-out cannot reach Supabase.
+    });
+    setMenuOpen(false);
+  }
 
   const links = [
     { name: "Home", path: "/" },
@@ -100,8 +116,16 @@ function Header() {
           >
             Advertise With Us <ArrowUpRight size={16} />
           </Link>
+          {user ? <><Link to="/dashboard" className="auth-nav-link mobile-auth-link" onClick={() => setMenuOpen(false)}>Dashboard</Link><button className="mobile-auth-link" onClick={handleSignOut}>Sign out</button></> : <>
+            <Link to="/login" className="auth-nav-link mobile-auth-link" onClick={() => setMenuOpen(false)}>Log in</Link>
+            <Link to="/signup" className="button mobile-signup" onClick={() => setMenuOpen(false)}>Create account</Link>
+          </>}
         </nav>
 
+        {user ? <div className="header-account"><Link to="/dashboard" className="header-user" title="Open your dashboard" aria-label={`Open dashboard for ${user.email || "your account"}`}><CircleUserRound size={23} /><span className="header-user-label">{user.user_metadata?.full_name || user.email}</span></Link><button className="header-signout" onClick={handleSignOut}>Sign out</button></div> : <div className="header-auth-links">
+          <Link to="/login" className="header-login">Log in</Link>
+          <Link to="/signup" className="button header-signup">Sign up</Link>
+        </div>}
         <Link to="/advertise" className="button desktop-contact">
           Advertise With Us <ArrowUpRight size={16} />
         </Link>
@@ -273,6 +297,7 @@ function EnquiryForm() {
   const [form, setForm] = useState(initialEnquiry);
   const [status, setStatus] = useState("idle"); // idle | sending | success | error
   const [errorMessage, setErrorMessage] = useState("");
+  const { user } = useAuth();
 
   function updateForm(event) {
     setForm({
@@ -298,6 +323,8 @@ function EnquiryForm() {
 
     try {
       await submitEnquiry({ ...form, enquiryType: form.interest });
+
+      recordSubmittedEnquiry(user?.id);
 
       setForm({ ...initialEnquiry });
       setStatus("success");
@@ -1225,6 +1252,20 @@ function Layout() {
   );
 }
 
+function ProtectedAdvertisePage() {
+  const { user, loading } = useAuth();
+  if (loading) return <section className="section"><div className="container"><p>Checking your account…</p></div></section>;
+  if (!user) return <Navigate to="/login?next=%2Fadvertise" replace />;
+  return <AdvertisePage />;
+}
+
+function ProtectedDashboardPage() {
+  const { user, loading } = useAuth();
+  if (loading) return <section className="section"><div className="container"><p>Checking your account…</p></div></section>;
+  if (!user) return <Navigate to="/login" replace />;
+  return <DashboardPage />;
+}
+
 export default function App() {
   return (
     <Routes>
@@ -1236,9 +1277,14 @@ export default function App() {
         <Route path="/how-it-works" element={<HowItWorksPage />} />
         <Route path="/why-adsrow" element={<WhyAdsrowPage />} />
         <Route path="/faqs" element={<FaqsPage />} />
-        <Route path="/advertise" element={<AdvertisePage />} />
+        <Route path="/advertise" element={<ProtectedAdvertisePage />} />
+        <Route path="/dashboard" element={<ProtectedDashboardPage />} />
         <Route path="/host-a-screen" element={<HostAScreenPage />} />
         <Route path="/contact" element={<ContactPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/terms" element={<TermsPage />} />
+        <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>
