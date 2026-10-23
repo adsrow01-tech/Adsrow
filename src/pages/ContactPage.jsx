@@ -1,6 +1,7 @@
 
 import { Link } from 'react-router-dom'
 import { ArrowRight, Mail, MessageCircle } from 'lucide-react'
+import EnquirySection from '../components/EnquirySection'
 
 export default function ContactPage() {
   return (
@@ -30,9 +31,8 @@ export default function ContactPage() {
             </h2>
 
             <p className="mt-4 leading-8 text-slate-600">
-              Sign in to share your requirements through the protected partner
-              enquiry page. Our next steps will depend on your campaign,
-              location and partnership needs.
+              Share your requirements through the enquiry form. Our next steps
+              will depend on your campaign, location and partnership needs.
             </p>
 
             <div className="mt-8 space-y-5">
@@ -79,17 +79,8 @@ export default function ContactPage() {
             </div>
           </div>
 
-          <div className="rounded-2xl bg-slate-50 p-7 md:p-9">
-            <h2 className="text-2xl font-extrabold text-slate-950">Ready to talk?</h2>
-            <p className="mt-4 leading-8 text-slate-600">
-              Sign in or create an account to send an enquiry to the Adsrow team.
-            </p>
-            <Link
-              to="/partner-form"
-              className="mt-6 inline-flex items-center gap-2 rounded-lg bg-slate-900 px-5 py-3 text-sm font-bold text-white"
-            >
-              Start an enquiry <ArrowRight size={16} />
-            </Link>
+          <div>
+            <EnquirySection />
           </div>
         </div>
       </section>
