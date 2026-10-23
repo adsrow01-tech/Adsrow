@@ -87,13 +87,13 @@ export default function Footer() {
                   to="/contact"
                   className="transition hover:text-amber-400"
                 >
-                  Send an enquiry
+                  Start an enquiry
                 </Link>
               </li>
 
               <li className="flex items-start gap-3">
                 <Phone size={18} className="mt-0.5 shrink-0 text-amber-400" />
-                <span>Contact us through our enquiry form</span>
+                <span>Start a partner enquiry through your Adsrow account</span>
               </li>
             </ul>
           </div>

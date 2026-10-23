@@ -68,7 +68,9 @@ function Header() {
     { name: "About Us", path: "/about" },
     { name: "Services", path: "/services" },
     { name: "Locations", path: "/locations" },
-    { name: "Contact", path: "/contact" },
+    { name: "How It Works", path: "/how-it-works" },
+    { name: "Host a Screen", path: "/host-a-screen" },
+    { name: "Contact Us", path: "/contact" },
   ];
 
   useEffect(() => {
@@ -236,6 +238,22 @@ function SectionHeading({ eyebrow, title, description, centered = false }) {
       <h2>{title}</h2>
       {description && <p className="section-description">{description}</p>}
     </div>
+  );
+}
+
+function PageCTA({ title, description, label }) {
+  return (
+    <section className="section section-soft">
+      <div className="container simple-cta">
+        <div>
+          <h2>{title}</h2>
+          <p>{description}</p>
+        </div>
+        <Link className="button" to="/partner-form">
+          {label} <ArrowUpRight size={16} />
+        </Link>
+      </div>
+    </section>
   );
 }
 
@@ -938,7 +956,11 @@ function ServicesPage() {
         </div>
       </section>
 
-      <EnquirySection title="Not sure which service you need?" />
+      <PageCTA
+        title="Not sure which service you need?"
+        description="Tell us your goals, audience, and target communities. Our team can help you choose the right Adsrow service."
+        label="Discuss Your Needs"
+      />
     </>
   );
 }
@@ -1169,7 +1191,11 @@ function FaqsPage() {
         </div>
       </section>
 
-      <EnquirySection title="Still have a question?" />
+      <PageCTA
+        title="Still have a question?"
+        description="Ask the Adsrow team about campaign options, locations, or screen hosting."
+        label="Ask Adsrow"
+      />
     </>
   );
 }
@@ -1216,7 +1242,6 @@ function AdvertisePage() {
         </div>
       </section>
 
-      <EnquirySection title="Tell us about your campaign" />
     </>
   );
 }
@@ -1231,7 +1256,7 @@ function HostAScreenPage() {
         title="Host an Adsrow screen in your community."
         description="Apartment associations, residential communities, property owners, and eligible venue partners can enquire about a digital display for their shared space. The supplied preview identifies gated communities and apartments as the current pilot focus."
       >
-        <Link className="button" to="/partner-form">Host a Screen <ArrowUpRight size={16} /></Link>
+        <Link className="button" to="/partner-form?interest=hosting">Host a Screen <ArrowUpRight size={16} /></Link>
       </PageHero>
 
       <section className="section">
@@ -1265,7 +1290,7 @@ function HostAScreenPage() {
             <h2>Tell us about your community or space.</h2>
             <p className="body-copy">Sign in or create an account to send a hosting enquiry to Adsrow.</p>
           </div>
-          <Link className="button" to="/partner-form">Host a Screen <ArrowRight size={18} /></Link>
+          <Link className="button" to="/partner-form?interest=hosting">Host a Screen <ArrowRight size={18} /></Link>
         </div>
       </section>
     </>
@@ -1307,7 +1332,6 @@ function ContactPage() {
         </div>
       </section>
 
-      <EnquirySection title="Send us your enquiry" />
     </>
   );
 }
