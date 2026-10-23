@@ -103,7 +103,7 @@ export default function HostScreenCTA() {
             <div className="mt-6 rounded-2xl bg-amber-400 p-5 text-slate-950">
               <p className="text-sm font-semibold">Have a suitable space?</p>
               <Link
-                to="/contact"
+                to="/partner-form?interest=hosting"
                 className="mt-2 inline-flex items-center gap-2 font-extrabold"
               >
                 Tell Us About It <ArrowRight size={17} />

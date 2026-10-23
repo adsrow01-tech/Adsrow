@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Routes,
   Route,
@@ -6,7 +6,9 @@ import {
   NavLink,
   Navigate,
   Outlet,
+  useNavigate,
   useLocation,
+  useSearchParams,
 } from "react-router-dom";
 import {
   Menu,
@@ -28,12 +30,11 @@ import {
   Mail,
   CircleUserRound,
 } from "lucide-react";
-import { submitEnquiry } from "./lib/enquire";
-import { LoginPage, SignupPage } from "./pages/AuthPages";
+import { submitEnquiry, validateEnquiry } from "./lib/enquire";
+import { AuthCallbackPage, ForgotPasswordPage, LoginPage, ResetPasswordPage, SignupPage } from "./pages/AuthPages";
 import { PrivacyPage, TermsPage } from "./pages/LegalPages";
 import DashboardPage from "./pages/DashboardPage";
-import { useAuth } from "./context/AuthContext";
-import { supabase } from "./lib/supabase";
+import { isVerifiedUser, useAuth } from "./context/AuthContext";
 import { recordSubmittedEnquiry } from "./lib/dashboard";
 
 /* -------------------- NAVBAR -------------------- */
@@ -48,14 +49,18 @@ function BrandWordmark() {
 
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const { user } = useAuth();
+  const [signOutError, setSignOutError] = useState("");
+  const menuToggleRef = useRef(null);
+  const { user, verified, signOut } = useAuth();
 
-  function handleSignOut() {
-    if (!supabase) return;
-    void supabase.auth.signOut().catch(() => {
-      // Auth state remains unchanged when sign-out cannot reach Supabase.
-    });
-    setMenuOpen(false);
+  async function handleSignOut() {
+    setSignOutError("");
+    try {
+      await signOut();
+      setMenuOpen(false);
+    } catch {
+      setSignOutError("We couldn't sign you out. Please try again.");
+    }
   }
 
   const links = [
@@ -72,7 +77,10 @@ function Header() {
     if (!menuOpen) return undefined;
 
     function closeOnEscape(event) {
-      if (event.key === "Escape") setMenuOpen(false);
+      if (event.key === "Escape") {
+        setMenuOpen(false);
+        menuToggleRef.current?.focus();
+      }
     }
 
     window.addEventListener("keydown", closeOnEscape);
@@ -110,27 +118,31 @@ function Header() {
           ))}
 
           <Link
-            to="/advertise"
+            to="/partner-form"
             className="button mobile-contact"
             onClick={() => setMenuOpen(false)}
           >
-            Advertise With Us <ArrowUpRight size={16} />
+            Partner with Adsrow <ArrowUpRight size={16} />
           </Link>
-          {user ? <><Link to="/dashboard" className="auth-nav-link mobile-auth-link" onClick={() => setMenuOpen(false)}>Dashboard</Link><button className="mobile-auth-link" onClick={handleSignOut}>Sign out</button></> : <>
+          {verified ? <><Link to="/dashboard" className="auth-nav-link mobile-auth-link" onClick={() => setMenuOpen(false)}>Dashboard</Link><button type="button" className="mobile-auth-link" onClick={handleSignOut}>Sign out</button>{signOutError && <p className="form-status form-error" role="alert">{signOutError}</p>}</> : <>
             <Link to="/login" className="auth-nav-link mobile-auth-link" onClick={() => setMenuOpen(false)}>Log in</Link>
-            <Link to="/signup" className="button mobile-signup" onClick={() => setMenuOpen(false)}>Create account</Link>
+            <Link to="/signup" className="button mobile-signup" onClick={() => setMenuOpen(false)}>Sign up</Link>
           </>}
         </nav>
 
-        {user ? <div className="header-account"><Link to="/dashboard" className="header-user" title="Open your dashboard" aria-label={`Open dashboard for ${user.email || "your account"}`}><CircleUserRound size={23} /><span className="header-user-label">{user.user_metadata?.full_name || user.email}</span></Link><button className="header-signout" onClick={handleSignOut}>Sign out</button></div> : <div className="header-auth-links">
-          <Link to="/login" className="header-login">Log in</Link>
-          <Link to="/signup" className="button header-signup">Sign up</Link>
-        </div>}
-        <Link to="/advertise" className="button desktop-contact">
-          Advertise With Us <ArrowUpRight size={16} />
-        </Link>
+        <div className="header-actions">
+          {verified ? <div className="header-account"><Link to="/dashboard" className="header-user" title="Open your dashboard" aria-label={`Open dashboard for ${user.email || "your account"}`}><CircleUserRound size={23} /><span className="header-user-label">{user.user_metadata?.full_name || user.email}</span></Link><button type="button" className="header-signout" onClick={handleSignOut}>Sign out</button></div> : <div className="header-auth-links">
+            <Link to="/login" className="header-login">Log in</Link>
+            <Link to="/signup" className="button header-signup">Sign up</Link>
+          </div>}
+          <Link to="/partner-form" className="button desktop-contact" onClick={() => setMenuOpen(false)}>
+            Partner with Adsrow <ArrowUpRight size={16} />
+          </Link>
+          {signOutError && <p className="header-auth-error" role="alert">{signOutError}</p>}
+        </div>
 
         <button
+          ref={menuToggleRef}
           type="button"
           className="menu-toggle"
           onClick={() => setMenuOpen(!menuOpen)}
@@ -229,6 +241,22 @@ function SectionHeading({ eyebrow, title, description, centered = false }) {
   );
 }
 
+function PageCTA({ title, description, label }) {
+  return (
+    <section className="section section-soft">
+      <div className="container simple-cta">
+        <div>
+          <h2>{title}</h2>
+          <p>{description}</p>
+        </div>
+        <Link className="button" to="/partner-form">
+          {label} <ArrowUpRight size={16} />
+        </Link>
+      </div>
+    </section>
+  );
+}
+
 /* -------------------- FEATURE CARD -------------------- */
 
 function FeatureCard({ icon: Icon, title, description, number }) {
@@ -293,20 +321,29 @@ const initialEnquiry = {
   message: "",
 };
 
-function EnquiryForm() {
-  const [form, setForm] = useState(initialEnquiry);
+function EnquiryForm({ requiresVerifiedUser = false }) {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const [form, setForm] = useState(() => ({
+    ...initialEnquiry,
+    interest: searchParams.get("interest") === "hosting" ? "Hosting a screen" : initialEnquiry.interest,
+  }));
   const [status, setStatus] = useState("idle"); // idle | sending | success | error
   const [errorMessage, setErrorMessage] = useState("");
-  const { user } = useAuth();
+  const [fieldErrors, setFieldErrors] = useState({});
+  const { user, refreshSession } = useAuth();
 
   function updateForm(event) {
+    const { name, value } = event.target;
     setForm({
       ...form,
-      [event.target.name]: event.target.value,
+      [name]: value,
     });
+    setFieldErrors((errors) => ({ ...errors, [name]: undefined }));
 
-    if (status === "success") {
+    if (status === "success" || status === "error") {
       setStatus("idle");
+      setErrorMessage("");
     }
   }
 
@@ -315,6 +352,30 @@ function EnquiryForm() {
 
     // Prevent duplicate submissions while a request is in flight.
     if (status === "sending") {
+      return;
+    }
+
+    const needsAuthentication = requiresVerifiedUser || form.interest === "Hosting a screen";
+    if (needsAuthentication) {
+      setStatus("sending");
+      const requestedPath = `/partner-form${form.interest === "Hosting a screen" ? "?interest=hosting" : ""}`;
+      try {
+        const currentUser = await refreshSession();
+        if (!isVerifiedUser(currentUser)) {
+          const reason = currentUser ? "verify-email" : "auth-required";
+          navigate(`/login?next=${encodeURIComponent(requestedPath)}&reason=${reason}`, { replace: true });
+          return;
+        }
+      } catch {
+        navigate(`/login?next=${encodeURIComponent(requestedPath)}&reason=auth-required`, { replace: true });
+        return;
+      }
+    }
+
+    const errors = validateEnquiry({ ...form, enquiryType: form.interest });
+    setFieldErrors(errors);
+    if (Object.keys(errors).length) {
+      setStatus("idle");
       return;
     }
 
@@ -339,7 +400,7 @@ function EnquiryForm() {
   }
 
   return (
-    <form className="enquiry-form" onSubmit={submitForm}>
+    <form className="enquiry-form" onSubmit={submitForm} noValidate>
       <div className="form-row">
         <label>
           Full Name
@@ -349,7 +410,10 @@ function EnquiryForm() {
             onChange={updateForm}
             placeholder="Your name"
             required
+            aria-invalid={Boolean(fieldErrors.name)}
+            aria-describedby={fieldErrors.name ? "enquiry-name-error" : undefined}
           />
+          {fieldErrors.name && <small className="field-error" id="enquiry-name-error">{fieldErrors.name}</small>}
         </label>
 
         <label>
@@ -361,7 +425,10 @@ function EnquiryForm() {
             onChange={updateForm}
             placeholder="you@example.com"
             required
+            aria-invalid={Boolean(fieldErrors.email)}
+            aria-describedby={fieldErrors.email ? "enquiry-email-error" : undefined}
           />
+          {fieldErrors.email && <small className="field-error" id="enquiry-email-error">{fieldErrors.email}</small>}
         </label>
       </div>
 
@@ -373,7 +440,11 @@ function EnquiryForm() {
             value={form.phone}
             onChange={updateForm}
             placeholder="Your phone number"
+            required
+            aria-invalid={Boolean(fieldErrors.phone)}
+            aria-describedby={fieldErrors.phone ? "enquiry-phone-error" : undefined}
           />
+          {fieldErrors.phone && <small className="field-error" id="enquiry-phone-error">{fieldErrors.phone}</small>}
         </label>
 
         <label>
@@ -399,7 +470,11 @@ function EnquiryForm() {
           onChange={updateForm}
           rows="4"
           placeholder="Tell us about your requirements..."
+          required
+          aria-invalid={Boolean(fieldErrors.message)}
+          aria-describedby={fieldErrors.message ? "enquiry-message-error" : undefined}
         />
+        {fieldErrors.message && <small className="field-error" id="enquiry-message-error">{fieldErrors.message}</small>}
       </label>
 
       {status === "success" && (
@@ -442,6 +517,7 @@ function EnquirySection({
   title = "Let's talk about your next campaign",
   description = "Tell us whether you’re planning an ad campaign or asking about hosting a screen. The Adsrow team can discuss target communities, pricing, creative support, campaign timing, or partnership terms.",
 }) {
+  const { pathname } = useLocation();
   return (
     <section className="section enquiry-section">
       <div className="container enquiry-grid">
@@ -451,7 +527,7 @@ function EnquirySection({
           <p className="section-description">{description}</p>
         </div>
 
-        <EnquiryForm />
+        <EnquiryForm requiresVerifiedUser={pathname === "/partner-form"} />
       </div>
     </section>
   );
@@ -741,7 +817,7 @@ function HomePage() {
             </p>
           </div>
 
-          <Link className="button button-white" to="/host-a-screen">
+          <Link className="button button-white" to="/partner-form">
             Partner With Adsrow <ArrowUpRight size={16} />
           </Link>
         </div>
@@ -761,7 +837,6 @@ function HomePage() {
         </div>
       </section>
 
-      <EnquirySection />
     </>
   );
 }
@@ -775,7 +850,9 @@ function AboutPage() {
         eyebrow="ABOUT ADSROW"
         title="A community-screen network for local advertisers."
         description="Adsrow brings digital advertising into gated-community lift lobbies, coordinating businesses, residential associations, screen-ready creative, and campaign reporting through one team."
-      />
+      >
+        <Link className="button" to="/partner-form">Partner with Adsrow <ArrowUpRight size={16} /></Link>
+      </PageHero>
 
       <section className="section">
         <div className="container about-grid">
@@ -879,7 +956,11 @@ function ServicesPage() {
         </div>
       </section>
 
-      <EnquirySection title="Not sure which service you need?" />
+      <PageCTA
+        title="Not sure which service you need?"
+        description="Tell us your goals, audience, and target communities. Our team can help you choose the right Adsrow service."
+        label="Discuss Your Needs"
+      />
     </>
   );
 }
@@ -972,7 +1053,9 @@ function HowItWorksPage() {
         eyebrow="HOW IT WORKS"
         title="A clear process. No unnecessary complexity."
         description="Adsrow coordinates the screen network; advertisers choose where and when their campaign should play, then review the delivery information available for that campaign."
-      />
+      >
+        <Link className="button" to="/partner-form">Plan a Campaign <ArrowUpRight size={16} /></Link>
+      </PageHero>
 
       <section className="section">
         <div className="container process-list">
@@ -1020,7 +1103,9 @@ function WhyAdsrowPage() {
         eyebrow="WHY ADSROW"
         title="Not where they pass. Where they pause."
         description="The supplied preview positions lift-lobby screens as a community-based alternative to roadside billboards and pamphlet distribution, with location choices and campaign delivery reports."
-      />
+      >
+        <Link className="button" to="/partner-form">Talk to Adsrow <ArrowUpRight size={16} /></Link>
+      </PageHero>
 
       <section className="section">
         <div className="container feature-grid feature-grid-four">
@@ -1078,7 +1163,9 @@ function FaqsPage() {
         eyebrow="HELP CENTRE"
         title="Frequently asked questions"
         description="Answers based on the supplied Adsrow preview. Confirm campaign pricing, current screen availability, and campaign-specific support with the team."
-      />
+      >
+        <Link className="button" to="/contact">Ask a Question <ArrowUpRight size={16} /></Link>
+      </PageHero>
 
       <section className="section">
         <div className="container faq-list">
@@ -1104,7 +1191,11 @@ function FaqsPage() {
         </div>
       </section>
 
-      <EnquirySection title="Still have a question?" />
+      <PageCTA
+        title="Still have a question?"
+        description="Ask the Adsrow team about campaign options, locations, or screen hosting."
+        label="Ask Adsrow"
+      />
     </>
   );
 }
@@ -1118,7 +1209,9 @@ function AdvertisePage() {
         eyebrow="ADVERTISE WITH ADSROW"
         title="Plan a campaign around your audience."
         description="Choose the communities and areas you want to reach, share your campaign timing, and tell us whether you have screen-ready creative or need support. The team can confirm placements and pricing."
-      />
+      >
+        <Link className="button" to="/partner-form">Start an Enquiry <ArrowUpRight size={16} /></Link>
+      </PageHero>
 
       <section className="section">
         <div className="container advertise-grid">
@@ -1149,7 +1242,6 @@ function AdvertisePage() {
         </div>
       </section>
 
-      <EnquirySection title="Tell us about your campaign" />
     </>
   );
 }
@@ -1163,7 +1255,9 @@ function HostAScreenPage() {
         eyebrow="HOST A SCREEN"
         title="Host an Adsrow screen in your community."
         description="Apartment associations, residential communities, property owners, and eligible venue partners can enquire about a digital display for their shared space. The supplied preview identifies gated communities and apartments as the current pilot focus."
-      />
+      >
+        <Link className="button" to="/partner-form?interest=hosting">Host a Screen <ArrowUpRight size={16} /></Link>
+      </PageHero>
 
       <section className="section">
         <div className="container feature-grid feature-grid-three">
@@ -1189,7 +1283,16 @@ function HostAScreenPage() {
         </div>
       </section>
 
-      <EnquirySection title="Tell us about your space" />
+      <section className="section section-soft">
+        <div className="container simple-cta">
+          <div>
+            <p className="eyebrow">READY TO PARTNER?</p>
+            <h2>Tell us about your community or space.</h2>
+            <p className="body-copy">Sign in or create an account to send a hosting enquiry to Adsrow.</p>
+          </div>
+          <Link className="button" to="/partner-form?interest=hosting">Host a Screen <ArrowRight size={18} /></Link>
+        </div>
+      </section>
     </>
   );
 }
@@ -1203,7 +1306,9 @@ function ContactPage() {
         eyebrow="CONTACT ADSROW"
         title="Let's start with a conversation."
         description="Tell us what you want to promote or which community may host a screen. Include your target area, timing, and creative status; for hosting, share the property and shared-space details. Adsrow can discuss availability, pricing, and next steps."
-      />
+      >
+        <Link className="button" to="/partner-form">Send an Enquiry <ArrowUpRight size={16} /></Link>
+      </PageHero>
 
       <section className="section">
         <div className="container contact-info-grid">
@@ -1227,7 +1332,6 @@ function ContactPage() {
         </div>
       </section>
 
-      <EnquirySection title="Send us your enquiry" />
     </>
   );
 }
@@ -1252,24 +1356,31 @@ function Layout() {
   );
 }
 
-function ProtectedAdvertisePage() {
-  const { user, loading } = useAuth();
-  if (loading) return <section className="section"><div className="container"><p>Checking your account…</p></div></section>;
-  if (!user) return <Navigate to="/login?next=%2Fadvertise" replace />;
-  return <AdvertisePage />;
-}
-
-function ProtectedDashboardPage() {
-  const { user, loading } = useAuth();
-  if (loading) return <section className="section"><div className="container"><p>Checking your account…</p></div></section>;
-  if (!user) return <Navigate to="/login" replace />;
-  return <DashboardPage />;
+function RequireVerifiedUser() {
+  const location = useLocation();
+  const { user, verified, loading } = useAuth();
+  if (loading) {
+    return <section className="section" aria-busy="true"><div className="container"><p role="status">Checking your account…</p></div></section>;
+  }
+  if (!verified) {
+    const next = `${location.pathname}${location.search}${location.hash}`;
+    const reason = user ? "verify-email" : "auth-required";
+    return <Navigate to={`/login?next=${encodeURIComponent(next)}&reason=${reason}`} replace />;
+  }
+  return <Outlet />;
 }
 
 export default function App() {
   return (
     <Routes>
       <Route element={<Layout />}>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
+        <Route path="/auth/callback" element={<AuthCallbackPage />} />
+        <Route path="/terms" element={<TermsPage />} />
+        <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/" element={<HomePage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/services" element={<ServicesPage />} />
@@ -1277,14 +1388,16 @@ export default function App() {
         <Route path="/how-it-works" element={<HowItWorksPage />} />
         <Route path="/why-adsrow" element={<WhyAdsrowPage />} />
         <Route path="/faqs" element={<FaqsPage />} />
-        <Route path="/advertise" element={<ProtectedAdvertisePage />} />
-        <Route path="/dashboard" element={<ProtectedDashboardPage />} />
+        <Route path="/advertise" element={<AdvertisePage />} />
         <Route path="/host-a-screen" element={<HostAScreenPage />} />
         <Route path="/contact" element={<ContactPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignupPage />} />
-        <Route path="/terms" element={<TermsPage />} />
-        <Route path="/privacy" element={<PrivacyPage />} />
+        <Route element={<RequireVerifiedUser />}>
+          <Route path="/partner-form" element={<>
+            <PageHero eyebrow="PARTNER WITH ADSROW" title="Tell us about your partnership." description="Share a few details about your community, venue, or advertising needs. Our team will follow up to discuss fit and next steps." />
+            <EnquirySection title="Start a conversation" description="Use this form to enquire about hosting a screen, advertising, or another partnership with Adsrow." />
+          </>} />
+          <Route path="/dashboard" element={<DashboardPage />} />
+        </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>
