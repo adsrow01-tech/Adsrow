@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import {
   ArrowRight,
   CheckCircle2,
@@ -9,6 +10,7 @@ import {
   submitEnquiry,
   validateEnquiry,
 } from '../lib/enquire'
+import { isVerifiedUser, useAuth } from '../context/AuthContext'
 
 const initialValues = {
   name: '',
@@ -21,7 +23,9 @@ const initialValues = {
 const fieldClass =
   'mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-amber-400 focus:ring-2 focus:ring-amber-100'
 
-export default function EnquirySection() {
+export default function EnquirySection({ requiresVerifiedUser = false }) {
+  const navigate = useNavigate()
+  const { refreshSession } = useAuth()
   const [values, setValues] = useState(initialValues)
   const [errors, setErrors] = useState({})
   const [status, setStatus] = useState('idle')
@@ -48,6 +52,23 @@ export default function EnquirySection() {
 
     if (status === 'sending') {
       return
+    }
+
+    const needsAuthentication = requiresVerifiedUser || values.enquiryType === 'Host a Screen'
+    if (needsAuthentication) {
+      setStatus('sending')
+      const requestedPath = `/partner-form${values.enquiryType === 'Host a Screen' ? '?interest=hosting' : ''}`
+      try {
+        const currentUser = await refreshSession()
+        if (!isVerifiedUser(currentUser)) {
+          const reason = currentUser ? 'verify-email' : 'auth-required'
+          navigate(`/login?next=${encodeURIComponent(requestedPath)}&reason=${reason}`, { replace: true })
+          return
+        }
+      } catch {
+        navigate(`/login?next=${encodeURIComponent(requestedPath)}&reason=auth-required`, { replace: true })
+        return
+      }
     }
 
     const validationErrors = validateEnquiry(values)

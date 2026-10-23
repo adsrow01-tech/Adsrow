@@ -37,14 +37,18 @@ export default function DashboardPage() {
   }
 
   return (
-    <section className="dashboard-page section">
-      <div className="container">
-        <div className="dashboard-heading">
+    <>
+      <section className="dashboard-banner">
+        <div className="container dashboard-heading">
           <p className="eyebrow">YOUR ADSROW ACCOUNT</p>
           <h1 className="page-title">Welcome back{fullName ? `, ${fullName.split(" ")[0]}` : ""}.</h1>
           <p className="body-copy">Manage your profile and keep track of your Adsrow enquiries.</p>
+          <Link to="/partner-form" className="button">Partner with Adsrow <ArrowRight size={16} /></Link>
         </div>
+      </section>
 
+      <section className="dashboard-page section">
+        <div className="container">
         <div className="dashboard-grid">
           <article className="dashboard-card dashboard-stat-card">
             <span className="dashboard-icon"><CheckCircle2 size={20} /></span>
@@ -67,6 +71,7 @@ export default function DashboardPage() {
           </article>
         </div>
       </div>
-    </section>
+      </section>
+    </>
   );
 }
