@@ -12,6 +12,7 @@ const quickLinks = [
 ]
 
 const contactLinks = [
+  { name: 'Partner with Adsrow', path: '/partner-form' },
   { name: 'Contact Us', path: '/contact' },
   { name: 'Host a Screen', path: '/host-a-screen' },
   { name: 'FAQs', path: '/faqs' },

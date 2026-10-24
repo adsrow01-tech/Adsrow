@@ -91,7 +91,7 @@ export default function HomePage() {
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <Link
-                to="/advertise"
+                to="/partner-form"
                 className="inline-flex min-h-14 items-center justify-center gap-3 rounded-xl bg-[#0B3D91] px-6 py-4 font-bold text-white shadow-lg shadow-[#0B3D91]/15 transition hover:-translate-y-0.5 hover:bg-[#082F70]"
               >
                 Book a campaign
@@ -478,7 +478,7 @@ export default function HomePage() {
           </div>
 
           <Link
-            to="/host-a-screen"
+            to="/partner-form"
             className="inline-flex shrink-0 items-center justify-center gap-3 rounded-xl bg-[#0B3D91] px-7 py-4 font-bold text-white transition hover:bg-[#082F70]"
           >
             Host a screen <ArrowRight size={19} />
