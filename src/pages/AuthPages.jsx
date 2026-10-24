@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { ArrowRight, LockKeyhole, Mail, UserRound } from "lucide-react";
 import { isSupabaseConfigured, supabase } from "../lib/supabase";
 import GoogleIcon from "../components/GoogleIcon";
+import { useAuth } from "../context/AuthContext";
 
 function getSafeNextPath(value) {
   if (!value || !value.startsWith("/") || value.startsWith("//") || value.includes("\\")) return "/";
@@ -21,12 +22,22 @@ function AuthPage({ mode }) {
   const [searchParams] = useSearchParams();
   const requestedPath = searchParams.get("next");
   const nextPath = getSafeNextPath(requestedPath);
+  const { user, loading: authLoading } = useAuth();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [status, setStatus] = useState("idle");
   const [message, setMessage] = useState("");
   const [acceptedTerms, setAcceptedTerms] = useState(false);
+
+  useEffect(() => {
+    if (!authLoading && user) navigate(nextPath, { replace: true });
+  }, [authLoading, user, nextPath, navigate]);
+
+  useEffect(() => {
+    const notice = searchParams.get("message");
+    if (notice) setMessage(notice);
+  }, [searchParams]);
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -43,7 +54,10 @@ function AuthPage({ mode }) {
         ? await supabase.auth.signUp({
             email: email.trim(),
             password,
-            options: { data: { full_name: name.trim() } },
+            options: {
+              data: { full_name: name.trim() },
+              emailRedirectTo: new URL(`/login?next=${encodeURIComponent(nextPath)}&message=${encodeURIComponent("Email verified. You can continue.")}`, window.location.origin).toString(),
+            },
           })
         : await supabase.auth.signInWithPassword({ email: email.trim(), password });
 
@@ -51,7 +65,7 @@ function AuthPage({ mode }) {
 
       if (signup && !result.data.session) {
         setStatus("success");
-        setMessage("Your account is ready. Check your email for a confirmation link before signing in.");
+        setMessage("Your account is ready. Check your email for a confirmation link. After verification, you will return to your requested page.");
         return;
       }
 
