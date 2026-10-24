@@ -30,6 +30,7 @@ import {
 } from "lucide-react";
 import { submitEnquiry } from "./lib/enquire";
 import { LoginPage, SignupPage } from "./pages/AuthPages";
+import { ForgotPasswordPage, ResetPasswordPage } from "./pages/AuthRecoveryPages";
 import { PrivacyPage, TermsPage } from "./pages/LegalPages";
 import DashboardPage from "./pages/DashboardPage";
 import { useAuth } from "./context/AuthContext";
@@ -315,6 +316,12 @@ function EnquiryForm() {
 
     // Prevent duplicate submissions while a request is in flight.
     if (status === "sending") {
+      return;
+    }
+
+    if (!user) {
+      setStatus("error");
+      setErrorMessage("Please sign in before submitting an enquiry.");
       return;
     }
 
@@ -761,7 +768,6 @@ function HomePage() {
         </div>
       </section>
 
-      <EnquirySection />
     </>
   );
 }
@@ -879,7 +885,6 @@ function ServicesPage() {
         </div>
       </section>
 
-      <EnquirySection title="Not sure which service you need?" />
     </>
   );
 }
@@ -1104,7 +1109,6 @@ function FaqsPage() {
         </div>
       </section>
 
-      <EnquirySection title="Still have a question?" />
     </>
   );
 }
@@ -1149,7 +1153,6 @@ function AdvertisePage() {
         </div>
       </section>
 
-      <EnquirySection title="Tell us about your campaign" />
     </>
   );
 }
@@ -1189,7 +1192,6 @@ function HostAScreenPage() {
         </div>
       </section>
 
-      <EnquirySection title="Tell us about your space" />
     </>
   );
 }
@@ -1227,7 +1229,18 @@ function ContactPage() {
         </div>
       </section>
 
-      <EnquirySection title="Send us your enquiry" />
+      <section className="section section-soft">
+        <div className="container simple-cta">
+          <div>
+            <p className="eyebrow">PARTNER WITH ADSROW</p>
+            <h2>Ready to discuss a campaign or host a screen?</h2>
+          </div>
+          <Link className="button" to="/partner-form">
+            Send a partner enquiry <ArrowRight size={17} />
+          </Link>
+        </div>
+      </section>
+
     </>
   );
 }
@@ -1266,6 +1279,31 @@ function ProtectedDashboardPage() {
   return <DashboardPage />;
 }
 
+function ProtectedPartnerFormPage() {
+  const { user, loading } = useAuth();
+  const location = useLocation();
+
+  if (loading) {
+    return <section className="section"><div className="container"><p>Checking your account…</p></div></section>;
+  }
+
+  if (!user) {
+    const destination = `${location.pathname}${location.search}`;
+    return <Navigate to={`/login?next=${encodeURIComponent(destination)}`} replace />;
+  }
+
+  return (
+    <>
+      <PageHero
+        eyebrow="PARTNER WITH ADSROW"
+        title="Tell us how you would like to partner."
+        description="Share your business or community details and our team will follow up with next steps."
+      />
+      <EnquirySection />
+    </>
+  );
+}
+
 export default function App() {
   return (
     <Routes>
@@ -1278,11 +1316,14 @@ export default function App() {
         <Route path="/why-adsrow" element={<WhyAdsrowPage />} />
         <Route path="/faqs" element={<FaqsPage />} />
         <Route path="/advertise" element={<ProtectedAdvertisePage />} />
+        <Route path="/partner-form" element={<ProtectedPartnerFormPage />} />
         <Route path="/dashboard" element={<ProtectedDashboardPage />} />
         <Route path="/host-a-screen" element={<HostAScreenPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/terms" element={<TermsPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
