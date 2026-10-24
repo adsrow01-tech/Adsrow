@@ -1,7 +1,6 @@
 
 import { Link } from 'react-router-dom'
 import { ArrowRight, Mail, MessageCircle } from 'lucide-react'
-import EnquirySection from '../components/EnquirySection'
 
 export default function ContactPage() {
   return (
@@ -79,8 +78,10 @@ export default function ContactPage() {
             </div>
           </div>
 
-          <div>
-            <EnquirySection />
+          <div className="flex items-start">
+            <Link to="/partner-form" className="inline-flex items-center gap-2 rounded-full bg-slate-950 px-6 py-3 font-bold text-white transition hover:bg-slate-800">
+              Partner with Adsrow <ArrowRight size={18} />
+            </Link>
           </div>
         </div>
       </section>
