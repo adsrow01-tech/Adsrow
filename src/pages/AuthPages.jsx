@@ -129,6 +129,7 @@ function AuthPage({ mode }) {
           {signup && <label>Full name<span className="auth-input"><UserRound size={17} /><input autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" required /></span></label>}
           <label>Email address<span className="auth-input"><Mail size={17} /><input type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" required /></span></label>
           <label>Password<span className="auth-input"><LockKeyhole size={17} /><input type="password" autoComplete={signup ? "new-password" : "current-password"} value={password} onChange={(e) => setPassword(e.target.value)} placeholder={signup ? "At least 8 characters" : "Your password"} minLength={signup ? 8 : undefined} required /></span></label>
+          {!signup && <Link to="/forgot-password" className="auth-forgot">Forgot your password?</Link>}
           {message && <p className={`form-status ${status === "error" ? "form-error" : "form-success"}`} role={status === "error" ? "alert" : "status"}>{message}</p>}
           <button className="button auth-submit" type="submit" disabled={status === "loading" || (signup && !acceptedTerms)}>{status === "loading" ? "Please wait…" : signup ? "Create account" : "Sign in"}<ArrowRight size={17} /></button>
         </form>

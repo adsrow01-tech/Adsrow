@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { isSupabaseConfigured, supabase } from "../lib/supabase";
+import { sendWelcomeEmail } from "../lib/welcomeEmail";
 
 const AuthContext = createContext({ user: null, session: null, loading: true, signOut: async () => {} });
 
@@ -12,12 +13,20 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     if (!supabase) return;
     let active = true;
+    const queueWelcomeEmail = () => {
+      window.setTimeout(() => {
+        void sendWelcomeEmail().catch(() => {
+          // Welcome email delivery is retried on the next authenticated session.
+        });
+      }, 0);
+    };
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       authRevision.current += 1;
       if (active) {
         setSession(session ?? null);
         setUser(session?.user ?? null);
         setLoading(false);
+        if (session?.user?.email_confirmed_at) queueWelcomeEmail();
       }
     });
     const initialRevision = authRevision.current;
@@ -27,6 +36,7 @@ export function AuthProvider({ children }) {
       setSession(restoredSession);
       setUser(restoredSession?.user ?? null);
       setLoading(false);
+      if (!error && data.session?.user?.email_confirmed_at) queueWelcomeEmail();
     }).catch(() => {
       if (active && initialRevision === authRevision.current) {
         setSession(null);

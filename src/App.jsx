@@ -31,6 +31,7 @@ import {
 } from "lucide-react";
 import { submitEnquiry } from "./lib/enquire";
 import { LoginPage, SignupPage } from "./pages/AuthPages";
+import { ForgotPasswordPage, ResetPasswordPage } from "./pages/AuthRecoveryPages";
 import { PrivacyPage, TermsPage } from "./pages/LegalPages";
 import DashboardPage from "./pages/DashboardPage";
 import { useAuth } from "./context/AuthContext";
@@ -329,6 +330,12 @@ function EnquiryForm() {
       return;
     }
 
+    if (!user) {
+      setStatus("error");
+      setErrorMessage("Please sign in before submitting an enquiry.");
+      return;
+    }
+
     setStatus("sending");
     setErrorMessage("");
 
@@ -563,10 +570,10 @@ function HomePage() {
             </h1>
 
             <p className="hero-description">
-              Adsrow places digital screens in gated-community lift lobbies,
-              bringing your message into residents’ everyday spaces. Plan a
-              campaign across selected Vijayawada communities with one team,
-              then review where it played.
+              Adsrow places portrait 9:16 digital screens in gated-community
+              lift lobbies, bringing your message into residents’ everyday
+              spaces. Plan a campaign across selected Vijayawada communities
+              with one team, then review where it played.
             </p>
 
             <div className="hero-actions">
@@ -590,6 +597,9 @@ function HomePage() {
                 src="/adsrow-lobby.png"
                 alt="Digital advertising screen in an apartment lobby"
                 className="hero-image"
+                width="1376"
+                height="768"
+                loading="eager"
                 fetchPriority="high"
               />
 
@@ -599,7 +609,7 @@ function HomePage() {
               </span>
               <span>
                 <strong>Advertising that fits the location</strong>
-                <small>Reach people in everyday spaces</small>
+                <small>9:16 portrait display · Reach people in everyday spaces</small>
               </span>
             </div>
           </div>
@@ -1171,6 +1181,7 @@ function AdvertisePage() {
           <Link className="button" to="/partner-form">Start Your Campaign <ArrowRight size={16} /></Link>
         </div>
       </section>
+
     </>
   );
 }
@@ -1217,6 +1228,7 @@ function HostAScreenPage() {
           <Link className="button" to="/partner-form?interest=Hosting%20a%20screen">Enquire About Hosting <ArrowRight size={16} /></Link>
         </div>
       </section>
+
     </>
   );
 }
@@ -1254,13 +1266,18 @@ function ContactPage() {
         </div>
       </section>
 
-      <section className="section">
-        <div className="container text-center">
-          <h2 className="section-title">Partner with Adsrow</h2>
-          <p className="body-copy">Ready to discuss a campaign or host a screen?</p>
-          <Link className="button" to="/partner-form">Send a partner enquiry <ArrowRight size={16} /></Link>
+      <section className="section section-soft">
+        <div className="container simple-cta">
+          <div>
+            <p className="eyebrow">PARTNER WITH ADSROW</p>
+            <h2>Ready to discuss a campaign or host a screen?</h2>
+          </div>
+          <Link className="button" to="/partner-form">
+            Send a partner enquiry <ArrowRight size={17} />
+          </Link>
         </div>
       </section>
+
     </>
   );
 }
@@ -1285,18 +1302,38 @@ function Layout() {
   );
 }
 
-function ProtectedPartnerFormPage() {
-  const { session, loading } = useAuth();
+function LegacyPartnerFormRedirect() {
   const location = useLocation();
-  if (loading) return <section className="section"><div className="container"><p>Checking your account...</p></div></section>;
-  if (!session?.user) {
+  return <Navigate to={`/partner-form${location.search}`} replace />;
+}
+
+function ProtectedAdvertisePage() {
+  const { user, loading } = useAuth();
+  if (loading) return <section className="section"><div className="container"><p>Checking your account…</p></div></section>;
+  if (!user) return <Navigate to="/login?next=%2Fadvertise" replace />;
+  return <AdvertisePage />;
+}
+
+function ProtectedDashboardPage() {
+  const { user, loading } = useAuth();
+  if (loading) return <section className="section"><div className="container"><p>Checking your account…</p></div></section>;
+  if (!user?.email_confirmed_at) return <Navigate to={`/login?next=${encodeURIComponent("/dashboard")}&message=${encodeURIComponent("Please log in or create an account to continue.")}`} replace />;
+  return <DashboardPage />;
+}
+
+function ProtectedPartnerFormPage() {
+  const { user, loading } = useAuth();
+  const location = useLocation();
+
+  if (loading) {
+    return <section className="section"><div className="container"><p>Checking your account…</p></div></section>;
+  }
+
+  if (!user) {
     const destination = `${location.pathname}${location.search}`;
     return <Navigate to={`/login?next=${encodeURIComponent(destination)}`} replace />;
   }
-  return <PartnerFormPage />;
-}
 
-function PartnerFormPage() {
   return (
     <>
       <PageHero
@@ -1307,18 +1344,6 @@ function PartnerFormPage() {
       <EnquirySection />
     </>
   );
-}
-
-function LegacyPartnerFormRedirect() {
-  const location = useLocation();
-  return <Navigate to={`/partner-form${location.search}`} replace />;
-}
-
-function ProtectedDashboardPage() {
-  const { user, loading } = useAuth();
-  if (loading) return <section className="section"><div className="container"><p>Checking your account…</p></div></section>;
-  if (!user?.email_confirmed_at) return <Navigate to={`/login?next=${encodeURIComponent("/dashboard")}&message=${encodeURIComponent("Please log in or create an account to continue.")}`} replace />;
-  return <DashboardPage />;
 }
 
 export default function App() {
@@ -1332,7 +1357,7 @@ export default function App() {
         <Route path="/how-it-works" element={<HowItWorksPage />} />
         <Route path="/why-adsrow" element={<WhyAdsrowPage />} />
         <Route path="/faqs" element={<FaqsPage />} />
-        <Route path="/advertise" element={<AdvertisePage />} />
+        <Route path="/advertise" element={<ProtectedAdvertisePage />} />
         <Route path="/partner-form" element={<ProtectedPartnerFormPage />} />
         <Route path="/advertise/enquiry" element={<LegacyPartnerFormRedirect />} />
         <Route path="/dashboard" element={<ProtectedDashboardPage />} />
@@ -1340,6 +1365,8 @@ export default function App() {
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/terms" element={<TermsPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
