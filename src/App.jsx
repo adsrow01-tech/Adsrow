@@ -1156,6 +1156,14 @@ function AdvertisePage() {
         </div>
       </section>
 
+      <section className="section">
+        <div className="container text-center">
+          <h2 className="section-title">Ready to plan your campaign?</h2>
+          <p className="body-copy">Share your goals and target communities with Adsrow.</p>
+          <Link className="button" to="/partner-form">Start Your Campaign <ArrowRight size={16} /></Link>
+        </div>
+      </section>
+
     </>
   );
 }
@@ -1192,6 +1200,14 @@ function HostAScreenPage() {
           <p className="small-note">
             Enquire with the property name, area, shared-space details, and an association or owner contact. The team must confirm current suitability and terms.
           </p>
+        </div>
+      </section>
+
+      <section className="section">
+        <div className="container text-center">
+          <h2 className="section-title">Tell us about your space</h2>
+          <p className="body-copy">Share your community details and hosting requirements with Adsrow.</p>
+          <Link className="button" to="/partner-form?interest=Hosting%20a%20screen">Enquire About Hosting <ArrowRight size={16} /></Link>
         </div>
       </section>
 
@@ -1268,6 +1284,11 @@ function Layout() {
   );
 }
 
+function LegacyPartnerFormRedirect() {
+  const location = useLocation();
+  return <Navigate to={`/partner-form${location.search}`} replace />;
+}
+
 function ProtectedAdvertisePage() {
   const { user, loading } = useAuth();
   if (loading) return <section className="section"><div className="container"><p>Checking your account…</p></div></section>;
@@ -1320,6 +1341,7 @@ export default function App() {
         <Route path="/faqs" element={<FaqsPage />} />
         <Route path="/advertise" element={<ProtectedAdvertisePage />} />
         <Route path="/partner-form" element={<ProtectedPartnerFormPage />} />
+        <Route path="/advertise/enquiry" element={<LegacyPartnerFormRedirect />} />
         <Route path="/dashboard" element={<ProtectedDashboardPage />} />
         <Route path="/host-a-screen" element={<HostAScreenPage />} />
         <Route path="/contact" element={<ContactPage />} />
