@@ -82,7 +82,7 @@ export default function HostAScreenPage() {
             </p>
 
             <Link
-              to="/contact"
+              to="/partner-form"
               className="mt-8 inline-flex items-center gap-2 rounded-full bg-amber-400 px-7 py-4 font-bold text-slate-950 transition hover:bg-amber-300"
             >
               Enquire About Hosting <ArrowRight size={18} />
@@ -238,7 +238,7 @@ export default function HostAScreenPage() {
           </p>
 
           <Link
-            to="/contact"
+            to="/partner-form"
             className="mt-7 inline-flex items-center gap-2 rounded-full bg-slate-950 px-6 py-3 font-bold text-white transition hover:bg-slate-800"
           >
             Contact Adsrow <ArrowRight size={18} />

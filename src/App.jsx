@@ -7,6 +7,7 @@ import {
   Navigate,
   Outlet,
   useLocation,
+  useNavigate,
 } from "react-router-dom";
 import {
   Menu,
@@ -49,14 +50,17 @@ function BrandWordmark() {
 
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
 
-  function handleSignOut() {
-    if (!supabase) return;
-    void supabase.auth.signOut().catch(() => {
-      // Auth state remains unchanged when sign-out cannot reach Supabase.
-    });
+  async function handleSignOut() {
+    try {
+      await signOut();
+    } catch {
+      // Local state is cleared immediately even if Supabase sign-out fails.
+    }
     setMenuOpen(false);
+    navigate("/", { replace: true });
   }
 
   const links = [
@@ -111,11 +115,11 @@ function Header() {
           ))}
 
           <Link
-            to="/advertise"
+            to="/partner-form"
             className="button mobile-contact"
             onClick={() => setMenuOpen(false)}
           >
-            Advertise With Us <ArrowUpRight size={16} />
+            Partner with Adsrow <ArrowUpRight size={16} />
           </Link>
           {user ? <><Link to="/dashboard" className="auth-nav-link mobile-auth-link" onClick={() => setMenuOpen(false)}>Dashboard</Link><button className="mobile-auth-link" onClick={handleSignOut}>Sign out</button></> : <>
             <Link to="/login" className="auth-nav-link mobile-auth-link" onClick={() => setMenuOpen(false)}>Log in</Link>
@@ -127,8 +131,8 @@ function Header() {
           <Link to="/login" className="header-login">Log in</Link>
           <Link to="/signup" className="button header-signup">Sign up</Link>
         </div>}
-        <Link to="/advertise" className="button desktop-contact">
-          Advertise With Us <ArrowUpRight size={16} />
+        <Link to="/partner-form" className="button desktop-contact">
+          Partner with Adsrow <ArrowUpRight size={16} />
         </Link>
 
         <button
@@ -179,6 +183,7 @@ function Footer() {
         <div className="footer-column">
           <h3>For Business</h3>
           <Link to="/advertise">Advertise With Us</Link>
+          <Link to="/partner-form">Partner with Adsrow</Link>
           <Link to="/host-a-screen">Host a Screen</Link>
           <Link to="/why-adsrow">Why Adsrow</Link>
           <Link to="/how-it-works">How It Works</Link>
@@ -187,8 +192,8 @@ function Footer() {
         <div className="footer-column">
           <h3>Have a campaign in mind?</h3>
           <p>Tell us what you want to promote and discuss your options.</p>
-          <Link to="/contact" className="footer-link">
-            Send an enquiry <ArrowUpRight size={16} />
+          <Link to="/partner-form" className="footer-link">
+            Partner with Adsrow <ArrowUpRight size={16} />
           </Link>
         </div>
       </div>
@@ -299,6 +304,12 @@ function EnquiryForm() {
   const [status, setStatus] = useState("idle"); // idle | sending | success | error
   const [errorMessage, setErrorMessage] = useState("");
   const { user } = useAuth();
+  const location = useLocation();
+
+  useEffect(() => {
+    const requestedInterest = new URLSearchParams(location.search).get("interest");
+    if (requestedInterest) setForm((current) => ({ ...current, interest: requestedInterest }));
+  }, [location.search]);
 
   function updateForm(event) {
     setForm({
@@ -329,9 +340,16 @@ function EnquiryForm() {
     setErrorMessage("");
 
     try {
+      const { data, error: sessionError } = await supabase.auth.getSession();
+      const submitter = data.session?.user;
+      if (sessionError || !submitter) {
+        const destination = `${location.pathname}${location.search}`;
+        window.location.assign(`/login?next=${encodeURIComponent(destination)}&message=${encodeURIComponent("Please log in or create an account to continue.")}`);
+        return;
+      }
       await submitEnquiry({ ...form, enquiryType: form.interest });
 
-      recordSubmittedEnquiry(user?.id);
+      recordSubmittedEnquiry(submitter.id);
 
       setForm({ ...initialEnquiry });
       setStatus("success");
@@ -446,8 +464,8 @@ function EnquiryForm() {
 /* -------------------- ENQUIRY SECTION -------------------- */
 
 function EnquirySection({
-  title = "Let's talk about your next campaign",
-  description = "Tell us whether you’re planning an ad campaign or asking about hosting a screen. The Adsrow team can discuss target communities, pricing, creative support, campaign timing, or partnership terms.",
+  title = "Partner with Adsrow",
+  description = "Share your business or community details and tell us how you would like to work with Adsrow.",
 }) {
   return (
     <section className="section enquiry-section">
@@ -559,8 +577,8 @@ function HomePage() {
             </p>
 
             <div className="hero-actions">
-              <Link className="button" to="/advertise">
-                Advertise With Us <ArrowUpRight size={16} />
+              <Link className="button" to="/partner-form">
+                Partner with Adsrow <ArrowUpRight size={16} />
               </Link>
 
               <Link className="text-link" to="/how-it-works">
@@ -751,7 +769,7 @@ function HomePage() {
             </p>
           </div>
 
-          <Link className="button button-white" to="/host-a-screen">
+          <Link className="button button-white" to="/partner-form">
             Partner With Adsrow <ArrowUpRight size={16} />
           </Link>
         </div>
@@ -765,7 +783,7 @@ function HomePage() {
             <p>Share your goals and discuss suitable advertising options with the Adsrow team.</p>
           </div>
           <div className="cta-actions">
-            <Link className="button" to="/advertise">Start Your Campaign <ArrowUpRight size={16} /></Link>
+            <Link className="button" to="/partner-form">Start Your Campaign <ArrowUpRight size={16} /></Link>
             <Link className="text-link" to="/contact">Contact Us <ArrowRight size={16} /></Link>
           </div>
         </div>
@@ -1299,7 +1317,7 @@ function ProtectedAdvertisePage() {
 function ProtectedDashboardPage() {
   const { user, loading } = useAuth();
   if (loading) return <section className="section"><div className="container"><p>Checking your account…</p></div></section>;
-  if (!user) return <Navigate to="/login" replace />;
+  if (!user?.email_confirmed_at) return <Navigate to={`/login?next=${encodeURIComponent("/dashboard")}&message=${encodeURIComponent("Please log in or create an account to continue.")}`} replace />;
   return <DashboardPage />;
 }
 
