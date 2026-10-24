@@ -552,10 +552,10 @@ function HomePage() {
             </h1>
 
             <p className="hero-description">
-              Adsrow places digital screens in gated-community lift lobbies,
-              bringing your message into residents’ everyday spaces. Plan a
-              campaign across selected Vijayawada communities with one team,
-              then review where it played.
+              Adsrow places portrait 9:16 digital screens in gated-community
+              lift lobbies, bringing your message into residents’ everyday
+              spaces. Plan a campaign across selected Vijayawada communities
+              with one team, then review where it played.
             </p>
 
             <div className="hero-actions">
@@ -579,6 +579,9 @@ function HomePage() {
                 src="/adsrow-lobby.png"
                 alt="Digital advertising screen in an apartment lobby"
                 className="hero-image"
+                width="1376"
+                height="768"
+                loading="eager"
                 fetchPriority="high"
               />
 
@@ -588,7 +591,7 @@ function HomePage() {
               </span>
               <span>
                 <strong>Advertising that fits the location</strong>
-                <small>Reach people in everyday spaces</small>
+                <small>9:16 portrait display · Reach people in everyday spaces</small>
               </span>
             </div>
           </div>
