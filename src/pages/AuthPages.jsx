@@ -4,17 +4,7 @@ import { ArrowRight, LockKeyhole, Mail, UserRound } from "lucide-react";
 import { isSupabaseConfigured, supabase } from "../lib/supabase";
 import GoogleIcon from "../components/GoogleIcon";
 import { useAuth } from "../context/AuthContext";
-
-function getSafeNextPath(value) {
-  if (!value || !value.startsWith("/") || value.startsWith("//") || value.includes("\\")) return "/";
-  try {
-    const target = new URL(value, window.location.origin);
-    if (target.origin !== window.location.origin) return "/";
-    return `${target.pathname}${target.search}${target.hash}`;
-  } catch {
-    return "/";
-  }
-}
+import { getSafeNextPath } from "../lib/redirect";
 
 function AuthPage({ mode }) {
   const signup = mode === "signup";
