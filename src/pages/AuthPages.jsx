@@ -85,16 +85,13 @@ function AuthPage({ mode }) {
     setStatus("loading");
     setMessage("");
     try {
-      const { data, error } = await supabase.auth.signInWithOAuth({
+      const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
           redirectTo: new URL(nextPath, window.location.origin).toString(),
-          skipBrowserRedirect: true,
         },
       });
       if (error) throw error;
-      if (!data?.url) throw new Error("Supabase did not return a Google sign-in URL. Check the Google provider configuration.");
-      window.location.assign(data.url);
     } catch (error) {
       setStatus("error");
       setMessage(error instanceof Error ? error.message : "Google sign-in could not be started. Please try again.");
