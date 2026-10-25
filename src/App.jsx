@@ -37,6 +37,7 @@ import DashboardPage from "./pages/DashboardPage";
 import { useAuth } from "./context/AuthContext";
 import { supabase } from "./lib/supabase";
 import { recordSubmittedEnquiry } from "./lib/dashboard";
+import { getCurrentPath } from "./lib/redirect";
 
 /* -------------------- NAVBAR -------------------- */
 
@@ -1309,15 +1310,18 @@ function LegacyPartnerFormRedirect() {
 
 function ProtectedAdvertisePage() {
   const { user, loading } = useAuth();
+  const location = useLocation();
   if (loading) return <section className="section"><div className="container"><p>Checking your account…</p></div></section>;
-  if (!user) return <Navigate to="/login?next=%2Fadvertise" replace />;
+  if (!user) return <Navigate to={`/login?next=${encodeURIComponent(getCurrentPath(location))}`} replace />;
   return <AdvertisePage />;
 }
 
 function ProtectedDashboardPage() {
   const { user, loading } = useAuth();
+  const location = useLocation();
   if (loading) return <section className="section"><div className="container"><p>Checking your account…</p></div></section>;
-  if (!user?.email_confirmed_at) return <Navigate to={`/login?next=${encodeURIComponent("/dashboard")}&message=${encodeURIComponent("Please log in or create an account to continue.")}`} replace />;
+  if (!user) return <Navigate to={`/login?next=${encodeURIComponent(getCurrentPath(location))}`} replace />;
+  if (!user.email_confirmed_at) return <Navigate to={`/login?message=${encodeURIComponent("Please verify your email before opening the dashboard.")}`} replace />;
   return <DashboardPage />;
 }
 
@@ -1330,7 +1334,7 @@ function ProtectedPartnerFormPage() {
   }
 
   if (!user) {
-    const destination = `${location.pathname}${location.search}`;
+    const destination = getCurrentPath(location);
     return <Navigate to={`/login?next=${encodeURIComponent(destination)}`} replace />;
   }
 
