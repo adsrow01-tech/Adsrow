@@ -1,90 +1,52 @@
+import { Link } from "react-router-dom";
+import { ArrowRight, MapPin, MessageCircle, Mail } from "lucide-react";
+import { PageHero } from "../components/SiteComponents";
 
-import { Link } from 'react-router-dom'
-import { ArrowRight, Mail, MessageCircle } from 'lucide-react'
-
-export default function ContactPage() {
+function ContactPage() {
   return (
-    <main className="bg-white">
-      <section className="bg-slate-950 px-5 py-20 text-white md:py-28">
-        <div className="mx-auto max-w-7xl">
-          <p className="text-sm font-bold uppercase tracking-[0.2em] text-amber-400">
-            Contact Adsrow
-          </p>
+    <>
+      <PageHero
+        eyebrow="CONTACT ADSROW"
+        title="Let's start with a conversation."
+        description="Tell us what you want to promote or which community may host a screen. Include your target area, timing, and creative status; for hosting, share the property and shared-space details. Adsrow can discuss availability, pricing, and next steps."
+      />
 
-          <h1 className="mt-5 max-w-4xl text-4xl font-extrabold leading-tight md:text-6xl">
-            Let's create better advertising opportunities.
-          </h1>
+      <section className="section">
+        <div className="container contact-info-grid">
+          <article className="contact-info-card">
+            <span className="feature-icon"><Mail size={20} /></span>
+            <h3>Advertiser enquiry</h3>
+            <p>Share your goal, target areas, timing, and creative needs. The team can reply with a suggested plan, communities to target, and pricing.</p>
+          </article>
 
-          <p className="mt-6 max-w-2xl text-base leading-8 text-slate-300 md:text-lg">
-            Want to advertise your business or explore hosting a digital screen
-            in your community? Tell us what you need.
-          </p>
+          <article className="contact-info-card">
+            <span className="feature-icon"><MapPin size={20} /></span>
+            <h3>Our Focus Area</h3>
+            <p>The preview’s pilot map lists indicative Vijayawada areas. Ask the team to confirm specific communities and screens.</p>
+          </article>
+
+          <article className="contact-info-card">
+            <span className="feature-icon"><MessageCircle size={20} /></span>
+            <h3>What to Tell Us</h3>
+            <p>For screen hosting, include the property or community name, area, shared space, and association or owner contact.</p>
+          </article>
         </div>
       </section>
 
-      <section className="px-5 py-16 md:py-24">
-        <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.8fr_1.2fr]">
+      <section className="section section-soft">
+        <div className="container simple-cta">
           <div>
-            <h2 className="text-3xl font-extrabold text-slate-950">
-              We'd love to hear from you.
-            </h2>
-
-            <p className="mt-4 leading-8 text-slate-600">
-              Share your requirements through the enquiry form. Our next steps
-              will depend on your campaign, location and partnership needs.
-            </p>
-
-            <div className="mt-8 space-y-5">
-              <div className="flex gap-4 rounded-2xl border border-slate-200 p-5">
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-700">
-                  <MessageCircle size={22} />
-                </div>
-                <div>
-                  <h3 className="font-bold text-slate-950">
-                    Advertising enquiries
-                  </h3>
-                  <p className="mt-1 text-sm leading-6 text-slate-600">
-                    Tell us about your brand, campaign and target audience.
-                  </p>
-                  <Link
-                    to="/advertise"
-                    className="mt-2 inline-flex items-center gap-2 text-sm font-bold text-amber-700"
-                  >
-                    Explore advertising <ArrowRight size={16} />
-                  </Link>
-                </div>
-              </div>
-
-              <div className="flex gap-4 rounded-2xl border border-slate-200 p-5">
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-700">
-                  <Mail size={22} />
-                </div>
-                <div>
-                  <h3 className="font-bold text-slate-950">
-                    Screen-hosting partnerships
-                  </h3>
-                  <p className="mt-1 text-sm leading-6 text-slate-600">
-                    Apartment associations and property managers can discuss
-                    potential screen-hosting opportunities.
-                  </p>
-                  <Link
-                    to="/host-a-screen"
-                    className="mt-2 inline-flex items-center gap-2 text-sm font-bold text-amber-700"
-                  >
-                    Host a screen <ArrowRight size={16} />
-                  </Link>
-                </div>
-              </div>
-            </div>
+            <p className="eyebrow">PARTNER WITH ADSROW</p>
+            <h2>Ready to discuss a campaign or host a screen?</h2>
           </div>
-
-          <div className="flex items-start">
-            <Link to="/partner-form" className="inline-flex items-center gap-2 rounded-full bg-slate-950 px-6 py-3 font-bold text-white transition hover:bg-slate-800">
-              Partner with Adsrow <ArrowRight size={18} />
-            </Link>
-          </div>
+          <Link className="button" to="/partner-form">
+            Send a partner enquiry <ArrowRight size={17} />
+          </Link>
         </div>
       </section>
-    </main>
-  )
+
+    </>
+  );
 }
+
+export default ContactPage;
