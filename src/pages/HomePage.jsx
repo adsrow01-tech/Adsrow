@@ -49,23 +49,20 @@ function HomePage() {
     <>
       <section className="home-hero home-hero-cinematic">
         <div className="home-hero-media" aria-hidden="true">
-          {prefersReducedMotion || heroVideoFailed ? (
-            <img src="/adsrow-lobby.png" alt="" width="1376" height="768" />
-          ) : (
+          {!prefersReducedMotion && !heroVideoFailed && (
             <video
               autoPlay
               muted
               loop
               playsInline
-              preload="metadata"
-              poster="/adsrow-lobby.png"
+              preload="auto"
+              fetchPriority="high"
               width="1376"
               height="768"
               tabIndex="-1"
               onError={() => setHeroVideoFailed(true)}
-            >
-              <source src="/videos/adsrow-elevator-hero.mp4" type="video/mp4" />
-            </video>
+              src="/videos/demo-adsrow-pingpong.mp4"
+            />
           )}
           <span className="home-hero-scrim" />
         </div>
