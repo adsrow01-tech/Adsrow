@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
-import { supabase } from "../lib/supabase";
 import { submitEnquiry } from "../lib/enquire";
 import { recordSubmittedEnquiry } from "../lib/dashboard";
 
@@ -128,26 +127,12 @@ export function EnquiryForm() {
       return;
     }
 
-    if (!user) {
-      setStatus("error");
-      setErrorMessage("Please sign in before submitting an enquiry.");
-      return;
-    }
-
     setStatus("sending");
     setErrorMessage("");
 
     try {
-      const { data, error: sessionError } = await supabase.auth.getSession();
-      const submitter = data.session?.user;
-      if (sessionError || !submitter) {
-        const destination = `${location.pathname}${location.search}`;
-        window.location.assign(`/login?next=${encodeURIComponent(destination)}&message=${encodeURIComponent("Please log in or create an account to continue.")}`);
-        return;
-      }
       await submitEnquiry({ ...form, enquiryType: form.interest });
-
-      recordSubmittedEnquiry(submitter.id);
+      if (user) recordSubmittedEnquiry(user.id);
 
       setForm({ ...initialEnquiry });
       setStatus("success");

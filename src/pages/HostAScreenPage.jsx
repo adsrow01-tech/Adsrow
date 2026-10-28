@@ -1,48 +1,182 @@
+import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Monitor, Building2, CheckCircle2, ClipboardCheck } from "lucide-react";
-import { PageHero, FeatureCard } from "../components/SiteComponents";
+import { ArrowUpRight, ChevronDown, Phone } from "lucide-react";
+import { FeatureCard, SectionHeading } from "../components/SiteComponents";
+import {
+  hostPartnerBenefits,
+  hostScreenBenefits,
+  hostScreenFaqs,
+  hostScreenSteps,
+} from "../lib/siteContent";
+
+const venueEnquiryLink = "/contact?type=venue";
+
+function HostFaqAccordion() {
+  const [openIndex, setOpenIndex] = useState(0);
+  const questionRefs = useRef([]);
+
+  function handleQuestionKeyDown(event, index) {
+    let nextIndex;
+    if (event.key === "ArrowDown") nextIndex = (index + 1) % hostScreenFaqs.length;
+    else if (event.key === "ArrowUp") nextIndex = (index - 1 + hostScreenFaqs.length) % hostScreenFaqs.length;
+    else if (event.key === "Home") nextIndex = 0;
+    else if (event.key === "End") nextIndex = hostScreenFaqs.length - 1;
+    else return;
+
+    event.preventDefault();
+    questionRefs.current[nextIndex]?.focus();
+  }
+
+  return (
+    <div className="faq-list host-faq-list">
+      {hostScreenFaqs.map(({ question, answer }, index) => {
+        const isOpen = openIndex === index;
+        const questionId = `host-faq-question-${index}`;
+        const answerId = `host-faq-answer-${index}`;
+        return (
+          <article className={`faq-item${isOpen ? " is-open" : ""}`} key={question}>
+            <h3 className="faq-heading">
+              <button
+                ref={(element) => { questionRefs.current[index] = element; }}
+                id={questionId}
+                className="faq-question"
+                type="button"
+                aria-expanded={isOpen}
+                aria-controls={answerId}
+                onClick={() => setOpenIndex(isOpen ? -1 : index)}
+                onKeyDown={(event) => handleQuestionKeyDown(event, index)}
+              >
+                <span>{question}</span>
+                <ChevronDown size={20} className={isOpen ? "rotated" : ""} aria-hidden="true" />
+              </button>
+            </h3>
+            <div
+              className={`faq-answer-panel${isOpen ? " is-open" : ""}`}
+              id={answerId}
+              role="region"
+              aria-labelledby={questionId}
+              aria-hidden={!isOpen}
+              inert={!isOpen}
+            >
+              <div className="faq-answer-inner">
+                <p className="faq-answer">{answer}</p>
+              </div>
+            </div>
+          </article>
+        );
+      })}
+    </div>
+  );
+}
 
 function HostAScreenPage() {
   return (
     <>
-      <PageHero
-        eyebrow="HOST A SCREEN"
-        title="Host an Adsrow screen in your community."
-        description="Apartment associations, residential communities, property owners, and eligible venue partners can enquire about a digital display for their shared space. The supplied preview identifies gated communities and apartments as the current pilot focus."
-      />
-
-      <section className="section">
-        <div className="container feature-grid feature-grid-three">
-          <FeatureCard icon={Building2} title="Share the location" description="Tell us the community or property name, Vijayawada area, and the shared space being considered." />
-          <FeatureCard icon={Monitor} title="Discuss installation and care" description="The preview says Adsrow installs and maintains the display. The team can review site details with the association or owner." />
-          <FeatureCard icon={ClipboardCheck} title="Review terms before installation" description="Discuss community notices, ad-content review, and partnership terms before any installation is agreed." />
+      <section className="page-hero host-screen-hero">
+        <div className="container host-screen-hero-grid">
+          <div className="host-screen-hero-copy">
+            <p className="eyebrow">FOR VENUE OWNERS AND MANAGERS</p>
+            <h1>Put a screen to work in your space.</h1>
+            <p className="page-hero-description">
+              We work with venue owners to place digital screens in shared spaces. Installation, maintenance, costs and partnership terms can be discussed before anything is agreed.
+            </p>
+            <Link className="button" to={venueEnquiryLink}>
+              Request a Site Visit <ArrowUpRight size={16} />
+            </Link>
+          </div>
+          <figure className="host-screen-hero-visual">
+            <img
+              src="/adsrow-lobby.png"
+              alt="Digital advertising screen in a residential lift lobby"
+              width="1376"
+              height="768"
+              fetchPriority="high"
+              decoding="async"
+            />
+            <figcaption>A shared-space screen for venue notices and advertising.</figcaption>
+          </figure>
         </div>
       </section>
 
-      <section className="section section-soft">
-        <div className="container host-requirements">
-          <h2 className="section-title">How the screen partnership works</h2>
-          <p className="body-copy">The preview describes community announcements running between ads. Ad content is reviewed before going live to keep it family-friendly, and partnership terms are explained clearly before installation.</p>
-          <ul className="check-list">
-            <li><CheckCircle2 size={17} /> Adsrow team installation and maintenance, as described in the preview</li>
-            <li><CheckCircle2 size={17} /> Space for association or community notices between advertisements</li>
-            <li><CheckCircle2 size={17} /> Review of ad content before it goes live</li>
-            <li><CheckCircle2 size={17} /> Partnership terms discussed before installation</li>
-          </ul>
-          <p className="small-note">
-            Enquire with the property name, area, shared-space details, and an association or owner contact. The team must confirm current suitability and terms.
-          </p>
+      <section className="section host-benefits-section">
+        <div className="container">
+          <SectionHeading
+            eyebrow="VENUE BENEFITS"
+            title="What a screen does for your venue"
+            description="A screen can help share timely information with people already in your space."
+          />
+          <div className="feature-grid host-venue-grid">
+            {hostScreenBenefits.map(({ icon: Icon, title, description }) => (
+              <FeatureCard
+                key={title}
+                className="host-venue-card"
+                icon={Icon}
+                title={title}
+                description={description}
+              />
+            ))}
+          </div>
         </div>
       </section>
 
-      <section className="section">
-        <div className="container text-center">
-          <h2 className="section-title">Tell us about your space</h2>
-          <p className="body-copy">Share your community details and hosting requirements with Adsrow.</p>
-          <Link className="button" to="/partner-form?interest=Hosting%20a%20screen">Enquire About Hosting <ArrowRight size={16} /></Link>
+      <section className="section section-soft host-partner-section">
+        <div className="container">
+          <SectionHeading
+            eyebrow="PARTNER TERMS"
+            title="Every partner gets"
+            description="Discuss the details with Adsrow and have the agreed terms documented before installation."
+          />
+          <div className="host-partner-grid">
+            {hostPartnerBenefits.map(({ title, description }, index) => (
+              <article className="host-partner-card" key={title}>
+                <span className="host-partner-index">0{index + 1}</span>
+                <div>
+                  <h3>{title}</h3>
+                  <p>{description}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+          <p className="host-terms-note">No-cost installation and maintenance, revenue-share terms, and responsibility for power and internet require confirmation for each partnership.</p>
         </div>
       </section>
 
+      <section className="section host-process-section">
+        <div className="container">
+          <SectionHeading eyebrow="HOW IT WORKS" title="A clear process, from enquiry to installation" />
+          <ol className="host-process-grid">
+            {hostScreenSteps.map(({ title, description }, index) => (
+              <li className="host-process-card" key={title}>
+                <span className="host-process-number">{String(index + 1).padStart(2, "0")}</span>
+                <h3>{title}</h3>
+                <p>{description}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      <section className="section section-soft host-faq-section">
+        <div className="container host-faq-container">
+          <SectionHeading eyebrow="PARTNERSHIPS" title="Venue partner FAQs" />
+          <HostFaqAccordion />
+        </div>
+      </section>
+
+      <section className="section host-final-section">
+        <div className="container">
+          <div className="host-final-cta">
+            <div>
+              <p className="eyebrow">PARTNER WITH ADSROW</p>
+              <h2>Your space already has the audience. Let's put it to work.</h2>
+            </div>
+            <div className="host-final-actions">
+              <Link className="button" to={venueEnquiryLink}>Request a Site Visit <ArrowUpRight size={16} /></Link>
+              <a className="host-phone-link" href="tel:+918374622055"><Phone size={16} />Call +91 83746 22055</a>
+            </div>
+          </div>
+        </div>
+      </section>
     </>
   );
 }

@@ -1,17 +1,8 @@
 import { Link } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import { ArrowUpRight, ArrowRight, CheckCircle2, Monitor, MapPin, Users, Building2, Coffee, Dumbbell, HeartPulse, ShoppingBag, BriefcaseBusiness, Target, Palette, ChartNoAxesCombined } from "lucide-react";
+import { ArrowUpRight, ArrowRight, CheckCircle2, Monitor, MapPin, Users, Target, Palette, ChartNoAxesCombined } from "lucide-react";
 import { SectionHeading, FeatureCard } from "../components/SiteComponents";
-
-const venues = [
-  { icon: Building2, title: "Apartment lift lobbies", description: "Families, every morning and evening." },
-  { icon: Coffee, title: "Cafés & restaurants", description: "Diners with time on their hands." },
-  { icon: Dumbbell, title: "Gyms", description: "Health-focused, high-routine regulars." },
-  { icon: HeartPulse, title: "Hospital receptions", description: "Patients and families, waiting and attentive." },
-  { icon: ShoppingBag, title: "Malls", description: "Shoppers in buying mode." },
-  { icon: ShoppingBag, title: "Supermarkets", description: "Households at the point of purchase." },
-  { icon: BriefcaseBusiness, title: "Offices & commercial spaces", description: "Working professionals, five days a week." },
-];
+import { campaignPackages, venueCategories } from "../lib/siteContent";
 
 const benefits = [
   { icon: Target, title: "Target by place and mindset", description: "Choose venue types, areas or both. Put a diagnostic offer in hospitals and a protein brand in gyms." },
@@ -34,13 +25,6 @@ const steps = [
   { icon: MapPin, title: "Get your plan", description: "Venues, schedule and price, sent to you." },
   { icon: Palette, title: "Send your ad", description: "Use your own, or our team designs it." },
   { icon: Monitor, title: "Go live. Track it.", description: "Play reports, QR scans and calls." },
-];
-
-const packages = [
-  ["Starter", "10 screens · 7 days"],
-  ["Growth", "20 screens · 15 days"],
-  ["Impact", "30 screens · 30 days"],
-  ["Full Network", "All 60 screens"],
 ];
 
 const homeComparisonRows = [
@@ -193,7 +177,7 @@ function HomePage() {
             <p className="hero-description">60 digital screens across 40 venues: lift lobbies, cafés, gyms, hospitals, malls and offices. Choose your audience, book once and get proof every ad played.</p>
             <div className="hero-actions">
               <Link className="button" to="/partner-form">Plan My Campaign <ArrowUpRight size={16} /></Link>
-              <Link className="text-link" to="/locations">Explore the Network <ArrowRight size={16} /></Link>
+              <Link className="text-link" to="/network">Explore the Network <ArrowRight size={16} /></Link>
             </div>
             <p className="hero-trust"><CheckCircle2 size={17} />One booking · One invoice · One play report</p>
           </div>
@@ -231,9 +215,9 @@ function HomePage() {
           </div>
           <SectionHeading title="40 venues. Seven moments that matter." />
           <div className="feature-grid feature-grid-four home-venue-grid">
-            {venues.map(({ icon: Icon, ...venue }) => <FeatureCard key={venue.title} className="home-venue-card" tabIndex={0} icon={Icon} {...venue} />)}
+            {venueCategories.map(({ icon: Icon, title, summary }) => <FeatureCard key={title} className="home-venue-card" tabIndex={0} icon={Icon} title={title} description={summary} />)}
           </div>
-          <div className="center-link"><Link className="text-link" to="/locations">See the full network: venues, areas and screen photos <ArrowRight size={16} /></Link></div>
+          <div className="center-link"><Link className="text-link" to="/network">See the full network: venues, areas and screen photos <ArrowRight size={16} /></Link></div>
         </div>
       </section>
 
@@ -281,9 +265,9 @@ function HomePage() {
         <div className="container">
           <SectionHeading centered eyebrow="CAMPAIGN PACKAGES" title="Start small. Scale what works." />
           <div className="feature-grid feature-grid-four home-package-grid">
-            {packages.map(([title, reach]) => <article className="feature-card home-package-card" tabIndex={0} key={title}><h3>{title}{title === "Impact" && <span className="home-package-note">Best value</span>}</h3><p>{reach}</p><strong className="home-price-placeholder">Contact us for pricing</strong></article>)}
+            {campaignPackages.map(({ name, screens, duration, price, customQuote }) => <article className="feature-card home-package-card" tabIndex={0} key={name}><h3>{name}</h3><p>{screens === "All 60" ? "All 60 screens" : `${screens} screens`} · {duration}</p><strong className="home-price-placeholder">{customQuote ? "Custom quote" : price ? `From ₹${price}` : "Price on request"}</strong></article>)}
           </div>
-          <div className="center-link"><Link className="button button-outline" to="/partner-form">Compare Packages <ArrowRight size={16} /></Link></div>
+          <div className="center-link"><Link className="button button-outline" to="/services">Compare Packages <ArrowRight size={16} /></Link></div>
         </div>
       </section>
 

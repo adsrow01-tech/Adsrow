@@ -7,7 +7,7 @@ function WhyAdsrowPage() {
     { icon: MapPin, title: "Choose communities", description: "Select exact neighbourhoods and communities relevant to your customers, subject to current screen availability." },
     { icon: Users, title: "Reach residents at home", description: "Place a message in a lift-lobby setting where residents pause, rather than beside a moving road or in a one-time handout." },
     { icon: ClipboardCheck, title: "Coordinate through one team", description: "Plan selected locations, timing, creative, and campaign changes with Adsrow rather than arranging each community independently." },
-    { icon: ChartNoAxesCombined, title: "Review campaign delivery", description: "The preview describes proof of play by screen and date, with QR scans by community and campaign-number calls." },
+    { icon: ChartNoAxesCombined, title: "Review campaign delivery", description: "Review proof of play by screen and date, QR scans by community, and campaign-number calls." },
   ];
 
   return (
@@ -15,7 +15,7 @@ function WhyAdsrowPage() {
       <PageHero
         eyebrow="WHY ADSROW"
         title="Not where they pass. Where they pause."
-        description="The supplied preview positions lift-lobby screens as a community-based alternative to roadside billboards and pamphlet distribution, with location choices and campaign delivery reports."
+        description="Lift-lobby screens offer a community-based alternative to roadside billboards and pamphlet distribution, with location choices and campaign delivery reports."
       />
 
       <section className="section">
@@ -31,7 +31,7 @@ function WhyAdsrowPage() {
           <SectionHeading
             eyebrow="WHAT YOU GET"
             title="Compare the placement and delivery options"
-            description="This comparison follows the supplied Adsrow preview. Outcomes depend on selected placements and available campaign tracking."
+            description="Compare the available placements and campaign tracking. Results depend on selected locations and campaign goals."
           />
           <ComparisonTable />
         </div>
