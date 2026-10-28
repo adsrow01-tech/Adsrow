@@ -1,14 +1,12 @@
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import Layout from "./components/Layout";
-import { PageHero, EnquirySection } from "./components/SiteComponents";
 import HomePage from "./pages/HomePage";
 import AboutPage from "./pages/AboutPage";
 import ServicesPage from "./pages/ServicesPage";
-import LocationsPage from "./pages/LocationsPage";
+import NetworkPage from "./pages/NetworkPage";
 import HowItWorksPage from "./pages/HowItWorksPage";
 import WhyAdsrowPage from "./pages/WhyAdsrowPage";
 import FaqsPage from "./pages/FaqsPage";
-import AdvertisePage from "./pages/AdvertisePage";
 import HostAScreenPage from "./pages/HostAScreenPage";
 import ContactPage from "./pages/ContactPage";
 import { LoginPage, SignupPage } from "./pages/AuthPages";
@@ -20,15 +18,17 @@ import { getCurrentPath } from "./lib/redirect";
 
 function LegacyPartnerFormRedirect() {
   const location = useLocation();
-  return <Navigate to={`/partner-form${location.search}`} replace />;
+  return <Navigate to={`/contact${location.search}`} replace />;
 }
 
-function ProtectedAdvertisePage() {
-  const { user, loading } = useAuth();
+function LegacyLocationsRedirect() {
   const location = useLocation();
-  if (loading) return <section className="section"><div className="container"><p>Checking your account…</p></div></section>;
-  if (!user) return <Navigate to={`/login?next=${encodeURIComponent(getCurrentPath(location))}`} replace />;
-  return <AdvertisePage />;
+  return <Navigate to={`/network${location.search}`} replace />;
+}
+
+function LegacyAdvertiseRedirect() {
+  const location = useLocation();
+  return <Navigate to={`/services${location.search}`} replace />;
 }
 
 function ProtectedDashboardPage() {
@@ -40,31 +40,6 @@ function ProtectedDashboardPage() {
   return <DashboardPage />;
 }
 
-function ProtectedPartnerFormPage() {
-  const { user, loading } = useAuth();
-  const location = useLocation();
-
-  if (loading) {
-    return <section className="section"><div className="container"><p>Checking your account…</p></div></section>;
-  }
-
-  if (!user) {
-    const destination = getCurrentPath(location);
-    return <Navigate to={`/login?next=${encodeURIComponent(destination)}`} replace />;
-  }
-
-  return (
-    <>
-      <PageHero
-        eyebrow="PARTNER WITH ADSROW"
-        title="Tell us how you would like to partner."
-        description="Share your business or community details and our team will follow up with next steps."
-      />
-      <EnquirySection />
-    </>
-  );
-}
-
 export default function App() {
   return (
     <Routes>
@@ -72,12 +47,13 @@ export default function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/services" element={<ServicesPage />} />
-        <Route path="/locations" element={<LocationsPage />} />
+        <Route path="/network" element={<NetworkPage />} />
+        <Route path="/locations" element={<LegacyLocationsRedirect />} />
         <Route path="/how-it-works" element={<HowItWorksPage />} />
         <Route path="/why-adsrow" element={<WhyAdsrowPage />} />
         <Route path="/faqs" element={<FaqsPage />} />
-        <Route path="/advertise" element={<ProtectedAdvertisePage />} />
-        <Route path="/partner-form" element={<ProtectedPartnerFormPage />} />
+        <Route path="/advertise" element={<LegacyAdvertiseRedirect />} />
+        <Route path="/partner-form" element={<LegacyPartnerFormRedirect />} />
         <Route path="/advertise/enquiry" element={<LegacyPartnerFormRedirect />} />
         <Route path="/dashboard" element={<ProtectedDashboardPage />} />
         <Route path="/host-a-screen" element={<HostAScreenPage />} />

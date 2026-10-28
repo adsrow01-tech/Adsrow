@@ -1,58 +1,118 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, MapPin, ChartNoAxesCombined, Target } from "lucide-react";
-import { PageHero, SectionHeading, FeatureCard } from "../components/SiteComponents";
+import { ArrowUpRight, Building2, MessageCircle, MapPin } from "lucide-react";
+import { FeatureCard, SectionHeading } from "../components/SiteComponents";
+
+const values = [
+  {
+    icon: Building2,
+    title: "Venues first",
+    description: "Every ad is checked and matched to the space. Our partners' audiences come first.",
+  },
+  {
+    icon: MessageCircle,
+    title: "Straight answers",
+    description: "Clear prices, clear terms and reports that show exactly what ran.",
+  },
+  {
+    icon: MapPin,
+    title: "Local, for real",
+    description: "We live and work here. We know these neighbourhoods by name.",
+  },
+];
 
 function AboutPage() {
   return (
     <>
-      <PageHero
-        eyebrow="ABOUT ADSROW"
-        title="A community-screen network for local advertisers."
-        description="Adsrow brings digital advertising into gated-community lift lobbies, coordinating businesses, residential associations, screen-ready creative, and campaign reporting through one team."
-      />
-
-      <section className="section">
-        <div className="container about-grid">
-          <div>
-            <p className="eyebrow">WHO WE ARE</p>
-            <h2 className="section-title">
-              One coordinated campaign across selected communities.
-            </h2>
+      <section className="page-hero about-hero">
+        <div className="container about-hero-grid">
+          <div className="about-hero-copy">
+            <p className="eyebrow">ABOUT ADSROW</p>
+            <h1>We connect local brands with the places people spend their day.</h1>
+            <p className="page-hero-description">
+              Adsrow is a Vijayawada company building one screen network across the places people live, eat, shop, work and get well.
+            </p>
           </div>
+          <figure className="about-hero-visual">
+            <img
+              src="/adsrow-lobby.png"
+              alt="Portrait digital advertising display in a residential lift lobby"
+              width="1376"
+              height="768"
+              fetchPriority="high"
+              decoding="async"
+            />
+            <figcaption>Local messages in the places people pause.</figcaption>
+          </figure>
+        </div>
+      </section>
 
-          <div>
-            <p className="body-copy">
-              Adsrow’s preview describes a network of digital screens inside
-              gated communities. Advertisers choose areas and communities that
-              fit their audience, while Adsrow coordinates each selected
-              placement through one team.
-            </p>
-            <p className="body-copy">
-              The setting is different from a roadside billboard or a one-time
-              pamphlet drop: residents encounter a screen in their lift lobby
-              as part of their everyday community. Campaign timing, creative,
-              remote updates, and available reports are discussed around the
-              selected screens.
-            </p>
-            <Link to="/contact" className="text-link">
-              Talk to Our Team <ArrowRight size={16} />
-            </Link>
+      <section className="section about-story-section">
+        <div className="container about-story-grid">
+          <div className="about-story-visual">
+            <img
+              src="/adsrow-screen.png"
+              alt="Digital Adsrow screen displayed in a real-world venue"
+              width="1672"
+              height="954"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+          <div className="about-story-copy">
+            <p className="eyebrow">OUR STORY</p>
+            <h2>Why we started</h2>
+            <p>Local businesses had two options: a billboard few people noticed, or pamphlets that went straight in the bin.</p>
+            <p>Yet their customers spent hours each day waiting: in lift lobbies, cafés, clinics and checkout queues. We built Adsrow to put the right local message in those moments.</p>
+            <p>We began with a 30-screen pilot. Today we're building a 60-screen network across 40 venues, and we're still growing.</p>
           </div>
         </div>
       </section>
 
-      <section className="section section-soft">
+      <section className="section section-soft about-values-section">
         <div className="container">
-          <SectionHeading
-            eyebrow="WHAT GUIDES US"
-            title="Built around community, choice, and visibility"
-            description="The pilot model brings location selection and campaign coordination together, with delivery information to review after launch."
-          />
+          <SectionHeading eyebrow="OUR PRINCIPLES" title="What we stand for" />
+          <div className="feature-grid feature-grid-three about-values-grid">
+            {values.map(({ icon: Icon, title, description }) => (
+              <FeatureCard
+                key={title}
+                className="about-value-card"
+                icon={Icon}
+                title={title}
+                description={description}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
 
-          <div className="feature-grid feature-grid-three">
-            <FeatureCard icon={Target} title="Community-level placement" description="Choose residential communities and areas relevant to the people you want to reach." />
-            <FeatureCard icon={MapPin} title="One team for selected locations" description="Coordinate a campaign across multiple communities without arranging each venue separately." />
-            <FeatureCard icon={ChartNoAxesCombined} title="Delivery you can review" description="The preview describes proof of play by screen and date, with QR and campaign-call tracking options." />
+      <section className="section about-founder-section">
+        <div className="container">
+          <SectionHeading eyebrow="LEADERSHIP" title="Founder & CEO" />
+          <article className="about-founder-card">
+            <div className="about-founder-mark" aria-hidden="true">
+              <span>RN</span>
+              <small>FOUNDER & CEO</small>
+            </div>
+            <div className="about-founder-copy">
+              <p className="eyebrow">FOUNDER & CEO</p>
+              <h2>Raviteja Nagulapalli</h2>
+              <p>Raviteja has spent 10 years building relationships with developers, businesses and agencies across Andhra Pradesh. He founded Adsrow to give local brands a better way to reach their city.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section className="section section-soft about-final-section">
+        <div className="container">
+          <div className="about-final-cta">
+            <div>
+              <p className="eyebrow">GET IN TOUCH</p>
+              <h2>Let's talk about your next campaign.</h2>
+            </div>
+            <div className="about-final-actions">
+              <Link className="button" to="/contact?type=advertiser">Talk to Our Team <ArrowUpRight size={16} /></Link>
+              <Link className="button button-outline" to="/contact?type=venue">Host a Screen <ArrowUpRight size={16} /></Link>
+            </div>
           </div>
         </div>
       </section>

@@ -95,7 +95,7 @@ function AuthPage({ mode }) {
         <Link to="/" className="auth-wordmark" aria-label="Adsrow home"><span>ads</span><b>row</b><i>.</i><sup>®</sup></Link>
         <div className="auth-aside-copy">
           <p className="auth-aside-kicker">LOCAL ADVERTISING, MADE SIMPLE</p>
-          <h2>Reach the right people, right where they live.</h2>
+          <h2>{signup ? "Reach the right people, right where they live." : "Reach people where they pause."}</h2>
           <p>Plan and manage campaigns across digital screens in local communities with Adsrow.</p>
           <div className="auth-aside-detail"><span className="auth-aside-dot" /> Built for local businesses and communities</div>
         </div>
@@ -104,8 +104,10 @@ function AuthPage({ mode }) {
       <div className="auth-panel">
       <div className="auth-card">
         <p className="eyebrow">{signup ? "JOIN ADSROW" : "WELCOME BACK"}</p>
-        <h1>{signup ? "Create your account" : "Sign in to Adsrow"}</h1>
-        <p className="auth-intro">{signup ? "Get started with your Adsrow account." : "Enter your details to continue."}</p>
+        <h1>{signup ? "Create your Adsrow account" : "Welcome back"}</h1>
+        <p className="auth-intro">{signup
+          ? "Create an account to manage your profile and see enquiries submitted from this browser."
+          : "Log in to manage your Adsrow profile and keep track of enquiries from this browser."}</p>
 
         <button className="google-auth-button" type="button" onClick={signInWithGoogle} disabled={status === "loading" || (signup && !acceptedTerms)}>
           <GoogleIcon />{status === "loading" ? "Connecting to Google…" : `${signup ? "Sign up" : "Sign in"} with Google`}
@@ -118,12 +120,14 @@ function AuthPage({ mode }) {
           <label>Password<span className="auth-input"><LockKeyhole size={17} /><input type="password" autoComplete={signup ? "new-password" : "current-password"} value={password} onChange={(e) => setPassword(e.target.value)} placeholder={signup ? "At least 8 characters" : "Your password"} minLength={signup ? 8 : undefined} required /></span></label>
           {!signup && <Link to="/forgot-password" className="auth-forgot">Forgot your password?</Link>}
           {message && <p className={`form-status ${status === "error" ? "form-error" : "form-success"}`} role={status === "error" ? "alert" : "status"}>{message}</p>}
-          <button className="button auth-submit" type="submit" disabled={status === "loading" || (signup && !acceptedTerms)}>{status === "loading" ? "Please wait…" : signup ? "Create account" : "Sign in"}<ArrowRight size={17} /></button>
+          <button className="button auth-submit" type="submit" disabled={status === "loading" || (signup && !acceptedTerms)}>{status === "loading" ? "Please wait…" : signup ? "Create Account" : "Log In"}<ArrowRight size={17} /></button>
         </form>
 
         {signup && <label className="terms-check terms-after-auth"><input type="checkbox" checked={acceptedTerms} onChange={(e) => setAcceptedTerms(e.target.checked)} /><span>I agree to Adsrow’s <Link to="/terms" onClick={(e) => e.stopPropagation()}>Terms and Conditions</Link> and <Link to="/privacy" onClick={(e) => e.stopPropagation()}>Privacy Policy</Link>.</span></label>}
 
-        <p className="auth-switch">{signup ? "Already have an account?" : "New to Adsrow?"} <Link to={signup ? `/login?next=${encodeURIComponent(nextPath)}` : `/signup?next=${encodeURIComponent(nextPath)}`}>{signup ? "Sign in" : "Create an account"}</Link></p>
+        {signup
+          ? <p className="auth-switch">Already have an account? <Link to={`/login?next=${encodeURIComponent(nextPath)}`}>Sign in</Link></p>
+          : <p className="auth-switch">New to Adsrow? You don't need an account to enquire. <Link to="/contact">Get a free plan →</Link></p>}
         <Link to="/" className="auth-back">← Back to Adsrow</Link>
       </div>
       </div>

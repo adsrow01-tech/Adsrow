@@ -26,13 +26,13 @@ function Footer() {
           <h3>Explore</h3>
           <Link to="/about">About Us</Link>
           <Link to="/services">Services</Link>
-          <Link to="/locations">Locations</Link>
+          <Link to="/network">Our Network</Link>
           <Link to="/faqs">FAQs</Link>
         </div>
 
         <div className="footer-column">
           <h3>For Business</h3>
-          <Link to="/advertise">Advertise With Us</Link>
+          <Link to="/services">Advertise With Us</Link>
           <Link to="/partner-form">Partner with Adsrow</Link>
           <Link to="/host-a-screen">Host a Screen</Link>
           <Link to="/why-adsrow">Why Adsrow</Link>

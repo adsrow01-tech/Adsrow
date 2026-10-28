@@ -29,7 +29,7 @@ function Header() {
     { name: "Home", path: "/" },
     { name: "About Us", path: "/about" },
     { name: "Services", path: "/services" },
-    { name: "Locations", path: "/locations" },
+    { name: "Our Network", path: "/network" },
     { name: "How It Works", path: "/how-it-works" },
     { name: "Host a Screen", path: "/host-a-screen" },
     { name: "Contact Us", path: "/contact" },
