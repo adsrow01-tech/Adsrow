@@ -35,9 +35,9 @@ export function SectionHeading({ eyebrow, title, description, centered = false }
 
 /* -------------------- FEATURE CARD -------------------- */
 
-export function FeatureCard({ icon: Icon, title, description, number }) {
+export function FeatureCard({ icon: Icon, title, description, number, className = "", tabIndex }) {
   return (
-    <article className="feature-card">
+    <article className={`feature-card ${className}`.trim()} tabIndex={tabIndex}>
       {number && <span className="feature-number">{number}</span>}
 
       {Icon && (
