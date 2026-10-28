@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { Menu, X, ArrowUpRight, CircleUserRound } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
@@ -6,6 +6,12 @@ import BrandWordmark from "./BrandWordmark";
 
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isCompact, setIsCompact] = useState(() => window.scrollY > 28);
+  const brandRef = useRef(null);
+  const partnerCtaRef = useRef(null);
+  const lastCompactRef = useRef(isCompact);
+  const transitionStartRectsRef = useRef(null);
+  const transitionFrameRef = useRef(0);
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
 
@@ -40,17 +46,98 @@ function Header() {
     return () => window.removeEventListener("keydown", closeOnEscape);
   }, [menuOpen]);
 
+  useEffect(() => {
+    let frame = 0;
+    const updateCompactState = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const nextCompact = window.scrollY > 28;
+        if (nextCompact === lastCompactRef.current) return;
+        transitionStartRectsRef.current = {
+          brand: brandRef.current?.getBoundingClientRect(),
+          cta: partnerCtaRef.current?.getBoundingClientRect(),
+        };
+        lastCompactRef.current = nextCompact;
+        setIsCompact(nextCompact);
+      });
+    };
+    window.addEventListener("scroll", updateCompactState, { passive: true });
+    updateCompactState();
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", updateCompactState);
+    };
+  }, []);
+
+  useLayoutEffect(() => {
+    const startRects = transitionStartRectsRef.current;
+    transitionStartRectsRef.current = null;
+    if (!startRects || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return undefined;
+
+    const elements = [
+      [brandRef.current, startRects.brand],
+      [partnerCtaRef.current, startRects.cta],
+    ].filter(([element, start]) => element && start?.width > 0);
+    const moved = [];
+    const finishTransition = (event) => {
+      if (event.propertyName !== "transform") return;
+      event.currentTarget.removeEventListener("transitionend", finishTransition);
+      event.currentTarget.style.removeProperty("transition");
+      event.currentTarget.style.removeProperty("transform");
+    };
+
+    elements.forEach(([element, start]) => {
+      const destination = element.getBoundingClientRect();
+      if (!destination.width) return;
+      const x = start.left - destination.left;
+      const y = start.top - destination.top;
+      if (Math.abs(x) < 1 && Math.abs(y) < 1) return;
+      element.style.transition = "none";
+      element.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+      element.getBoundingClientRect();
+      element.addEventListener("transitionend", finishTransition);
+      moved.push(element);
+    });
+
+    if (!moved.length) return undefined;
+    transitionFrameRef.current = requestAnimationFrame(() => {
+      moved.forEach((element) => {
+        element.style.transition = "transform 240ms cubic-bezier(.2,.7,.2,1)";
+        element.style.transform = "translate3d(0, 0, 0)";
+      });
+    });
+
+    return () => {
+      cancelAnimationFrame(transitionFrameRef.current);
+      moved.forEach((element) => {
+        element.removeEventListener("transitionend", finishTransition);
+        element.style.removeProperty("transition");
+        element.style.removeProperty("transform");
+      });
+    };
+  }, [isCompact]);
+
+  useEffect(() => {
+    if (isCompact && menuOpen) setMenuOpen(false);
+  }, [isCompact, menuOpen]);
+
   return (
-    <header className="site-header">
+    <header className={`site-header${isCompact ? " is-compact" : ""}`}>
       <div className="container header-inner">
-        <Link
-          to="/"
-          className="brand header-brand"
-          aria-label="Adsrow home"
-          onClick={() => setMenuOpen(false)}
-        >
-          <BrandWordmark />
-        </Link>
+        <div className="header-brand-cta">
+          <Link
+            to="/"
+            className="brand header-brand"
+            ref={brandRef}
+            aria-label="Adsrow home"
+            onClick={() => setMenuOpen(false)}
+          >
+            <BrandWordmark />
+          </Link>
+          <Link to="/partner-form" className="button desktop-contact" ref={partnerCtaRef}>
+            Partner with Adsrow <ArrowUpRight size={16} />
+          </Link>
+        </div>
 
         <nav id="primary-navigation" className={`nav-links ${menuOpen ? "is-open" : ""}`}>
           {links.map((link) => (
@@ -87,10 +174,6 @@ function Header() {
           <Link to="/login" className="header-login">Log in</Link>
           <Link to="/signup" className="button header-signup">Sign up</Link>
         </div>}
-        <Link to="/partner-form" className="button desktop-contact">
-          Partner with Adsrow <ArrowUpRight size={16} />
-        </Link>
-
         <button
           type="button"
           className="menu-toggle"

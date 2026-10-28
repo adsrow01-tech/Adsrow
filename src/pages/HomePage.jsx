@@ -1,14 +1,68 @@
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { ArrowUpRight, ArrowRight, Monitor, MapPin, Palette, ChartNoAxesCombined, CheckCircle2, Users, ClipboardCheck } from "lucide-react";
-import { SectionHeading, FeatureCard, ComparisonTable } from "../components/SiteComponents";
-import { targetAreas, campaignSteps } from "../lib/siteContent";
+import { useEffect, useRef, useState } from "react";
+import { ArrowUpRight, ArrowRight, CheckCircle2, Monitor, MapPin, Users, Building2, Coffee, Dumbbell, HeartPulse, ShoppingBag, BriefcaseBusiness, Target, Palette, ChartNoAxesCombined } from "lucide-react";
+import { SectionHeading, FeatureCard } from "../components/SiteComponents";
+
+const venues = [
+  { icon: Building2, title: "Apartment lift lobbies", description: "Families, every morning and evening." },
+  { icon: Coffee, title: "Cafés & restaurants", description: "Diners with time on their hands." },
+  { icon: Dumbbell, title: "Gyms", description: "Health-focused, high-routine regulars." },
+  { icon: HeartPulse, title: "Hospital receptions", description: "Patients and families, waiting and attentive." },
+  { icon: ShoppingBag, title: "Malls", description: "Shoppers in buying mode." },
+  { icon: ShoppingBag, title: "Supermarkets", description: "Households at the point of purchase." },
+  { icon: BriefcaseBusiness, title: "Offices & commercial spaces", description: "Working professionals, five days a week." },
+];
+
+const benefits = [
+  { icon: Target, title: "Target by place and mindset", description: "Choose venue types, areas or both. Put a diagnostic offer in hospitals and a protein brand in gyms." },
+  { icon: Monitor, title: "Book once. Play everywhere.", description: "One team handles 40 venues and every screen schedule. You make one call, not forty." },
+  { icon: Palette, title: "Change your ad in minutes", description: "New offer or new price? We update your ad remotely. No reprinting and no remounting." },
+  { icon: ChartNoAxesCombined, title: "See proof. Count leads.", description: "Get a play report by screen and date. Add QR codes and a tracked number to count real enquiries." },
+];
+
+const categories = [
+  ["Real estate", "Homes · Offices", "Fill site visits from families at home and professionals at work."],
+  ["Restaurants & food brands", "Homes · Offices · Malls", "Win the ‘what’s for dinner?’ decision before it’s made."],
+  ["Clinics, labs & pharmacies", "Hospitals · Gyms · Homes", "Reach health-conscious people at the right moment."],
+  ["Schools & coaching", "Homes · Malls", "Talk to parents before admission season begins."],
+  ["Auto dealers", "Offices · Malls · Homes", "Book test drives with buyers who have time to think."],
+  ["Retail & FMCG", "Supermarkets · Malls · Cafés", "Be the last brand shoppers see before they choose."],
+];
+
+const steps = [
+  { icon: Users, title: "Tell us your goal", description: "What you sell and who you want to reach." },
+  { icon: MapPin, title: "Get your plan", description: "Venues, schedule and price, sent to you." },
+  { icon: Palette, title: "Send your ad", description: "Use your own, or our team designs it." },
+  { icon: Monitor, title: "Go live. Track it.", description: "Play reports, QR scans and calls." },
+];
+
+const packages = [
+  ["Starter", "10 screens · 7 days"],
+  ["Growth", "20 screens · 15 days"],
+  ["Impact", "30 screens · 30 days"],
+  ["Full Network", "All 60 screens"],
+];
+
+const homeComparisonRows = [
+  ["Reaches people while they wait", "No, they're driving", "Rarely", "Yes, at 40 venues"],
+  ["Target a mindset", "No", "No", "Homes, health, shopping, work"],
+  ["Choose exact locations", "One site", "Hard to control", "Pick venues and areas"],
+  ["Change your ad", "Reprint and remount", "Reprint", "In minutes"],
+  ["Proof your ad ran", "A photo, if you ask", "None", "Play report"],
+  ["Track enquiries", "No", "No", "QR + call tracking"],
+];
 
 function HomePage() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(() =>
     window.matchMedia("(prefers-reduced-motion: reduce)").matches
   );
-  const [heroVideoFailed, setHeroVideoFailed] = useState(false);
+  const proofGridRef = useRef(null);
+  const problemSectionRef = useRef(null);
+  const networkSectionRef = useRef(null);
+  const benefitsSectionRef = useRef(null);
+  const advertisersSectionRef = useRef(null);
+  const processSectionRef = useRef(null);
+  const packagesSectionRef = useRef(null);
 
   useEffect(() => {
     const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -17,39 +71,106 @@ function HomePage() {
     return () => preference.removeEventListener("change", updatePreference);
   }, []);
 
+  useEffect(() => {
+    const grid = proofGridRef.current;
+    if (!grid) return undefined;
+    if (prefersReducedMotion || !("IntersectionObserver" in window)) {
+      grid.classList.add("is-entered");
+      return undefined;
+    }
 
-  const services = [
-    {
-      icon: Monitor,
-      title: "Digital Screen Advertising",
-      description:
-        "Run one campaign across selected gated communities through one Adsrow team, instead of arranging each venue separately.",
-    },
-    {
-      icon: MapPin,
-      title: "Location-Based Advertising",
-      description:
-        "Choose areas and communities near a project site, store, clinic, or other audience you want to reach, subject to availability.",
-    },
-    {
-      icon: Palette,
-      title: "Ad Creative Support",
-      description:
-        "Send an existing image or video, or ask the creative team to prepare screen-ready material for your brand.",
-    },
-    {
-      icon: ChartNoAxesCombined,
-      title: "Campaign Updates & Reports",
-      description:
-        "Review proof of play by screen and date, plus available QR scans by community and calls through your campaign number.",
-    },
-  ];
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      grid.classList.add("is-entered");
+      observer.disconnect();
+    }, { threshold: 0.12, rootMargin: "0px 0px -24px 0px" });
+    observer.observe(grid);
+    return () => observer.disconnect();
+  }, [prefersReducedMotion]);
+
+  useEffect(() => {
+    const section = benefitsSectionRef.current;
+    if (!section || prefersReducedMotion || !("IntersectionObserver" in window)) return undefined;
+
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      section.classList.add("is-entered");
+      observer.disconnect();
+    }, { threshold: 0.12, rootMargin: "0px 0px -24px 0px" });
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, [prefersReducedMotion]);
+
+  useEffect(() => {
+    const section = advertisersSectionRef.current;
+    if (!section || prefersReducedMotion || !("IntersectionObserver" in window)) return undefined;
+
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      section.classList.add("is-entered");
+      observer.disconnect();
+    }, { threshold: 0.12, rootMargin: "0px 0px -24px 0px" });
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, [prefersReducedMotion]);
+
+  useEffect(() => {
+    const section = processSectionRef.current;
+    if (!section || prefersReducedMotion || !("IntersectionObserver" in window)) return undefined;
+
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      section.classList.add("is-entered");
+      observer.disconnect();
+    }, { threshold: 0.12, rootMargin: "0px 0px -24px 0px" });
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, [prefersReducedMotion]);
+
+  useEffect(() => {
+    const section = packagesSectionRef.current;
+    if (!section || prefersReducedMotion || !("IntersectionObserver" in window)) return undefined;
+
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      section.classList.add("is-entered");
+      observer.disconnect();
+    }, { threshold: 0.12, rootMargin: "0px 0px -24px 0px" });
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, [prefersReducedMotion]);
+
+  useEffect(() => {
+    const section = networkSectionRef.current;
+    if (!section || prefersReducedMotion || !("IntersectionObserver" in window)) return undefined;
+
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      section.classList.add("is-entered");
+      observer.disconnect();
+    }, { threshold: 0.12, rootMargin: "0px 0px -24px 0px" });
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, [prefersReducedMotion]);
+
+  useEffect(() => {
+    const section = problemSectionRef.current;
+    if (!section || prefersReducedMotion || !("IntersectionObserver" in window)) return undefined;
+
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      section.classList.add("is-entered");
+      observer.disconnect();
+    }, { threshold: 0.18, rootMargin: "0px 0px -24px 0px" });
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, [prefersReducedMotion]);
 
   return (
     <>
       <section className="home-hero home-hero-cinematic">
         <div className="home-hero-media" aria-hidden="true">
-          {!prefersReducedMotion && !heroVideoFailed && (
+          {!prefersReducedMotion && (
             <video
               autoPlay
               muted
@@ -60,7 +181,6 @@ function HomePage() {
               width="1376"
               height="768"
               tabIndex="-1"
-              onError={() => setHeroVideoFailed(true)}
               src="/videos/demo-adsrow-pingpong.mp4"
             />
           )}
@@ -68,198 +188,113 @@ function HomePage() {
         </div>
         <div className="container home-hero-grid">
           <div className="home-hero-copy">
-            <p className="eyebrow">
-              <span className="eyebrow-dot" />
-              DIGITAL ADVERTISING IN VIJAYAWADA
-            </p>
-
-            <h1>
-              Your Brand, Right Where{" "}
-              <span>Communities Connect.</span>
-            </h1>
-
-            <p className="hero-description">
-              Adsrow places portrait 9:16 digital screens in gated-community
-              lift lobbies, bringing your message into residents’ everyday
-              spaces. Plan a campaign across selected Vijayawada communities
-              with one team, then review where it played.
-            </p>
-
+            <p className="eyebrow"><span className="eyebrow-dot" />VIJAYAWADA'S EVERYDAY SCREEN NETWORK</p>
+            <h1>Reach people <span>where they pause.</span></h1>
+            <p className="hero-description">60 digital screens across 40 venues: lift lobbies, cafés, gyms, hospitals, malls and offices. Choose your audience, book once and get proof every ad played.</p>
             <div className="hero-actions">
-              <Link className="button" to="/partner-form">
-                Partner with Adsrow <ArrowUpRight size={16} />
-              </Link>
-
-              <Link className="text-link" to="/how-it-works">
-                See How It Works <ArrowRight size={16} />
-              </Link>
+              <Link className="button" to="/partner-form">Plan My Campaign <ArrowUpRight size={16} /></Link>
+              <Link className="text-link" to="/locations">Explore the Network <ArrowRight size={16} /></Link>
             </div>
-
-            <p className="hero-trust">
-              <CheckCircle2 size={17} />
-              Community placements, coordinated in one campaign.
-            </p>
-          </div>
-
-        </div>
-      </section>
-
-      <section className="intro-strip">
-        <div className="container pilot-highlights">
-          <div className="pilot-highlights-heading">
-            <p className="eyebrow">VIJAYAWADA PILOT FIGURES IN THE PREVIEW</p>
-            <p>These are pilot figures from the supplied preview. Confirm current screen and community availability with Adsrow.</p>
-          </div>
-          <div className="stats-grid">
-            <div className="stat-item"><strong>30</strong><span>digital screens in the pilot</span></div>
-            <div className="stat-item"><strong>20</strong><span>gated communities</span></div>
-            <div className="stat-item"><strong>1</strong><span>dashboard described for managing the network</span></div>
+            <p className="hero-trust"><CheckCircle2 size={17} />One booking · One invoice · One play report</p>
           </div>
         </div>
       </section>
 
-      <section className="section">
+      <section className="intro-strip home-proof-strip">
+        <div ref={proofGridRef} className={`container stats-grid home-proof-grid ${prefersReducedMotion ? "is-reduced" : "is-motion"}`}>
+          <article className="stat-item" tabIndex={0}><strong>60</strong><span>digital screens</span></article>
+          <article className="stat-item" tabIndex={0}><strong>40</strong><span>venues across the city</span></article>
+          <article className="stat-item" tabIndex={0}><strong>7</strong><span>venue types, from homes to hospitals</span></article>
+          <article className="stat-item home-proof-highlight" tabIndex={0}><strong>Every</strong><span>play logged by screen and date</span></article>
+        </div>
+      </section>
+
+      <section ref={problemSectionRef} className="section home-problem-section">
+        <div className="container home-problem-content">
+          <p className="eyebrow home-problem-eyebrow">THE PROBLEM</p>
+          <div className="home-problem-grid">
+            <h2>Your customers aren't on the highway. They're in the <span>queue.</span></h2>
+            <div className="home-problem-copy-wrap">
+              <p className="home-problem-lead">Billboards catch people at 40 km/h. Pamphlets go in the bin. Social feeds bury your offer under everyone else's.</p>
+              <p className="body-copy home-problem-copy">Your customers spend their day waiting: for the lift, a coffee, a doctor, the checkout. That's where their attention is, and until now nobody owned those moments.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section ref={networkSectionRef} className="section section-soft home-network-section">
         <div className="container">
-          <SectionHeading
-            eyebrow="WHAT WE DO"
-            title="Everything you need to advertise on Adsrow"
-            description="Coordinate community placements, audience areas, screen-ready creative, and campaign reporting through one team."
-          />
-
-          <div className="feature-grid feature-grid-four">
-            {services.map((service) => (
-              <FeatureCard key={service.title} {...service} />
-            ))}
+          <div className="home-network-intro">
+            <p className="eyebrow">THE ADSROW NETWORK</p>
+            <h2>Not where they pass. <span>Where they pause.</span></h2>
+            <p className="home-network-description">We put screens where people stand still: at eye level, for minutes not seconds. Then we connect every screen into one network you can book in a single call. Reach families at home in the morning, professionals at work by noon and shoppers at the checkout by evening. One campaign covers all of it.</p>
           </div>
-
-          <div className="center-link">
-            <Link className="text-link" to="/services">
-              View All Services <ArrowRight size={16} />
-            </Link>
+          <SectionHeading title="40 venues. Seven moments that matter." />
+          <div className="feature-grid feature-grid-four home-venue-grid">
+            {venues.map(({ icon: Icon, ...venue }) => <FeatureCard key={venue.title} className="home-venue-card" tabIndex={0} icon={Icon} {...venue} />)}
           </div>
+          <div className="center-link"><Link className="text-link" to="/locations">See the full network: venues, areas and screen photos <ArrowRight size={16} /></Link></div>
         </div>
       </section>
 
-      <section className="section section-soft">
-        <div className="container location-feature">
-          <div className="location-photo">
-           <img
-                   src="/adsrow-lobby.png"
-                    alt="Adsrow advertising display in a lobby"
-                   className="hero-image"
-                  />
-            <span className="photo-tag">
-              <MapPin size={15} /> Vijayawada, Andhra Pradesh
-            </span>
-          </div>
-
-          <div>
-            <p className="eyebrow">ABOUT ADSROW</p>
-            <h2 className="section-title">
-              Connecting local businesses with residential communities.
-            </h2>
-            <p className="body-copy">
-              Adsrow helps businesses explore digital advertising on screens
-              in apartment communities. We coordinate campaign goals with
-              potential placements and the people who manage those spaces.
-            </p>
-
-            <ul className="check-list">
-              <li><CheckCircle2 size={17} /> Select communities close to your audience</li>
-              <li><CheckCircle2 size={17} /> Coordinate campaign timing and updates with one team</li>
-              <li><CheckCircle2 size={17} /> Review available proof of play and response tracking</li>
-            </ul>
-
-            <Link className="button button-outline" to="/locations">
-              Explore Locations <ArrowUpRight size={16} />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      <section className="section">
+      <section ref={benefitsSectionRef} className="section section-soft home-benefits-section">
         <div className="container">
-          <SectionHeading
-            eyebrow="INITIAL MARKET"
-            title="Pilot areas across Vijayawada"
-            description="These are the indicative areas shown in Adsrow’s pilot preview, not a list of confirmed live screens. The map is schematic; ask the team for current community availability."
-          />
-          <div className="area-grid">
-            {targetAreas.map((area) => (
-              <div className="area-card" key={area}>
-                <MapPin size={17} />
-                {area}
-              </div>
-            ))}
+          <div className="home-benefits-heading"><SectionHeading centered title="One network. Every way to target." /></div>
+          <div className="feature-grid home-benefits-grid">
+            {benefits.map(({ icon: Icon, ...benefit }, index) => <FeatureCard key={benefit.title} className="home-benefit-card" tabIndex={0} number={`0${index + 1}`} icon={Icon} {...benefit} />)}
           </div>
         </div>
       </section>
 
-      <section className="section">
+      <section ref={advertisersSectionRef} className="section section-soft home-advertisers-section">
         <div className="container">
-          <SectionHeading
-            centered
-            eyebrow="HOW IT WORKS"
-            title="A clear path to launch"
-            description="Campaigns are coordinated with the Adsrow team, from your first enquiry through launch planning."
-          />
-
-          <div className="feature-grid home-process-grid">
-            {campaignSteps.map((step, index) => (
-              <FeatureCard
-                key={step.title}
-                number={`0${index + 1}`}
-                icon={step.icon}
-                title={step.title}
-                description={step.description}
-              />
-            ))}
+          <SectionHeading eyebrow="WHO ADVERTISES WITH US" title="Match your message to the moment." />
+          <div className="feature-grid feature-grid-three home-advertisers-grid">
+            {categories.map(([title, label, description]) => <article className="feature-card home-category-card" tabIndex={0} key={title}><h3>{title}</h3><p>{description}</p><p className="home-venue-labels">{label}</p></article>)}
           </div>
+        </div>
+      </section>
 
-          <div className="center-link">
-            <Link className="text-link" to="/how-it-works">
-              Learn How It Works <ArrowRight size={16} />
-            </Link>
+      <section ref={processSectionRef} className="section section-soft home-process-section">
+        <div className="container">
+          <SectionHeading centered eyebrow="HOW IT WORKS" title="Go live in 4 steps." />
+          <div className="feature-grid feature-grid-four home-process-cards">
+            {steps.map(({ icon: Icon, ...step }, index) => <FeatureCard key={step.title} className="home-process-card" tabIndex={0} number={`0${index + 1}`} icon={Icon} {...step} />)}
           </div>
+          <div className="center-link"><Link className="button button-outline" to="/how-it-works">See the Full Process <ArrowRight size={16} /></Link></div>
         </div>
       </section>
 
       <section className="section section-navy">
-        <div className="container why-home-grid">
-          <div>
-            <p className="eyebrow eyebrow-light">WHY ADSROW</p>
-            <h2 className="section-title">Local campaigns, thoughtfully coordinated.</h2>
-            <p className="body-copy">Adsrow brings businesses and residential communities together through a clear, people-first process.</p>
-          </div>
-          <div className="why-points">
-            <p><MapPin size={19} /> Choose specific communities near your customers</p>
-            <p><Users size={19} /> Reach residents in lift lobbies as they wait and pause</p>
-            <p><ClipboardCheck size={19} /> Coordinate screens, time slots, creative and changes through one team</p>
-            <p><ChartNoAxesCombined size={19} /> Review proof of play and available QR or call tracking</p>
+        <div className="container comparison-block home-comparison-block">
+          <h3>Same budget. Smarter placement.</h3>
+          <div className="comparison-wrap" role="region" aria-label="Advertising format comparison" tabIndex="0">
+            <table className="comparison-table">
+              <thead><tr><th scope="col">What you get</th><th scope="col">Billboard</th><th scope="col">Pamphlets</th><th scope="col">Adsrow</th></tr></thead>
+              <tbody>{homeComparisonRows.map(([benefit, billboard, pamphlets, adsrow]) => <tr key={benefit}><th scope="row">{benefit}</th><td>{billboard}</td><td>{pamphlets}</td><td>{adsrow}</td></tr>)}</tbody>
+            </table>
           </div>
         </div>
-        <div className="container comparison-block">
-          <h3>Not where they pass. Where they pause.</h3>
-          <p>A lift-lobby screen reaches residents inside their community. The preview compares that setting with a roadside billboard and pamphlet distribution.</p>
-          <ComparisonTable />
+      </section>
+
+      <section ref={packagesSectionRef} className="section section-soft home-packages-section">
+        <div className="container">
+          <SectionHeading centered eyebrow="CAMPAIGN PACKAGES" title="Start small. Scale what works." />
+          <div className="feature-grid feature-grid-four home-package-grid">
+            {packages.map(([title, reach]) => <article className="feature-card home-package-card" tabIndex={0} key={title}><h3>{title}{title === "Impact" && <span className="home-package-note">Best value</span>}</h3><p>{reach}</p><strong className="home-price-placeholder">Contact us for pricing</strong></article>)}
+          </div>
+          <div className="center-link"><Link className="button button-outline" to="/partner-form">Compare Packages <ArrowRight size={16} /></Link></div>
         </div>
       </section>
 
       <section className="host-banner">
         <div className="container host-banner-inner">
           <div>
-            <p className="eyebrow eyebrow-light">HAVE A SUITABLE SPACE?</p>
-            <h2>Turn your community screen into an opportunity.</h2>
-            <p>
-              Adsrow’s preview describes installation and maintenance by its
-              team, with space for community notices between ads. Share your
-              property details to discuss suitability and partnership terms.
-            </p>
+            <p className="eyebrow eyebrow-light">FOR VENUE OWNERS AND MANAGERS</p>
+            <h2>Own a café, gym, clinic or building? Host a screen.</h2>
+            <p>We install and maintain the screen. You get space for your own offers and notices.</p>
           </div>
-
-          <Link className="button button-white" to="/partner-form">
-            Partner With Adsrow <ArrowUpRight size={16} />
-          </Link>
+          <Link className="button button-white" to="/host-a-screen">Host a Screen <ArrowUpRight size={16} /></Link>
         </div>
       </section>
 
@@ -267,16 +302,15 @@ function HomePage() {
         <div className="container simple-cta">
           <div>
             <p className="eyebrow">READY TO GET STARTED?</p>
-            <h2>Let’s plan your next local campaign.</h2>
-            <p>Share your goals and discuss suitable advertising options with the Adsrow team.</p>
+            <h2>Tell us who you want to reach. We'll show you where they pause.</h2>
+            <p>Get a free plan with venues, a schedule and a clear price. No obligation.</p>
           </div>
           <div className="cta-actions">
-            <Link className="button" to="/partner-form">Start Your Campaign <ArrowUpRight size={16} /></Link>
-            <Link className="text-link" to="/contact">Contact Us <ArrowRight size={16} /></Link>
+            <Link className="button" to="/partner-form">Get My Free Plan <ArrowUpRight size={16} /></Link>
+            <a className="text-link" href="https://wa.me/918374622055" target="_blank" rel="noreferrer">WhatsApp Us <ArrowRight size={16} /></a>
           </div>
         </div>
       </section>
-
     </>
   );
 }

@@ -12,7 +12,8 @@
     "lucide-react": "^1.59.0",
     "react": "^19",
     "react-dom": "^19",
-    "react-router-dom": "^7.18.4"
+    "react-router-dom": "^7.18.4",
+    "three": "^0.186.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.3",
