@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { ArrowUpRight, MapPin } from "lucide-react";
 import { SectionHeading } from "../components/SiteComponents";
+import VijayawadaCoverageMap from "../components/VijayawadaCoverageMap";
 import { targetAreas, venueCategories } from "../lib/siteContent";
 
 const enquiryLink = "/contact?type=advertiser";
@@ -24,20 +25,7 @@ function NetworkPage() {
               <span>Ask Adsrow to confirm current availability and participating venues.</span>
             </div>
           </div>
-          <figure className="network-hero-visual">
-            <img
-              src="/adsrow-lobby.png"
-              alt="Portrait digital display installed in a residential lift lobby"
-              width="1376"
-              height="768"
-              fetchPriority="high"
-              decoding="async"
-            />
-            <figcaption>
-              <span className="network-visual-dot" aria-hidden="true" />
-              Screens positioned where people pause
-            </figcaption>
-          </figure>
+          
         </div>
       </section>
 
@@ -69,6 +57,8 @@ function NetworkPage() {
           </div>
         </div>
       </section>
+
+      <VijayawadaCoverageMap />
 
       <section className="section section-soft network-areas-section">
         <div className="container">

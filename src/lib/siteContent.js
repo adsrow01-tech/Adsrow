@@ -4,14 +4,16 @@ import {
   Palette,
   ChartNoAxesCombined,
   CalendarDays,
-  Building2,
-  Coffee,
-  Dumbbell,
-  HeartPulse,
-  ShoppingBag,
-  ShoppingBasket,
-  BriefcaseBusiness,
 } from "lucide-react";
+import {
+  Building2Icon as Building2,
+  CoffeeIcon as Coffee,
+  DumbbellIcon as Dumbbell,
+  HeartPulseIcon as HeartPulse,
+  ShoppingBagIcon as ShoppingBag,
+  ShoppingBasketIcon as ShoppingBasket,
+  BriefcaseIcon as BriefcaseBusiness,
+} from "@animateicons/react/lucide";
 
 export const targetAreas = [
   "Bhavanipuram",
