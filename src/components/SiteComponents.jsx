@@ -22,9 +22,9 @@ export function PageHero({ eyebrow = "ADSROW", title, description, children }) {
 
 /* -------------------- SECTION HEADING -------------------- */
 
-export function SectionHeading({ eyebrow, title, description, centered = false }) {
+export function SectionHeading({ eyebrow, title, description, centered = false, className = "" }) {
   return (
-    <div className={`section-heading ${centered ? "centered" : ""}`}>
+    <div className={`section-heading ${centered ? "centered" : ""} ${className}`.trim()}>
       {eyebrow && <p className="eyebrow">{eyebrow}</p>}
       <h2>{title}</h2>
       {description && <p className="section-description">{description}</p>}
