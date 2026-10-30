@@ -2,7 +2,8 @@ import { Link } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { ArrowUpRight, ArrowRight, CheckCircle2, Monitor, MapPin, Users, Target, Palette, ChartNoAxesCombined } from "lucide-react";
 import { SectionHeading, FeatureCard } from "../components/SiteComponents";
-import { campaignPackages, venueCategories } from "../lib/siteContent";
+import VenueShowcaseCarousel from "../components/VenueShowcaseCarousel";
+import { campaignPackages } from "../lib/siteContent";
 
 const benefits = [
   { icon: Target, title: "Target by place and mindset", description: "Choose venue types, areas or both. Put a diagnostic offer in hospitals and a protein brand in gyms." },
@@ -216,11 +217,9 @@ function HomePage() {
             className="home-section-heading"
             title={<>40 venues. <span>Seven moments</span> that matter.</>}
           />
-          <div className="feature-grid feature-grid-four home-venue-grid">
-            {venueCategories.map(({ icon: Icon, title, summary }) => <FeatureCard key={title} className="home-card-interactive home-venue-card" tabIndex={0} icon={Icon} title={title} description={summary} />)}
-          </div>
-          <div className="center-link"><Link className="text-link" to="/network">See the full network: venues, areas and screen photos <ArrowRight size={16} /></Link></div>
         </div>
+        <VenueShowcaseCarousel />
+        <div className="container"><div className="center-link"><Link className="text-link" to="/network">See the full network: venues, areas and screen photos <ArrowRight size={16} /></Link></div></div>
       </section>
 
       {/*
