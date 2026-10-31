@@ -20,8 +20,16 @@ function WhyAdsrowPage() {
 
       <section className="section">
         <div className="container feature-grid feature-grid-four">
-          {reasons.map((reason) => (
-            <FeatureCard key={reason.title} {...reason} />
+          {reasons.map((reason, index) => (
+            <FeatureCard
+              key={reason.title}
+              {...reason}
+              index={index}
+              styled
+              decor
+              number={`0${index + 1}`}
+              className="why-reason-card"
+            />
           ))}
         </div>
       </section>
@@ -38,7 +46,7 @@ function WhyAdsrowPage() {
       </section>
 
       <section className="section section-soft">
-        <div className="container simple-cta">
+        <div className="container simple-cta ads-card ads-card-featured ads-card-interactive">
           <div>
             <h2>Let's find the right approach for your business.</h2>
             <p>Tell us what you want to promote and who you want to reach.</p>

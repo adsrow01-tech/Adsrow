@@ -27,7 +27,7 @@ function FaqAccordion({ id, items }) {
         const questionId = `${id}-question-${index}`;
         const answerId = `${id}-answer-${index}`;
         return (
-          <article className={`faq-item${isOpen ? " is-open" : ""}`} key={question}>
+          <article className={`faq-item ads-accent-${(index % 6) + 1}${isOpen ? " is-open" : ""}`} key={question}>
             <h3 className="faq-heading">
               <button
                 ref={(element) => { questionRefs.current[index] = element; }}

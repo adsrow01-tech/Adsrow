@@ -38,10 +38,10 @@ function NetworkPage() {
           />
           <div className="network-venue-grid">
             {venueCategories.map(({ icon: Icon, title, audience, bestFor }, index) => (
-              <article className="network-venue-card" key={title}>
+              <article className={`network-venue-card ads-card ads-card-interactive ads-accent-${(index % 6) + 1}`} key={title}>
                 <div className="network-venue-card-top">
                   <span className="network-venue-icon" aria-hidden="true"><Icon size={21} strokeWidth={1.8} /></span>
-                  <span className="network-venue-index">0{index + 1}</span>
+                  <span className="network-venue-index ads-num" aria-hidden="true">0{index + 1}</span>
                 </div>
                 <h3>{title}</h3>
                 <div className="network-venue-detail">
@@ -68,8 +68,8 @@ function NetworkPage() {
             description="These areas are part of the Vijayawada coverage map. Specific venues and live screens in each area need confirmation."
           />
           <div className="network-area-grid">
-            {targetAreas.map((area) => (
-              <div className="network-area-card" key={area}>
+            {targetAreas.map((area, index) => (
+              <div className={`network-area-card ads-accent-${(index % 6) + 1}`} key={area}>
                 <MapPin size={17} aria-hidden="true" />
                 <span>{area}</span>
               </div>
@@ -80,7 +80,7 @@ function NetworkPage() {
 
       <section className="section network-final-section">
         <div className="container">
-          <div className="location-callout network-final-cta">
+          <div className="location-callout network-final-cta ads-card ads-card-featured ads-card-interactive">
             <span className="callout-icon"><MapPin size={24} /></span>
             <div>
               <h2>Looking for a specific venue or area?</h2>

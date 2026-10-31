@@ -34,7 +34,7 @@ function HostFaqAccordion() {
         const questionId = `host-faq-question-${index}`;
         const answerId = `host-faq-answer-${index}`;
         return (
-          <article className={`faq-item${isOpen ? " is-open" : ""}`} key={question}>
+          <article className={`faq-item ads-accent-${(index % 6) + 1}${isOpen ? " is-open" : ""}`} key={question}>
             <h3 className="faq-heading">
               <button
                 ref={(element) => { questionRefs.current[index] = element; }}
@@ -86,10 +86,10 @@ function HostAScreenPage() {
           </div>
           <figure className="host-screen-hero-visual">
             <img
-              src="/adsrow-lobby.png"
-              alt="Digital advertising screen in a residential lift lobby"
-              width="1376"
-              height="768"
+              src="/photos/corporate-hub.png"
+              alt="Digital advertising screen in a corporate office lobby"
+              width="1200"
+              height="900"
               fetchPriority="high"
               decoding="async"
             />
@@ -106,10 +106,14 @@ function HostAScreenPage() {
             description="A screen can help share timely information with people already in your space."
           />
           <div className="feature-grid host-venue-grid">
-            {hostScreenBenefits.map(({ icon: Icon, title, description }) => (
+            {hostScreenBenefits.map(({ icon: Icon, title, description }, index) => (
               <FeatureCard
                 key={title}
                 className="host-venue-card"
+                index={index}
+                styled
+                decor
+                number={`0${index + 1}`}
                 icon={Icon}
                 title={title}
                 description={description}
@@ -128,8 +132,8 @@ function HostAScreenPage() {
           />
           <div className="host-partner-grid">
             {hostPartnerBenefits.map(({ title, description }, index) => (
-              <article className="host-partner-card" key={title}>
-                <span className="host-partner-index">0{index + 1}</span>
+              <article className={`host-partner-card ads-card ads-card-interactive ads-accent-${(index % 6) + 1}`} key={title}>
+                <span className="ads-num" aria-hidden="true">0{index + 1}</span>
                 <div>
                   <h3>{title}</h3>
                   <p>{description}</p>
@@ -146,8 +150,8 @@ function HostAScreenPage() {
           <SectionHeading eyebrow="HOW IT WORKS" title="A clear process, from enquiry to installation" />
           <ol className="host-process-grid">
             {hostScreenSteps.map(({ title, description }, index) => (
-              <li className="host-process-card" key={title}>
-                <span className="host-process-number">{String(index + 1).padStart(2, "0")}</span>
+              <li className={`host-process-card ads-card ads-card-interactive ads-accent-${(index % 6) + 1}`} key={title}>
+                <span className="ads-num" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
                 <h3>{title}</h3>
                 <p>{description}</p>
               </li>
@@ -165,7 +169,7 @@ function HostAScreenPage() {
 
       <section className="section host-final-section">
         <div className="container">
-          <div className="host-final-cta">
+          <div className="host-final-cta ads-card ads-card-featured ads-card-interactive">
             <div>
               <p className="eyebrow">PARTNER WITH ADSROW</p>
               <h2>Your space already has the audience. Let's put it to work.</h2>

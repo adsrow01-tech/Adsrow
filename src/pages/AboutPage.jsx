@@ -34,10 +34,10 @@ function AboutPage() {
           </div>
           <figure className="about-hero-visual">
             <img
-              src="/adsrow-lobby.png"
+              src="/photos/lift-lobby-family.png"
               alt="Portrait digital advertising display in a residential lift lobby"
-              width="1376"
-              height="768"
+              width="1200"
+              height="900"
               fetchPriority="high"
               decoding="async"
             />
@@ -50,10 +50,10 @@ function AboutPage() {
         <div className="container about-story-grid">
           <div className="about-story-visual">
             <img
-              src="/adsrow-screen.png"
+              src="/photos/supermarket-checkout.png"
               alt="Digital Adsrow screen displayed in a real-world venue"
-              width="1672"
-              height="954"
+              width="1200"
+              height="900"
               loading="lazy"
               decoding="async"
             />
@@ -72,10 +72,14 @@ function AboutPage() {
         <div className="container">
           <SectionHeading eyebrow="OUR PRINCIPLES" title="What we stand for" />
           <div className="feature-grid feature-grid-three about-values-grid">
-            {values.map(({ icon: Icon, title, description }) => (
+            {values.map(({ icon: Icon, title, description }, index) => (
               <FeatureCard
                 key={title}
                 className="about-value-card"
+                index={index}
+                styled
+                decor
+                number={`0${index + 1}`}
                 icon={Icon}
                 title={title}
                 description={description}
@@ -88,7 +92,7 @@ function AboutPage() {
       <section className="section about-founder-section">
         <div className="container">
           <SectionHeading eyebrow="LEADERSHIP" title="Founder & CEO" />
-          <article className="about-founder-card">
+          <article className="about-founder-card ads-card ads-card-interactive ads-accent-1">
             <div className="about-founder-mark" aria-hidden="true">
               <span>RN</span>
               <small>FOUNDER & CEO</small>
@@ -104,7 +108,7 @@ function AboutPage() {
 
       <section className="section section-soft about-final-section">
         <div className="container">
-          <div className="about-final-cta">
+          <div className="about-final-cta ads-card ads-card-featured ads-card-interactive">
             <div>
               <p className="eyebrow">GET IN TOUCH</p>
               <h2>Let's talk about your next campaign.</h2>
