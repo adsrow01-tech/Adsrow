@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import { ArrowUpRight, ArrowRight, CheckCircle2, Monitor, MapPin, Users, Target, Palette, ChartNoAxesCombined } from "lucide-react";
+import { ArrowUpRight, ArrowRight, CheckCircle2, Monitor, MapPin, Users, Target, Palette, ChartNoAxesCombined, Building2, UtensilsCrossed, Stethoscope, GraduationCap, Car, ShoppingBag, Eye } from "lucide-react";
 import { SectionHeading, FeatureCard } from "../components/SiteComponents";
 import VenueShowcaseCarousel from "../components/VenueShowcaseCarousel";
 import { campaignPackages } from "../lib/siteContent";
@@ -10,15 +10,17 @@ const benefits = [
   { icon: Monitor, title: "Book once. Play everywhere.", description: "One team handles 40 venues and every screen schedule. You make one call, not forty." },
   { icon: Palette, title: "Change your ad in minutes", description: "New offer or new price? We update your ad remotely. No reprinting and no remounting." },
   { icon: ChartNoAxesCombined, title: "See proof. Count leads.", description: "Get a play report by screen and date. Add QR codes and a tracked number to count real enquiries." },
+  { icon: MapPin, title: "From one lift lobby to the whole city", description: "Start with a single lobby or book all 60 screens. Plan exactly the areas where your audience lives, works and shops." },
+  { icon: Eye, title: "Minutes of attention, not seconds", description: "Eye-level screens where people stand still: no feeds to scroll past and no button to skip, so your story plays in full." },
 ];
 
 const categories = [
-  ["Real estate", "Homes · Offices", "Fill site visits from families at home and professionals at work."],
-  ["Restaurants & food brands", "Homes · Offices · Malls", "Win the ‘what’s for dinner?’ decision before it’s made."],
-  ["Clinics, labs & pharmacies", "Hospitals · Gyms · Homes", "Reach health-conscious people at the right moment."],
-  ["Schools & coaching", "Homes · Malls", "Talk to parents before admission season begins."],
-  ["Auto dealers", "Offices · Malls · Homes", "Book test drives with buyers who have time to think."],
-  ["Retail & FMCG", "Supermarkets · Malls · Cafés", "Be the last brand shoppers see before they choose."],
+  { icon: Building2, title: "Real estate", label: "Homes · Offices", description: "Fill site visits from families at home and professionals at work." },
+  { icon: UtensilsCrossed, title: "Restaurants & food brands", label: "Homes · Offices · Malls", description: "Win the ‘what’s for dinner?’ decision before it’s made." },
+  { icon: Stethoscope, title: "Clinics, labs & pharmacies", label: "Hospitals · Gyms · Homes", description: "Reach health-conscious people at the right moment." },
+  { icon: GraduationCap, title: "Schools & coaching", label: "Homes · Malls", description: "Talk to parents before admission season begins." },
+  { icon: Car, title: "Auto dealers", label: "Offices · Malls · Homes", description: "Book test drives with buyers who have time to think." },
+  { icon: ShoppingBag, title: "Retail & FMCG", label: "Supermarkets · Malls · Cafés", description: "Be the last brand shoppers see before they choose." },
 ];
 
 const steps = [
@@ -345,9 +347,32 @@ function HomePage() {
 
       <section ref={benefitsSectionRef} className="section section-soft home-benefits-section">
         <div className="container">
-          <div className="home-benefits-heading"><SectionHeading centered className="home-section-heading" title={<>One network. <span>Every way</span> to target.</>} /></div>
+          <div className="home-benefits-heading"><SectionHeading centered className="home-section-heading" description="Six reasons to plan your next campaign on Adsrow screens." title={<>One network. <span>Every way</span> to target.</>} /></div>
           <div className="feature-grid home-benefits-grid">
-            {benefits.map(({ icon: Icon, ...benefit }, index) => <FeatureCard key={benefit.title} className={`home-card-interactive home-benefit-card home-benefit-card-${index + 1}`} tabIndex={0} number={`0${index + 1}`} icon={Icon} {...benefit} />)}
+            {benefits.map(({ icon: Icon, ...benefit }, index) => (
+              <article
+                key={benefit.title}
+                tabIndex={0}
+                className={`home-card-interactive home-benefit-card home-benefit-card-${index + 1}`}
+              >
+                {index === 0 && (
+                  <span className="benefit-badge">
+                    <span className="benefit-badge-dot" aria-hidden="true" />
+                    TARGETED BY DESIGN
+                  </span>
+                )}
+                <span className="benefit-number" aria-hidden="true">{`0${index + 1}`}</span>
+                <h3>{benefit.title}</h3>
+                <p>{benefit.description}</p>
+                {index === 0 && (
+                  <span className="benefit-meta">
+                    <span className="benefit-meta-dots" aria-hidden="true"><i /><i /><i /></span>
+                    40 venues · 7 moments that matter
+                  </span>
+                )}
+                <Icon className="home-card-decor" aria-hidden="true" />
+              </article>
+            ))}
           </div>
         </div>
       </section>
@@ -356,7 +381,22 @@ function HomePage() {
         <div className="container">
           <SectionHeading eyebrow="WHO ADVERTISES WITH US" className="home-section-heading" title={<>Match your message to the <span>moment.</span></>} />
           <div className="feature-grid feature-grid-three home-advertisers-grid">
-            {categories.map(([title, label, description]) => <article className="feature-card home-card-interactive home-category-card" tabIndex={0} key={title}><h3>{title}</h3><p>{description}</p><p className="home-venue-labels">{label}</p></article>)}
+            {categories.map(({ icon: Icon, ...category }, index) => (
+              <article
+                className={`feature-card home-card-interactive home-category-card home-category-card-${index + 1}`}
+                tabIndex={0}
+                key={category.title}
+              >
+                <div className="home-category-top">
+                  <span className="feature-number">{`0${index + 1}`}</span>
+                  <span className="feature-icon"><Icon size={20} strokeWidth={1.7} /></span>
+                </div>
+                <h3>{category.title}</h3>
+                <p>{category.description}</p>
+                <p className="home-venue-labels">{category.label}</p>
+                <Icon className="home-card-decor" aria-hidden="true" />
+              </article>
+            ))}
           </div>
         </div>
       </section>
@@ -365,7 +405,7 @@ function HomePage() {
         <div className="container">
           <SectionHeading centered eyebrow="HOW IT WORKS" className="home-section-heading" title={<>Go live in <span>4 steps.</span></>} />
           <div className="feature-grid feature-grid-four home-process-cards">
-            {steps.map(({ icon: Icon, ...step }, index) => <FeatureCard key={step.title} className="home-card-interactive home-process-card" tabIndex={0} number={`0${index + 1}`} icon={Icon} {...step} />)}
+            {steps.map(({ icon: Icon, ...step }, index) => <FeatureCard key={step.title} className={`home-card-interactive home-process-card home-process-card-${index + 1}`} tabIndex={0} number={`0${index + 1}`} icon={Icon} {...step} />)}
           </div>
           <div className="center-link"><Link className="button button-outline" to="/how-it-works">See the Full Process <ArrowRight size={16} /></Link></div>
         </div>
@@ -387,7 +427,18 @@ function HomePage() {
         <div className="container">
           <SectionHeading centered eyebrow="CAMPAIGN PACKAGES" className="home-section-heading" title={<>Start small. <span>Scale what works.</span></>} />
           <div className="feature-grid feature-grid-four home-package-grid">
-            {campaignPackages.map(({ name, screens, duration, price, customQuote }) => <article className="feature-card home-card-interactive home-package-card" tabIndex={0} key={name}><h3>{name}</h3><p>{screens === "All 60" ? "All 60 screens" : `${screens} screens`} · {duration}</p><strong className="home-price-placeholder">{customQuote ? "Custom quote" : price ? `From ₹${price}` : "Price on request"}</strong></article>)}
+            {campaignPackages.map(({ name, screens, duration, price, customQuote }, index) => (
+              <article
+                className={`feature-card home-card-interactive home-package-card home-package-card-${index + 1}`}
+                tabIndex={0}
+                key={name}
+              >
+                <span className="home-package-index" aria-hidden="true">{`0${index + 1}`}</span>
+                <h3>{name}</h3>
+                <p>{screens === "All 60" ? "All 60 screens" : `${screens} screens`} · {duration}</p>
+                <strong className="home-price-placeholder">{customQuote ? "Custom quote" : price ? `From ₹${price}` : "Price on request"}</strong>
+              </article>
+            ))}
           </div>
           <div className="center-link"><Link className="button button-outline" to="/services">Compare Packages <ArrowRight size={16} /></Link></div>
         </div>
