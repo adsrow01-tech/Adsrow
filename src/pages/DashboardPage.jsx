@@ -46,7 +46,7 @@ export default function DashboardPage() {
         </div>
 
         <div className="dashboard-grid">
-          <article className="dashboard-card dashboard-stat-card">
+          <article className="dashboard-card dashboard-stat-card ads-card ads-card-interactive ads-accent-1">
             <span className="dashboard-icon"><CheckCircle2 size={20} /></span>
             <p className="dashboard-label">Submitted enquiries</p>
             <strong>{count}</strong>
@@ -54,7 +54,7 @@ export default function DashboardPage() {
             <Link to="/partner-form" className="dashboard-link">Start an enquiry <ArrowRight size={16} /></Link>
           </article>
 
-          <article className="dashboard-card">
+          <article className="dashboard-card ads-card ads-card-interactive ads-accent-6">
             <div className="dashboard-card-heading"><span className="dashboard-icon"><UserRound size={20} /></span><div><h2>Personal details</h2><p>Keep your contact details up to date.</p></div></div>
             <form className="dashboard-form" onSubmit={saveProfile}>
               <label>Full name<input value={fullName} onChange={(event) => setFullName(event.target.value)} maxLength={100} autoComplete="name" /></label>

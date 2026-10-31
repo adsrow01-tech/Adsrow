@@ -37,10 +37,10 @@ function ServicesPage() {
           </div>
           <figure className="services-hero-visual">
             <img
-              src="/adsrow-lobby.png"
-              alt="Digital advertising display in a real residential lift lobby"
-              width="1376"
-              height="768"
+              src="/photos/premium-mall.png"
+              alt="Digital advertising display in a busy shopping mall"
+              width="1200"
+              height="900"
               fetchPriority="high"
               decoding="async"
             />
@@ -58,8 +58,9 @@ function ServicesPage() {
           />
           <div className="service-pack-grid">
             {audiencePacks.map(({ title, category, description }, index) => (
-              <article className="service-pack-card" key={title}>
-                <span className="service-pack-index">PACK 0{index + 1}</span>
+              <article className={`service-pack-card ads-card ads-card-interactive ads-accent-${(index % 6) + 1}`} key={title}>
+                <span className="service-pack-index">Audience pack</span>
+                <span className="ads-num" aria-hidden="true">0{index + 1}</span>
                 <h3>{title}</h3>
                 <p className="service-pack-category">{category}</p>
                 <p className="service-pack-description">{description}</p>
@@ -75,8 +76,8 @@ function ServicesPage() {
           <SectionHeading title="What's included" />
           <div className="services-included-grid">
             {includedServices.map(({ title, description }, index) => (
-              <article className="services-included-card" key={title}>
-                <span className="services-included-index">0{index + 1}</span>
+              <article className={`services-included-card ads-card ads-card-interactive ads-accent-${(index % 6) + 1}`} key={title}>
+                <span className="ads-num" aria-hidden="true">0{index + 1}</span>
                 <h3>{title}</h3>
                 <p>{description}</p>
               </article>
@@ -93,8 +94,9 @@ function ServicesPage() {
             description="Choose a starting package, then confirm the final venue mix and availability with the team."
           />
           <div className="campaign-package-grid">
-            {campaignPackages.map((pkg) => (
-              <article className="campaign-package-card" key={pkg.name}>
+            {campaignPackages.map((pkg, index) => (
+              <article className={`campaign-package-card ads-card ads-card-interactive ads-accent-${(index % 6) + 1}`} key={pkg.name}>
+                <span className="ads-num" aria-hidden="true">0{index + 1}</span>
                 <h3>{pkg.name}</h3>
                 <dl>
                   <div><dt>Screens</dt><dd>{pkg.screens}</dd></div>
@@ -118,9 +120,9 @@ function ServicesPage() {
             description="Ask the team which options are available for your selected venues and schedule."
           />
           <div className="services-addon-grid">
-            {campaignAddOns.map(({ title, description }) => (
-              <article className="services-addon-card" key={title}>
-                <span className="services-addon-mark" aria-hidden="true" />
+            {campaignAddOns.map(({ title, description }, index) => (
+              <article className={`services-addon-card ads-card ads-card-interactive ads-accent-${(index % 6) + 1}`} key={title}>
+                <span className="ads-num" aria-hidden="true">0{index + 1}</span>
                 <h3>{title}</h3>
                 <p>{description}</p>
               </article>
@@ -163,7 +165,7 @@ function ServicesPage() {
 
       <section className="section section-soft services-final-section">
         <div className="container">
-          <div className="services-final-cta">
+          <div className="services-final-cta ads-card ads-card-featured ads-card-interactive">
             <div>
               <p className="eyebrow">LET'S PLAN YOUR CAMPAIGN</p>
               <h2>Not sure which pack fits?</h2>

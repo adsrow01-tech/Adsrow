@@ -167,7 +167,7 @@ function HomePage() {
               width="1376"
               height="768"
               tabIndex="-1"
-              src="/videos/demo-adsrow-pingpong.mp4"
+              src="/videos/download.mp4"
             />
           )}
           <span className="home-hero-scrim" />
@@ -456,7 +456,7 @@ function HomePage() {
       </section>
 
       <section className="section section-soft">
-        <div className="container simple-cta">
+        <div className="container simple-cta ads-card ads-card-interactive ads-accent-1">
           <div>
             <p className="eyebrow">READY TO GET STARTED?</p>
             <h2 className="home-heading">Tell us who you want to reach. We'll show you <span>where they pause.</span></h2>

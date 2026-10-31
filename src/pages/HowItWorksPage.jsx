@@ -65,7 +65,7 @@ function HowItWorksPage() {
           </div>
           <ol className="how-step-list">
             {steps.map(({ title, description }, index) => (
-              <li className="how-step" key={title}>
+              <li className={`how-step ads-accent-${(index % 6) + 1}`} key={title}>
                 <span className="how-step-number" aria-hidden="true">0{index + 1}</span>
                 <div className="how-step-copy">
                   <h3>{title}</h3>
@@ -81,7 +81,7 @@ function HowItWorksPage() {
       </section>
 
       <section className="section how-cta-section">
-        <div className="container how-cta-card">
+        <div className="container how-cta-card ads-card ads-card-featured ads-card-interactive">
           <div>
             <p className="eyebrow">READY WHEN YOU ARE</p>
             <h2>Step one takes two minutes.</h2>

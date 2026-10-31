@@ -136,7 +136,7 @@ function CheckList({ id, label, options, value, onChange }) {
 function SuccessState({ kind }) {
   const advertiser = kind === "advertiser";
   return (
-    <section className="contact-success" role="status" aria-live="polite">
+    <section className="contact-success ads-card ads-card-interactive ads-accent-4" role="status" aria-live="polite">
       <span className="contact-success-icon"><MessageCircle size={23} /></span>
       <h2>{advertiser ? "Got it. Your plan is on its way." : "Thanks. Let's plan a visit."}</h2>
       <p>{advertiser
@@ -270,7 +270,7 @@ function EnquiryForm({ kind }) {
 
 function ContactPanel() {
   return (
-    <aside className="contact-panel" aria-labelledby="contact-panel-title">
+    <aside className="contact-panel ads-card ads-card-interactive ads-accent-1" aria-labelledby="contact-panel-title">
       <h2 id="contact-panel-title">Prefer to talk?</h2>
       <a href="tel:+918374622055"><Phone size={18} /><span><strong>Call or WhatsApp</strong><br />+91 83746 22055</span></a>
       <a href="https://wa.me/918374622055" target="_blank" rel="noreferrer"><MessageCircle size={18} /><span>Message us on WhatsApp</span></a>

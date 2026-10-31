@@ -32,21 +32,43 @@ export function SectionHeading({ eyebrow, title, description, centered = false, 
   );
 }
 
-/* -------------------- FEATURE CARD -------------------- */
+/* -------------------- FEATURE CARD --------------------
+   Shared card component. Pass `index` (0-based) to opt into the
+   Adsrow card design system: pastel surface, coordinated accent,
+   per-card hover interaction. `decor` renders the icon again as an
+   oversized outline icon in the background, `styled` builds a
+   number + icon header row. */
 
-export function FeatureCard({ icon: Icon, title, description, number, className = "", tabIndex }) {
+export function FeatureCard({ icon: Icon, title, description, number, className = "", tabIndex, index, decor = false, styled = false }) {
+  const themes = ["ads-card", "ads-card-interactive"];
+  if (typeof index === "number") themes.push(`ads-accent-${(index % 6) + 1}`);
+  const base = ["feature-card", ...themes, className].filter(Boolean).join(" ");
+
   return (
-    <article className={`feature-card ${className}`.trim()} tabIndex={tabIndex}>
-      {number && <span className="feature-number">{number}</span>}
+    <article className={base} tabIndex={tabIndex}>
+      {styled && number && Icon ? (
+        <div className="ads-card-head-row">
+          <span className="ads-num" aria-hidden="true">{number}</span>
+          <span className="feature-icon" aria-hidden="true">
+            <Icon size={21} strokeWidth={1.7} />
+          </span>
+        </div>
+      ) : (
+        <>
+          {number && <span className="feature-number">{number}</span>}
 
-      {Icon && (
-        <span className="feature-icon">
-          <Icon size={21} strokeWidth={1.7} />
-        </span>
+          {Icon && (
+            <span className="feature-icon">
+              <Icon size={21} strokeWidth={1.7} />
+            </span>
+          )}
+        </>
       )}
 
       <h3>{title}</h3>
       <p>{description}</p>
+
+      {decor && Icon && <Icon className="ads-card-decor" aria-hidden="true" />}
     </article>
   );
 }
