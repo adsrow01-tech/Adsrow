@@ -2044,12 +2044,218 @@ video.hero-image { display: block; }
 .home-packages-section .center-link .button {
   font-size: 15px;
 }
+/* ── Homepage comparison: "Same budget. Smarter placement." ──────
+   Premium rework scoped to this section only. Tokens live on
+   .home-comparison-section and inherit down, so the shared light-theme
+   comparison table used on other routes stays exactly as it was. */
+.home-comparison-section {
+  --cmp-surface: #ffffff;
+  --cmp-accent: #12bd9c;
+  --cmp-accent-bright: #3adfc2;
+  --cmp-accent-deep: #0c8f77;
+  --cmp-blue: #0b3d91;
+  --cmp-header-a: #f7fafe;
+  --cmp-header-b: #e8f0fa;
+  --cmp-tint-a: #f1fdf9;
+  --cmp-tint-b: #e1f7ee;
+  --cmp-tint-hover-a: #e6faf4;
+  --cmp-tint-hover-b: #d5f2e8;
+  --cmp-row-hover: #f4f9fe;
+  --cmp-radius: 20px;
+  --cmp-pad-x: 18px;
+  --cmp-divider: #eef2f8;
+  --cmp-divider-soft: #f2f5fa;
+  --cmp-seam: rgb(13 168 140 / 28%);
+}
+
+/* Atmosphere: deep navy with quiet ambient light and a hairline aurora. */
+.section-navy.home-comparison-section {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(1100px 480px at 16% -12%, rgb(59 167 242 / 9%), transparent 62%),
+    radial-gradient(860px 440px at 88% 8%, rgb(58 223 194 / 7%), transparent 60%),
+    radial-gradient(900px 500px at 62% 118%, rgb(11 61 145 / 22%), transparent 66%),
+    var(--navy);
+}
+.home-comparison-section::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgb(127 231 214 / 32%), transparent);
+  pointer-events: none;
+}
+
+/* Heading: balanced spacing, refined blue accent that reads on navy. */
+.home-comparison-section .home-comparison-heading {
+  margin: 0 0 clamp(26px, 3.2vw, 38px);
+}
+.home-comparison-section .home-comparison-heading span { color: var(--sky); }
+@supports ((background-clip: text) or (-webkit-background-clip: text)) {
+  .home-comparison-section .home-comparison-heading span {
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    background-image: linear-gradient(97deg, #74c4f8 4%, #7feada 94%);
+    background-repeat: no-repeat;
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+}
+
+/* Card shell: fine edge, soft realistic depth, subtle rim light. */
+.home-comparison-block .comparison-wrap {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  border: 1px solid rgb(255 255 255 / 26%);
+  border-radius: var(--cmp-radius);
+  background: var(--cmp-surface);
+  box-shadow:
+    0 42px 88px -36px rgb(2 6 23 / 80%),
+    0 16px 40px -22px rgb(2 6 23 / 52%),
+    0 1px 0 rgb(255 255 255 / 32%),
+    0 0 0 10px rgb(255 255 255 / 3%);
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgb(18 21 43 / 24%) transparent;
+}
+.home-comparison-block .comparison-wrap:focus-visible {
+  outline: 3px solid var(--sky);
+  outline-offset: 5px;
+}
+.home-comparison-block .comparison-wrap::-webkit-scrollbar { height: 10px; }
+.home-comparison-block .comparison-wrap::-webkit-scrollbar-track { background: transparent; }
+.home-comparison-block .comparison-wrap::-webkit-scrollbar-thumb {
+  background: rgb(18 21 43 / 22%);
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background-clip: content-box;
+}
+
 .home-comparison-block .comparison-table {
+  width: 100%;
+  min-width: 680px;
+  border-collapse: separate;
+  border-spacing: 0;
   font-size: 14px;
   line-height: 1.55;
 }
+
+/* Consistent cell rhythm: equal heights, aligned baselines. */
+.home-comparison-block .comparison-table th,
+.home-comparison-block .comparison-table td {
+  padding: 16px var(--cmp-pad-x);
+  text-align: left;
+  vertical-align: middle;
+  background-color: var(--cmp-surface);
+  transition: background-color 180ms cubic-bezier(.33, .7, .4, 1), color 180ms cubic-bezier(.33, .7, .4, 1), box-shadow 180ms cubic-bezier(.33, .7, .4, 1);
+}
+
+/* Column alignment: soft dividers inside, a quiet teal seam at Adsrow. */
+.home-comparison-block .comparison-table thead th + th,
+.home-comparison-block .comparison-table tbody td + td { border-left: 1px solid var(--cmp-divider-soft); }
+.home-comparison-block .comparison-table thead th + th:last-child,
+.home-comparison-block .comparison-table tbody td + td:last-child { border-left: 1px solid var(--cmp-seam); }
+
+/* Subtle row separators; the final row closes the table. */
+.home-comparison-block .comparison-table tbody th,
+.home-comparison-block .comparison-table tbody td { border-bottom: 1px solid var(--cmp-divider); }
+.home-comparison-block .comparison-table tbody tr:last-child th,
+.home-comparison-block .comparison-table tbody tr:last-child td { border-bottom: 0; }
+
+/* Header: sophisticated light-blue band, precisely aligned labels. */
 .home-comparison-block .comparison-table thead th {
-  font-size: 12px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  border-bottom: 1px solid rgb(18 21 43 / 9%);
+}
+.home-comparison-block .comparison-table thead th:not(:last-child) {
+  background: linear-gradient(180deg, var(--cmp-header-a) 0%, var(--cmp-header-b) 100%);
+  color: var(--navy);
+}
+.home-comparison-block .comparison-table thead th:last-child {
+  background: linear-gradient(135deg, var(--cmp-accent-bright) 0%, var(--cmp-accent) 55%, #0da184 100%);
+  color: var(--navy);
+  border-bottom: 1px solid rgb(9 122 100 / 40%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 30%);
+}
+
+/* Sticky row labels: context stays visible while the table scrolls. */
+.home-comparison-block .comparison-table thead th:first-child,
+.home-comparison-block .comparison-table tbody th {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  min-width: 220px;
+  padding-left: 22px;
+  border-right: 1px solid var(--cmp-divider);
+}
+.home-comparison-block .comparison-table tbody th {
+  color: var(--ink);
+  font-weight: 700;
+}
+.home-comparison-block .comparison-table tbody td { color: #3d4b63; min-width: 150px; }
+
+/* Optical padding: align to the card's rounded corners. */
+.home-comparison-block .comparison-table thead th:last-child,
+.home-comparison-block .comparison-table tbody td:last-child { padding-right: 20px; }
+
+/* Adsrow advantage column: turquoise-to-mint, confident blue, soft inner glow. */
+.home-comparison-block .comparison-table tbody td.comparison-adsrow-cell,
+.home-comparison-block .comparison-table tbody td:last-child {
+  background-image: linear-gradient(180deg, var(--cmp-tint-a), var(--cmp-tint-b));
+  color: var(--cmp-blue);
+  font-weight: 700;
+  border-bottom: 1px solid rgb(13 168 140 / 14%);
+  box-shadow: inset 12px 0 14px -14px rgb(15 174 145 / 30%);
+}
+.home-comparison-block .comparison-adsrow-value {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+.home-comparison-block .comparison-adsrow-value svg {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  padding: 4px;
+  color: var(--cmp-accent-deep);
+  background: rgb(15 174 145 / 12%);
+  border-radius: 50%;
+}
+
+/* Highlight only the row under the cursor; everything else holds still. */
+@media (hover: hover) {
+  .home-comparison-block .comparison-table tbody tr:hover th,
+  .home-comparison-block .comparison-table tbody tr:hover td { background-color: var(--cmp-row-hover); }
+  .home-comparison-block .comparison-table tbody tr:hover th { color: var(--cmp-blue); }
+  .home-comparison-block .comparison-table tbody tr:hover td.comparison-adsrow-cell,
+  .home-comparison-block .comparison-table tbody tr:hover td:last-child {
+    background-image: linear-gradient(180deg, var(--cmp-tint-hover-a), var(--cmp-tint-hover-b));
+    box-shadow: inset 12px 0 14px -13px rgb(15 174 145 / 34%);
+  }
+}
+
+@media (max-width: 600px) {
+  .home-comparison-block .comparison-table { min-width: 640px; font-size: 13.5px; }
+  .home-comparison-block .comparison-table th,
+  .home-comparison-block .comparison-table td { padding: 13px 14px; }
+  .home-comparison-block .comparison-table thead th:first-child,
+  .home-comparison-block .comparison-table tbody th { min-width: 176px; padding-left: 18px; }
+  .home-comparison-block .comparison-table thead th:last-child,
+  .home-comparison-block .comparison-table tbody td:last-child { padding-right: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-comparison-block .comparison-table th,
+  .home-comparison-block .comparison-table td,
+  .home-comparison-block .comparison-table tbody tr { transition: none; }
 }
 .host-banner > .container > div > p:not(.eyebrow),
 .simple-cta > div:first-child > p:last-child {
@@ -2178,7 +2384,28 @@ video.hero-image { display: block; }
 .header-wordmark .wordmark-row { color: var(--sky); }
 .header-wordmark .wordmark-dot { margin-left: 1px; color: var(--mint); }
 .header-wordmark sup { position: relative; top: -11px; margin-left: 2px; color: #104493; font-family: Arial, sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 0; }
-.footer-brand-column .header-wordmark { font-size: 30px; }
+/* Footer logo: the provided PNG renders the full brand wordmark (blue-to-cyan
+   "ads", white "row", cyan dot, ®) directly on the footer navy — no alpha, so
+   it sits flush on the near-identical background without any processing. The
+   canvas carries large baked-in padding around the wordmark, so the image is
+   sized to keep the wordmark at the same visual size as the previous 30px
+   text wordmark (~22px glyphs at 203px wide) and absolutely positioned so its
+   glyphs land exactly where the text logo sat. The link keeps its original
+   ~126x30 footprint, so the column's alignment and spacing do not move. */
+.footer-brand {
+  position: relative;
+  width: 126px;
+  height: 30px;
+}
+.footer-brand .footer-logo {
+  position: absolute;
+  top: -36px;
+  left: -52px;
+  display: block;
+  width: 203px;
+  height: auto;
+  max-width: none;
+}
 .site-header .nav-links { flex: 0 1 auto; justify-content: flex-end; gap: clamp(12px, 1.45vw, 21px); }
 .site-header .nav-link { display: inline-flex; min-height: 24px; align-items: center; color: #28344b; font-size: 12px; font-weight: 700; line-height: 1.2; white-space: nowrap; }
 .site-header .nav-link:hover, .site-header .nav-link.active { color: var(--blue); }
@@ -2461,6 +2688,115 @@ video.hero-image { display: block; }
   .site-header.is-compact .header-wordmark { font-size: clamp(23px, 7vw, 26px); }
   .site-header.is-compact .desktop-contact { min-height: 36px; padding-inline: clamp(7px, 2vw, 10px); font-size: clamp(9px, 3vw, 11px); }
 }
+
+/* More ▼ dropdown in the desktop navbar; the six extra pages render flat
+   inside the mobile drawer. Everything here also keeps the compact-scroll
+   collapse intact: the panel simply needs room to escape the nav row's
+   clipping while it is visible. */
+.site-header .nav-links { overflow: visible; }
+.site-header.is-compact .nav-links { overflow: hidden; }
+
+.site-header .nav-more { position: relative; flex: 0 0 auto; }
+.site-header .nav-more-toggle {
+  position: relative;
+  display: inline-flex;
+  min-height: 24px;
+  align-items: center;
+  gap: 5px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #283d55;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 180ms ease;
+}
+.site-header .nav-more-toggle:hover,
+.site-header .nav-more-toggle.active { color: var(--blue); }
+.site-header .nav-more-toggle svg { transition: transform 220ms cubic-bezier(.2, .7, .2, 1); }
+.site-header .nav-more-toggle.is-open svg { transform: rotate(180deg); }
+.site-header .nav-more-toggle.active::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 1px;
+  left: 0;
+  height: 2px;
+  background: var(--sky);
+}
+
+.site-header .nav-more-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  min-width: 232px;
+  padding: 8px;
+  border: 1px solid #d9e7f2;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 24px 48px -18px rgb(18 21 43 / 24%), 0 6px 16px rgb(18 21 43 / 8%);
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(-50%, 8px) scale(.97);
+  transform-origin: top center;
+  transition: opacity 180ms cubic-bezier(.2, .7, .2, 1), transform 200ms cubic-bezier(.2, .7, .2, 1), visibility 0s linear 200ms;
+  z-index: 40;
+}
+.site-header .nav-more-menu.is-open {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, 0) scale(1);
+  transition: opacity 180ms cubic-bezier(.2, .7, .2, 1), transform 200ms cubic-bezier(.2, .7, .2, 1), visibility 0s;
+}
+
+.site-header .nav-more-menu .nav-more-item {
+  display: flex;
+  min-height: 40px;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 9px;
+  color: #283d55;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: color 160ms ease, background-color 160ms ease;
+}
+.site-header .nav-more-menu .nav-more-item:hover,
+.site-header .nav-more-menu .nav-more-item:focus-visible {
+  background: var(--soft);
+  color: var(--blue);
+}
+.site-header .nav-more-menu .nav-more-item.active {
+  background: var(--pale);
+  color: var(--blue);
+}
+.site-header .nav-more-menu .nav-more-item.active::after {
+  content: "";
+  width: 6px;
+  height: 6px;
+  flex: 0 0 auto;
+  margin-left: auto;
+  border-radius: 50%;
+  background: var(--sky);
+}
+
+/* Inside the mobile drawer the six pages appear as ordinary links. */
+.site-header .nav-more-mobile-link { display: none; }
+
+@media (max-width: 1050px) {
+  .site-header .nav-more { display: none; }
+  .site-header .nav-more-mobile-link { display: inline-flex; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-header .nav-more-menu,
+  .site-header .nav-more-toggle svg { transition: none; }
+}
 .home-hero-cinematic {
   position: relative;
   display: flex;
@@ -2481,10 +2817,10 @@ video.hero-image { display: block; }
   pointer-events: none;
 }
 .home-hero-cinematic .home-hero-grid { display: block; }
-.home-hero-cinematic .home-hero-copy { width: min(100%, 650px); max-width: 650px; }
+.home-hero-cinematic .home-hero-copy { width: min(100%, 1000px); max-width: 1000px; }
 .home-hero-cinematic .eyebrow { color: #e3edf5; }
 .home-hero-cinematic .eyebrow::before { background: #25b9ff; }
-.home-hero-cinematic h1 { max-width: 650px; color: #fff; font-size: clamp(52px, 5.2vw, 60px); line-height: 1.06; letter-spacing: -2.5px; text-shadow: 0 2px 20px rgb(0 0 0 / 20%); }
+.home-hero-cinematic h1 { max-width: 1000px; color: #fff; font-size: clamp(46px, 5.2vw, 60px); line-height: 1.06; letter-spacing: -2.5px; text-shadow: 0 2px 20px rgb(0 0 0 / 20%); }
 .home-hero-cinematic h1 span { color: #27b7ff; }
 .home-hero-cinematic .hero-description { color: rgb(255 255 255 / 82%); }
 .home-hero-cinematic .hero-trust { color: rgb(255 255 255 / 76%); }
@@ -2615,16 +2951,118 @@ video.hero-image { display: block; }
 .services-addon-card h3 { margin: 0 0 7px; color: var(--navy); font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 800; }
 .services-addon-card p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.7; }
 .services-specs-section { background: #fff; }
-.ad-specs-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+/* ── Services: "Ad specs, at a glance." ─────────────────────────── */
+.services-specs-section .section-heading { margin-bottom: clamp(30px, 3.6vw, 42px); }
+
+/* Card shell: fine blue edge, quiet layered depth, rounded corners. */
+.ad-specs-wrap {
+  overflow-x: auto;
+  border: 1px solid #d3e3f4;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow:
+    0 24px 46px -24px rgb(18 21 43 / 14%),
+    0 4px 12px rgb(18 21 43 / 4%);
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgb(18 21 43 / 18%) transparent;
+}
 .ad-specs-wrap:focus-visible { outline: 3px solid var(--sky); outline-offset: 3px; }
-.ad-specs-table { width: 100%; min-width: 660px; border-collapse: collapse; text-align: left; }
-.ad-specs-table th, .ad-specs-table td { padding: 16px 18px; border-bottom: 1px solid #eaf1f7; color: #334155; font-size: 12px; line-height: 1.55; vertical-align: top; }
-.ad-specs-table thead th { background: var(--soft); color: var(--navy); font-size: 10px; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; }
+.ad-specs-wrap::-webkit-scrollbar { height: 8px; }
+.ad-specs-wrap::-webkit-scrollbar-track { background: transparent; }
+.ad-specs-wrap::-webkit-scrollbar-thumb { background: rgb(18 21 43 / 16%); border-radius: 999px; }
+
+.ad-specs-table {
+  width: 100%;
+  min-width: 640px;
+  border-collapse: separate;
+  border-spacing: 0;
+  text-align: left;
+}
+
+/* Even cell rhythm, hairline separators, gentle transitions. */
+.ad-specs-table th,
+.ad-specs-table td {
+  padding: 15px 18px 16px;
+  border-bottom: 1px solid #eaf1f7;
+  color: #334155;
+  font-size: 12px;
+  line-height: 1.55;
+  vertical-align: top;
+  background-color: #fff;
+  transition: background-color 160ms cubic-bezier(.33, .7, .4, 1), color 160ms cubic-bezier(.33, .7, .4, 1);
+}
+
+/* Consistent, evenly-weighted columns. */
+.ad-specs-table thead th:nth-child(1) { width: 22%; }
+.ad-specs-table thead th:nth-child(2) { width: 30%; }
+.ad-specs-table thead th:nth-child(3) { width: 24%; }
+.ad-specs-table thead th:nth-child(4) { width: 24%; }
+
+/* Optical padding that meets the card's rounded corners. */
+.ad-specs-table th:first-child { padding-left: 22px; }
+.ad-specs-table th:last-child { padding-right: 22px; }
+
+/* Header: subtle light-blue band, crisp aligned labels. */
+.ad-specs-table thead th {
+  background: linear-gradient(180deg, #f2f8fe 0%, #e7f2fc 100%);
+  color: var(--navy);
+  font-family: 'Manrope', sans-serif;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  border-bottom: 1px solid #d7e5f3;
+}
+
 .ad-specs-table tbody th { color: var(--navy); font-weight: 800; white-space: nowrap; }
-.ad-specs-table tbody tr:last-child th, .ad-specs-table tbody tr:last-child td { border-bottom: 0; }
-.ad-specs-notes { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 17px; }
-.ad-specs-tip, .ad-standards-copy { margin: 0; padding: 17px 18px; border-radius: 9px; background: var(--soft); color: #334155; font-size: 12px; line-height: 1.7; }
-.ad-specs-tip strong { display: block; margin-bottom: 5px; color: var(--blue); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; }
+.ad-specs-table tbody td { color: #3d4b63; }
+.ad-specs-table tbody tr:last-child th,
+.ad-specs-table tbody tr:last-child td { border-bottom: 0; }
+
+/* Highlight only the row under the cursor. */
+@media (hover: hover) {
+  .ad-specs-table tbody tr:hover th,
+  .ad-specs-table tbody tr:hover td { background-color: #f5fafe; }
+}
+
+/* Notes: two matched cards, soft blue, aligned to the table edges
+   with the same 14px gap used inside the grid. */
+.ad-specs-notes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 14px;
+}
+.ad-specs-tip,
+.ad-standards-copy {
+  margin: 0;
+  padding: 17px 19px 18px;
+  border: 1px solid #d3e3f4;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #f5faff 0%, #ecf5fd 100%);
+  box-shadow: 0 10px 20px -14px rgb(18 21 43 / 10%);
+  color: #334155;
+  font-size: 12px;
+  line-height: 1.7;
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+.ad-specs-tip strong {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--blue);
+  font-size: 10px;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ad-specs-table th,
+  .ad-specs-table td,
+  .ad-specs-tip,
+  .ad-standards-copy { transition: none; }
+}
 .services-final-section { padding-top: 0; }
 .services-final-cta { display: flex; align-items: center; justify-content: space-between; gap: 30px; padding: clamp(24px, 4vw, 38px); border: 1px solid var(--line); border-radius: 11px; background: #fff; }
 .services-final-cta h2 { margin: 8px 0; color: var(--navy); font-family: 'Manrope', sans-serif; font-size: clamp(25px, 3.3vw, 35px); line-height: 1.2; }
@@ -2656,8 +3094,13 @@ video.hero-image { display: block; }
   .services-hero-visual img { aspect-ratio: 4 / 3; object-position: 74% center; }
   .service-pack-grid, .services-included-grid, .campaign-package-grid, .services-addon-grid { grid-template-columns: minmax(0, 1fr); }
   .service-pack-card, .campaign-package-card, .services-addon-card { padding: 19px; }
-  .ad-specs-wrap::after { content: "Scroll table horizontally to see all specifications."; display: block; padding: 10px 13px; color: var(--muted); font-size: 10px; }
+  .ad-specs-wrap { border-radius: 12px; }
+  .ad-specs-table th, .ad-specs-table td { padding: 13px 14px 14px; }
+  .ad-specs-table th:first-child { padding-left: 16px; }
+  .ad-specs-table th:last-child { padding-right: 16px; }
+  .ad-specs-wrap::after { content: "Scroll table horizontally to see all specifications."; display: block; padding: 11px 16px 13px; border-top: 1px solid #eaf1f7; background: #f8fbfe; color: var(--muted); font-size: 10px; letter-spacing: .02em; }
   .ad-specs-notes { grid-template-columns: minmax(0, 1fr); }
+  .ad-specs-tip, .ad-standards-copy { padding: 15px 16px 16px; }
   .services-final-cta { padding: 22px; }
   .services-final-actions { align-items: flex-start; flex-direction: column; }
 }

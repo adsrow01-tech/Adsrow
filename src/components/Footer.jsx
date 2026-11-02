@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import { ArrowUpRight, MapPin } from "lucide-react";
-import BrandWordmark from "./BrandWordmark";
 
 function Footer() {
   return (
@@ -8,7 +7,13 @@ function Footer() {
       <div className="container footer-grid">
         <div className="footer-brand-column">
           <Link to="/" className="brand footer-brand" aria-label="Adsrow home">
-            <BrandWordmark />
+            <img
+              className="footer-logo"
+              src="/adsrow-logo-footer.png"
+              alt="Adsrow"
+              width={2065}
+              height={762}
+            />
           </Link>
 
           <p>
