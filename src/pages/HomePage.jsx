@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { ArrowUpRight, ArrowRight, CheckCircle2, Monitor, MapPin, Users, Target, Palette, ChartNoAxesCombined, Building2, UtensilsCrossed, Stethoscope, GraduationCap, Car, ShoppingBag, Eye } from "lucide-react";
-import { SectionHeading, FeatureCard } from "../components/SiteComponents";
+import { SectionHeading, FeatureCard, ComparisonTable } from "../components/SiteComponents";
 import VenueShowcaseCarousel from "../components/VenueShowcaseCarousel";
 import { campaignPackages } from "../lib/siteContent";
 
@@ -178,7 +178,7 @@ function HomePage() {
             <h1>Reach people <span>where they pause.</span></h1>
             <p className="hero-description">60 digital screens across 40 venues: lift lobbies, cafés, gyms, hospitals, malls and offices. Choose your audience, book once and get proof every ad played.</p>
             <div className="hero-actions">
-              <Link className="button" to="/partner-form">Plan My Campaign <ArrowUpRight size={16} /></Link>
+              <Link className="button" to="/partner-form">Start My Campaign <ArrowUpRight size={16} /></Link>
               <Link className="text-link" to="/network">Explore the Network <ArrowRight size={16} /></Link>
             </div>
             <p className="hero-trust"><CheckCircle2 size={17} />One booking · One invoice · One play report</p>
@@ -411,15 +411,10 @@ function HomePage() {
         </div>
       </section>
 
-      <section className="section section-navy">
+      <section className="section section-navy home-comparison-section">
         <div className="container comparison-block home-comparison-block">
           <h2 className="home-heading home-comparison-heading">Same budget. <span>Smarter placement.</span></h2>
-          <div className="comparison-wrap" role="region" aria-label="Advertising format comparison" tabIndex="0">
-            <table className="comparison-table">
-              <thead><tr><th scope="col">What you get</th><th scope="col">Billboard</th><th scope="col">Pamphlets</th><th scope="col">Adsrow</th></tr></thead>
-              <tbody>{homeComparisonRows.map(([benefit, billboard, pamphlets, adsrow]) => <tr key={benefit}><th scope="row">{benefit}</th><td>{billboard}</td><td>{pamphlets}</td><td>{adsrow}</td></tr>)}</tbody>
-            </table>
-          </div>
+          <ComparisonTable rows={homeComparisonRows} highlightAdsrow />
         </div>
       </section>
 
