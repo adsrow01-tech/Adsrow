@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowUpRight, ArrowRight, CheckCircle2, Monitor, MapPin, Users, Target, Palette, ChartNoAxesCombined, Building2, UtensilsCrossed, Stethoscope, GraduationCap, Car, ShoppingBag, Eye } from "lucide-react";
 import { SectionHeading, FeatureCard, ComparisonTable } from "../components/SiteComponents";
 import VenueShowcaseCarousel from "../components/VenueShowcaseCarousel";
+import Adsrow99Banner from "../components/Adsrow99Banner";
 import { campaignPackages } from "../lib/siteContent";
 
 const benefits = [
@@ -193,6 +194,10 @@ function HomePage() {
           <article className="stat-item home-card-interactive" tabIndex={0}><strong>7</strong><span>venue types, from homes to hospitals</span></article>
           <article className="stat-item home-proof-highlight home-card-interactive" tabIndex={0}><strong>Every</strong><span>play logged by screen and date</span></article>
         </div>
+      </section>
+
+      <section className="intro-strip home-proof-strip">
+        <Adsrow99Banner />
       </section>
 
       <section ref={problemSectionRef} className="section home-problem-section">
