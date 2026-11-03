@@ -28,7 +28,6 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 90px;
 }
 
 body {
@@ -1675,7 +1674,7 @@ video.hero-image { display: block; }
 /* Adsrow wordmark navbar */
 
 /* Home page copy v2 layout adjustments */
-.intro-strip.home-proof-strip { padding-top: clamp(50px, 4vw, 60px); border: 0; background: #f5faff; }
+.intro-strip.home-proof-strip { padding-block: clamp(50px, 4vw, 60px); border: 0; background: #f5faff; }
 .home-proof-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); align-items: stretch; gap: 18px; overflow: visible; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
 .home-proof-grid .stat-item { display: flex; min-height: 96px; flex-direction: column; align-items: flex-start; justify-content: center; padding: 15px 17px; border: 1px solid var(--accent-line); border-radius: 14px; background: linear-gradient(165deg, var(--tint-a), var(--tint-b)); text-align: left; cursor: default; transition: color 240ms ease, border-color 240ms ease, box-shadow 240ms ease, transform 240ms ease; will-change: transform; }
 .home-proof-grid .stat-item:nth-child(1) { --accent: #1f7ae0; --tint-a: #e9f4fe; --tint-b: #fbfdff; --accent-line: rgb(31 122 224 / 24%); --edge: #8fc0f2; --glow: rgba(31, 122, 224, .26); }
@@ -2384,14 +2383,12 @@ video.hero-image { display: block; }
 .header-wordmark .wordmark-row { color: var(--sky); }
 .header-wordmark .wordmark-dot { margin-left: 1px; color: var(--mint); }
 .header-wordmark sup { position: relative; top: -11px; margin-left: 2px; color: #104493; font-family: Arial, sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 0; }
-/* Footer logo: the provided PNG renders the full brand wordmark (blue-to-cyan
-   "ads", white "row", cyan dot, ®) directly on the footer navy — no alpha, so
-   it sits flush on the near-identical background without any processing. The
-   canvas carries large baked-in padding around the wordmark, so the image is
-   sized to keep the wordmark at the same visual size as the previous 30px
-   text wordmark (~22px glyphs at 203px wide) and absolutely positioned so its
-   glyphs land exactly where the text logo sat. The link keeps its original
-   ~126x30 footprint, so the column's alignment and spacing do not move. */
+/* Footer logo: white variant of the provided footer PNG — same 2065x762
+   canvas and baked-in padding, so the existing placement keeps its glyphs
+   exactly where the text logo sat. The wordmark is pure white with alpha
+   instead of blue-on-baked-navy, so it reads clearly on the footer navy.
+   The link keeps its original ~126x30 footprint, so the column's alignment
+   and spacing do not move. */
 .footer-brand {
   position: relative;
   width: 126px;
@@ -2640,6 +2637,13 @@ video.hero-image { display: block; }
 .site-header .desktop-contact { order: 3; display: inline-flex; min-height: 38px; flex: 0 0 auto; align-items: center; justify-content: center; gap: 8px; padding: 8px clamp(10px, 1.15vw, 14px); border: 1px solid var(--blue); border-radius: 8px; background: var(--blue); color: #fff; font-size: 12px; font-weight: 800; white-space: nowrap; box-shadow: 0 2px 5px rgb(11 61 145 / 8%); transition: background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease, padding 220ms ease, min-height 220ms ease; }
 .site-header .desktop-contact:hover { border-color: var(--blue-dark); background: var(--blue-dark); box-shadow: 0 5px 12px rgb(11 61 145 / 17%); transform: translateY(-1px); }
 .site-header .mobile-contact { display: none; }
+/* Right-side group: Log in / Sign up (or the account chip when signed in)
+   sits flush against the Partner CTA instead of being spread apart by
+   space-between. The two auto margins split the leftover space, so the nav
+   keeps the middle of the bar and only the right group packs tight. */
+.site-header .nav-links,
+.site-header .header-auth-links,
+.site-header .header-account { margin-left: auto; }
 .site-header .menu-toggle { order: 4; border-color: #c9dfef; background: rgb(255 255 255 / 58%); color: var(--navy); }
 .site-header .menu-toggle:hover { border-color: var(--sky); background: #fff; }
 .site-header .header-brand-cta,
@@ -2663,7 +2667,7 @@ video.hero-image { display: block; }
 @media (max-width: 1050px) {
   .site-header .header-inner { min-height: 64px; }
   .site-header .header-wordmark { font-size: clamp(25px, 3vw, 29px); }
-  .site-header .nav-links { position: absolute; top: 100%; right: 0; left: 0; display: none; max-width: none; flex-direction: column; align-items: stretch; gap: 0; padding: 9px 24px 18px; border-bottom: 1px solid #d3e8f7; background: #EAF6FF; box-shadow: 0 12px 20px rgb(21 65 104 / 9%); opacity: 1; visibility: visible; }
+  .site-header .nav-links { position: absolute; top: 100%; right: 0; left: 0; margin-left: 0; display: none; max-width: none; flex-direction: column; align-items: stretch; gap: 0; padding: 9px 24px 18px; border-bottom: 1px solid #d3e8f7; background: #EAF6FF; box-shadow: 0 12px 20px rgb(21 65 104 / 9%); opacity: 1; visibility: visible; }
   .site-header .nav-links.is-open { display: flex; }
   .site-header .nav-link { min-height: 43px; padding: 13px 2px; border-bottom: 1px solid #dcebf6; font-size: 14px; }
   .site-header .nav-link.active::after { display: none; }
@@ -2689,7 +2693,7 @@ video.hero-image { display: block; }
   .site-header.is-compact .desktop-contact { min-height: 36px; padding-inline: clamp(7px, 2vw, 10px); font-size: clamp(9px, 3vw, 11px); }
 }
 
-/* More ▼ dropdown in the desktop navbar; the six extra pages render flat
+/* More ▼ dropdown in the desktop navbar; the five extra pages render flat
    inside the mobile drawer. Everything here also keeps the compact-scroll
    collapse intact: the panel simply needs room to escape the nav row's
    clipping while it is visible. */
@@ -2785,7 +2789,7 @@ video.hero-image { display: block; }
   background: var(--sky);
 }
 
-/* Inside the mobile drawer the six pages appear as ordinary links. */
+/* Inside the mobile drawer the remaining pages appear as ordinary links. */
 .site-header .nav-more-mobile-link { display: none; }
 
 @media (max-width: 1050px) {
