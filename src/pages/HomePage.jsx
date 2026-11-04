@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import { ArrowUpRight, ArrowRight, CheckCircle2, Monitor, MapPin, Users, Target, Palette, ChartNoAxesCombined, Building2, UtensilsCrossed, Stethoscope, GraduationCap, Car, ShoppingBag, Eye } from "lucide-react";
+import { ArrowUpRight, ArrowRight, CheckCircle2, Monitor, MapPin, Users, Target, Palette, ChartNoAxesCombined, Building2, UtensilsCrossed, Stethoscope, GraduationCap, Car, ShoppingBag, Eye, X, Check } from "lucide-react";
 import { SectionHeading, FeatureCard, ComparisonTable } from "../components/SiteComponents";
 import VenueShowcaseCarousel from "../components/VenueShowcaseCarousel";
 import Adsrow99Banner from "../components/Adsrow99Banner";
@@ -176,13 +176,40 @@ function HomePage() {
         <div className="container home-hero-grid">
           <div className="home-hero-copy">
             <p className="eyebrow"><span className="eyebrow-dot" />VIJAYAWADA'S EVERYDAY SCREEN NETWORK</p>
-            <h1>Reach people <span>where they pause.</span></h1>
-            <p className="hero-description">60 digital screens across 40 venues: lift lobbies, cafés, gyms, hospitals, malls and offices. Choose your audience, book once and get proof every ad played.</p>
+            <h1>Reach <span>20,000+ people</span> a day, right where they pause.</h1>
+            <p className="hero-description">Put your ad on digital screens in lift lobbies, cafés, gyms, hospitals, malls and offices. Pick your audience, book once and get proof every ad played. from ₹99 a day</p>
             <div className="hero-actions">
               <Link className="button" to="/partner-form">Start My Campaign <ArrowUpRight size={16} /></Link>
               <Link className="text-link" to="/network">Explore the Network <ArrowRight size={16} /></Link>
             </div>
             <p className="hero-trust"><CheckCircle2 size={17} />One booking · One invoice · One play report</p>
+          </div>
+        </div>
+      </section>
+
+      <section className="home-quick-steps" aria-label="How Adsrow works in 10 seconds">
+        <div className="container">
+          <div className="home-quick-cards">
+            <article className="home-quick-card home-quick-card-1">
+              <span className="home-quick-card-num" aria-hidden="true"></span>
+              <p className="home-quick-card-eyebrow">Adsrow in 10 seconds</p>
+              <h2 className="home-quick-card-title">Simple as<br />1·2·3</h2>
+            </article>
+            <article className="home-quick-card home-quick-card-2">
+              <span className="home-quick-card-num" aria-hidden="true">01</span>
+              <h3 className="home-quick-card-heading">You choose</h3>
+              <p className="home-quick-card-copy">Pick the venues, areas and dates.</p>
+            </article>
+            <article className="home-quick-card home-quick-card-3">
+              <span className="home-quick-card-num" aria-hidden="true">02</span>
+              <h3 className="home-quick-card-heading">We play</h3>
+              <p className="home-quick-card-copy">Your ad runs on every screen you booked, every 2 minutes.</p>
+            </article>
+            <article className="home-quick-card home-quick-card-4">
+              <span className="home-quick-card-num" aria-hidden="true">03</span>
+              <h3 className="home-quick-card-heading">You see results</h3>
+              <p className="home-quick-card-copy">Get a play report, QR scans and calls.</p>
+            </article>
           </div>
         </div>
       </section>
@@ -202,12 +229,41 @@ function HomePage() {
 
       <section ref={problemSectionRef} className="section home-problem-section">
         <div className="container home-problem-content">
-          <p className="eyebrow home-problem-eyebrow">THE PROBLEM</p>
           <div className="home-problem-grid">
-            <h2>Your customers aren't on the highway. They're in the <span>queue.</span></h2>
             <div className="home-problem-copy-wrap">
-              <p className="home-problem-lead">Billboards catch people at 40 km/h. Pamphlets go in the bin. Social feeds bury your offer under everyone else's.</p>
-              <p className="body-copy home-problem-copy">Your customers spend their day waiting: for the lift, a coffee, a doctor, the checkout. That's where their attention is, and until now nobody owned those moments.</p>
+              <p className="eyebrow home-problem-eyebrow">THE PROBLEM</p>
+              <h2>Your customers aren't looking at billboards. <span>They're waiting in line.</span></h2>
+              <p className="home-problem-lead">Billboards are passed at speed. Pamphlets get thrown away. Social ads get scrolled past. Meanwhile, people spend hours a day waiting, and no one is speaking to them there.</p>
+            </div>
+            <div className="home-problem-cards">
+              <div className="home-problem-card home-problem-card-no">
+                <span className="home-problem-card-icon"><X size={20} aria-hidden="true" /></span>
+                <div className="home-problem-card-text">
+                  <h3>Billboards</h3>
+                  <p>Seen for 2 seconds at 40 km/h</p>
+                </div>
+              </div>
+              <div className="home-problem-card home-problem-card-no">
+                <span className="home-problem-card-icon"><X size={20} aria-hidden="true" /></span>
+                <div className="home-problem-card-text">
+                  <h3>Pamphlets</h3>
+                  <p>Straight into the bin</p>
+                </div>
+              </div>
+              <div className="home-problem-card home-problem-card-no">
+                <span className="home-problem-card-icon"><X size={20} aria-hidden="true" /></span>
+                <div className="home-problem-card-text">
+                  <h3>Social ads</h3>
+                  <p>Scrolled past in a crowded feed</p>
+                </div>
+              </div>
+              <div className="home-problem-card home-problem-card-yes">
+                <span className="home-problem-card-icon"><Check size={20} aria-hidden="true" /></span>
+                <div className="home-problem-card-text">
+                  <h3>Adsrow screens</h3>
+                  <p>Seen at eye level while people wait</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
