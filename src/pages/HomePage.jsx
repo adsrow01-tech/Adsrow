@@ -175,8 +175,8 @@ function HomePage() {
         <div className="container home-hero-grid">
           <div className="home-hero-copy">
             <p className="eyebrow"><span className="eyebrow-dot" />VIJAYAWADA'S EVERYDAY SCREEN NETWORK</p>
-            <h1>Reach people <span>where they pause.</span></h1>
-            <p className="hero-description">60 digital screens across 40 venues: lift lobbies, cafés, gyms, hospitals, malls and offices. Choose your audience, book once and get proof every ad played.</p>
+            <h1>Reach <span>20,000+ people</span> a day, right where they pause.</h1>
+            <p className="hero-description">Put your ad on digital screens in lift lobbies, cafés, gyms, hospitals, malls and offices. Pick your audience, book once and get proof every ad played. from ₹99 a day</p>
             <div className="hero-actions">
               <Link className="button" to="/partner-form">Start My Campaign <ArrowUpRight size={16} /></Link>
               <Link className="text-link" to="/network">Explore the Network <ArrowRight size={16} /></Link>
