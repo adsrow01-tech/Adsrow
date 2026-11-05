@@ -100,7 +100,7 @@ export default function Adsrow99Banner() {
           </div>
 
           <p className="ar99-sub">
-            Your ad plays <b>about 960 times a day</b> in the places your customers wait: lift lobbies, cafés, gyms, hospitals, malls and offices.
+            Your ad plays <b>about 960 times a day</b> in the places your customers wait: lift lobbies, cafés, gyms, malls and offices.
           </p>
 
           <div className="ar99-chips">
@@ -181,19 +181,15 @@ export default function Adsrow99Banner() {
           <span>Apartment lift lobbies</span>
           <span>Cafés &amp; restaurants</span>
           <span>Gyms</span>
-          <span>Hospital receptions</span>
           <span>Shopping malls</span>
           <span>Supermarkets</span>
-          <span>Offices</span>
-          <span>Commercial spaces</span>
+          <span>Offices &amp; commercial spaces</span>
           <span>Apartment lift lobbies</span>
           <span>Cafés &amp; restaurants</span>
           <span>Gyms</span>
-          <span>Hospital receptions</span>
           <span>Shopping malls</span>
           <span>Supermarkets</span>
-          <span>Offices</span>
-          <span>Commercial spaces</span>
+          <span>Offices &amp; commercial spaces</span>
         </div>
       </div>
     </section>
