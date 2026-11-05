@@ -156,7 +156,7 @@ export const campaignPackages = [
   },
   {
     name: "Full Network",
-    screens: "All 60",
+    screens: "Full network",
     duration: "Custom",
     bestFor: "City-wide takeovers by regional and national brands",
     price: null,
