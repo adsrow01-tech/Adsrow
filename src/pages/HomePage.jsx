@@ -1,24 +1,24 @@
 import { Link } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { ArrowUpRight, ArrowRight, CheckCircle2, Monitor, MapPin, Users, Target, Palette, ChartNoAxesCombined, Building2, UtensilsCrossed, Stethoscope, GraduationCap, Car, ShoppingBag, Eye, X, Check } from "lucide-react";
-import { SectionHeading, FeatureCard, ComparisonTable } from "../components/SiteComponents";
-import VenueShowcaseCarousel from "../components/VenueShowcaseCarousel";
+import { FeatureCard, ComparisonTable, SectionHeading } from "../components/SiteComponents";
 import Adsrow99Banner from "../components/Adsrow99Banner";
+import VenueShowcaseCarousel from "../components/VenueShowcaseCarousel";
 import { campaignPackages } from "../lib/siteContent";
 
 const benefits = [
-  { icon: Target, title: "Target by place and mindset", description: "Choose venue types, areas or both. Put a diagnostic offer in hospitals and a protein brand in gyms." },
+  { icon: Target, title: "Target by place and mindset", description: "Pick the type of place, the area, or both. Show a new housing project in apartment communities, a protein brand in gyms and a dinner offer in restaurants." },
   { icon: Monitor, title: "Book once. Play everywhere.", description: "One team handles 40 venues and every screen schedule. You make one call, not forty." },
-  { icon: Palette, title: "Change your ad in minutes", description: "New offer or new price? We update your ad remotely. No reprinting and no remounting." },
-  { icon: ChartNoAxesCombined, title: "See proof. Count leads.", description: "Get a play report by screen and date. Add QR codes and a tracked number to count real enquiries." },
-  { icon: MapPin, title: "From one lift lobby to the whole city", description: "Start with a single lobby or book all 60 screens. Plan exactly the areas where your audience lives, works and shops." },
-  { icon: Eye, title: "Minutes of attention, not seconds", description: "Eye-level screens where people stand still: no feeds to scroll past and no button to skip, so your story plays in full." },
+  { icon: Palette, title: "Update your Ad in minutes", description: "New offer or new price? We update your ad remotely. No reprinting and no remounting." },
+  { icon: ChartNoAxesCombined, title: "Proof you can count", description: "Get a play report by screen and date. Add QR codes and a tracked number to count real enquiries." },
+  { icon: MapPin, title: "From one lift lobby to the whole city", description: "Start with a single lobby. Plan exactly the areas where your audience lives, works and shops." },
+  { icon: Eye, title: "Full attention, no skip button", description: "Eye-level screens where people stand still: no feeds to scroll past and no button to skip, so your story plays in full." },
 ];
 
 const categories = [
   { icon: Building2, title: "Real estate", label: "Homes · Offices", description: "Fill site visits from families at home and professionals at work." },
   { icon: UtensilsCrossed, title: "Restaurants & food brands", label: "Homes · Offices · Malls", description: "Win the ‘what’s for dinner?’ decision before it’s made." },
-  { icon: Stethoscope, title: "Clinics, labs & pharmacies", label: "Hospitals · Gyms · Homes", description: "Reach health-conscious people at the right moment." },
+  { icon: Stethoscope, title: "Clinics, labs & pharmacies", label: "Gyms · Homes", description: "Reach health-conscious people at the right moment." },
   { icon: GraduationCap, title: "Schools & coaching", label: "Homes · Malls", description: "Talk to parents before admission season begins." },
   { icon: Car, title: "Auto dealers", label: "Offices · Malls · Homes", description: "Book test drives with buyers who have time to think." },
   { icon: ShoppingBag, title: "Retail & FMCG", label: "Supermarkets · Malls · Cafés", description: "Be the last brand shoppers see before they choose." },
@@ -177,7 +177,7 @@ function HomePage() {
           <div className="home-hero-copy">
             <p className="eyebrow"><span className="eyebrow-dot" />VIJAYAWADA'S EVERYDAY SCREEN NETWORK</p>
             <h1>Reach <span>20,000+ people</span> a day, right where they pause.</h1>
-            <p className="hero-description">Put your ad on digital screens in lift lobbies, cafés, gyms, hospitals, malls and offices. Pick your audience, book once and get proof every ad played. from ₹99 a day</p>
+            <p className="hero-description">Put your ad on digital screens in lift lobbies, cafés, gyms, hospitals, malls and offices. Pick your audience, book once and get proof every ad played, from ₹99 a day.</p>
             <div className="hero-actions">
               <Link className="button" to="/partner-form">Start My Campaign <ArrowUpRight size={16} /></Link>
               <Link className="text-link" to="/network">Explore the Network <ArrowRight size={16} /></Link>
@@ -216,10 +216,9 @@ function HomePage() {
 
       <section className="intro-strip home-proof-strip">
         <div ref={proofGridRef} className={`container stats-grid home-proof-grid ${prefersReducedMotion ? "is-reduced" : "is-motion"}`}>
-          <article className="stat-item home-card-interactive" tabIndex={0}><strong>60</strong><span>digital screens</span></article>
-          <article className="stat-item home-card-interactive" tabIndex={0}><strong>40</strong><span>venues across the city</span></article>
-          <article className="stat-item home-card-interactive" tabIndex={0}><strong>7</strong><span>venue types, from homes to hospitals</span></article>
-          <article className="stat-item home-proof-highlight home-card-interactive" tabIndex={0}><strong>Every</strong><span>play logged by screen and date</span></article>
+          <article className="stat-item home-card-interactive" tabIndex={0}><strong>20,000+</strong><span>daily audience</span></article>
+          <article className="stat-item home-card-interactive" tabIndex={0}><strong>75,000+</strong><span>monthly reach</span></article>
+          <article className="stat-item home-card-interactive" tabIndex={0}><strong>8.5 lakh+</strong><span>monthly ad views</span></article>
         </div>
       </section>
 
@@ -274,14 +273,29 @@ function HomePage() {
           <div className="home-network-intro">
             <p className="eyebrow">THE ADSROW NETWORK</p>
             <h2>Not where they pass. <span>Where they pause.</span></h2>
-            <p className="home-network-description">We put screens where people stand still: at eye level, for minutes not seconds. Then we connect every screen into one network you can book in a single call. Reach families at home in the morning, professionals at work by noon and shoppers at the checkout by evening. One campaign covers all of it.</p>
+            <p className="home-network-description">We install screens where people stand still, then connect them into one network you can book with a single call. Morning at home, noon at work, evening at the checkout: one campaign covers it all.</p>
           </div>
-          <SectionHeading
-            className="home-section-heading"
-            title={<>40 venues. <span>Seven moments</span> that matter.</>}
-          />
+          <div className="home-network-cards">
+            <div className="home-network-card">
+              <div className="home-network-card-label">MORNING</div>
+              <div className="home-network-card-desc">Families in lift lobbies</div>
+            </div>
+            <div className="home-network-card">
+              <div className="home-network-card-label">NOON</div>
+              <div className="home-network-card-desc">Professionals in offices and cafés</div>
+            </div>
+            <div className="home-network-card">
+              <div className="home-network-card-label">EVENING</div>
+              <div className="home-network-card-desc">Shoppers, gym-goers and patients</div>
+            </div>
+          </div>
+          <div className="home-network-venues">
+            <h2>Home. Work. Coffee. Workout. <span>Your ad is part of their routine.</span></h2>
+            <p className="home-venues-sub">Choose one type of place or mix them all. Each one reaches a different audience in a different frame of mind.</p>
+          </div>
         </div>
         <VenueShowcaseCarousel />
+
         <div className="container"><div className="center-link"><Link className="text-link" to="/network">See the full network: venues, areas and screen photos <ArrowRight size={16} /></Link></div></div>
       </section>
 
@@ -408,7 +422,7 @@ function HomePage() {
 
       <section ref={benefitsSectionRef} className="section section-soft home-benefits-section">
         <div className="container">
-          <div className="home-benefits-heading"><SectionHeading centered className="home-section-heading" description="Six reasons to plan your next campaign on Adsrow screens." title={<>One network. <span>Every way</span> to target.</>} /></div>
+          <div className="home-benefits-heading"><SectionHeading centered className="home-section-heading" description="Everything you need to reach the right people, and prove it." title={<>One network. <span>Six</span> reasons it works harder.</>} /></div>
           <div className="feature-grid home-benefits-grid">
             {benefits.map(({ icon: Icon, ...benefit }, index) => (
               <article
@@ -440,7 +454,7 @@ function HomePage() {
 
       <section ref={advertisersSectionRef} className="section section-soft home-advertisers-section">
         <div className="container">
-          <SectionHeading eyebrow="WHO ADVERTISES WITH US" className="home-section-heading" title={<>Match your message to the <span>moment.</span></>} />
+          <SectionHeading eyebrow="WHO ADVERTISES WITH US" className="home-section-heading" description="Match your message to the place your buyers are in." title={<>Built for businesses that need <span>local customers.</span></>} />
           <div className="feature-grid feature-grid-three home-advertisers-grid">
             {categories.map(({ icon: Icon, ...category }, index) => (
               <article
@@ -491,7 +505,7 @@ function HomePage() {
               >
                 <span className="home-package-index" aria-hidden="true">{`0${index + 1}`}</span>
                 <h3>{name}</h3>
-                <p>{screens === "All 60" ? "All 60 screens" : `${screens} screens`} · {duration}</p>
+                <p>{screens === "Full network" ? "Full network" : `${screens} screens`} · {duration}</p>
                 <strong className="home-price-placeholder">{customQuote ? "Custom quote" : price ? `From ₹${price}` : "Price on request"}</strong>
               </article>
             ))}
@@ -503,11 +517,19 @@ function HomePage() {
       <section className="host-banner">
         <div className="container host-banner-inner">
           <div>
-            <p className="eyebrow eyebrow-light">FOR VENUE OWNERS AND MANAGERS</p>
-            <h2 className="home-heading home-heading-on-dark">Own a café, gym, clinic or building? <span>Host a screen.</span></h2>
-            <p>We install and maintain the screen. You get space for your own offers and notices.</p>
+            <p className="eyebrow eyebrow-light">FOR VENUE OWNERS</p>
+            <h2 className="home-heading home-heading-on-dark">Turn your space into a screen that works for you.</h2>
+            <p>We install and maintain the screen, and you get space for your own offers and notices.</p>
+            <ul className="host-venue-chips" aria-label="Venue types that host Adsrow screens">
+              <li>Cafés</li>
+              <li>Gyms</li>
+              <li>Clinics</li>
+              <li>Malls</li>
+              <li>Offices</li>
+              <li>Apartments</li>
+            </ul>
           </div>
-          <Link className="button button-white" to="/host-a-screen">Host a Screen <ArrowUpRight size={16} /></Link>
+          <Link className="button button-mint" to="/host-a-screen">Host a Screen <ArrowUpRight size={16} /></Link>
         </div>
       </section>
 
@@ -515,7 +537,7 @@ function HomePage() {
         <div className="container simple-cta ads-card ads-card-interactive ads-accent-1">
           <div>
             <p className="eyebrow">READY TO GET STARTED?</p>
-            <h2 className="home-heading">Tell us who you want to reach. We'll show you <span>where they pause.</span></h2>
+            <h2 className="home-heading">Tell us who you want to reach. We'll put you <span>in front of them.</span></h2>
             <p>Get a free plan with venues, a schedule and a clear price. No obligation.</p>
           </div>
           <div className="cta-actions">
