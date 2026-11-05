@@ -5,7 +5,6 @@ import {
   Building2Icon as Building2,
   CoffeeIcon as Coffee,
   DumbbellIcon as Dumbbell,
-  HeartPulseIcon as HeartPulse,
   ShoppingBagIcon as ShoppingBag,
   ShoppingBasketIcon as ShoppingBasket,
   BriefcaseIcon as Briefcase,
