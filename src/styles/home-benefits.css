@@ -1,0 +1,379 @@
+.home-benefits-section {
+  background: #f5faff;
+  display: flex;
+  height: calc(100svh - 76px);
+  min-height: 0;
+  align-items: center;
+  padding-block: 14px;
+  box-sizing: border-box;
+}
+
+.home-benefits-section > .container {
+  width: min(1000px, calc(100% - 48px));
+  margin-inline: auto;
+}
+
+.home-benefits-heading {
+  max-width: none;
+  margin: 0 auto;
+}
+
+.home-benefits-heading .section-heading {
+  margin: 0 0 8px;
+  max-width: none;
+}
+
+.home-benefits-heading .section-heading h2 {
+  margin: 0 0 6px;
+  font-size: clamp(30px, 3.1vw, 42px);
+  line-height: 1.12;
+}
+
+.home-benefits-heading .section-heading .section-description {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.home-benefits-grid {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-areas:
+    "featured featured featured featured two two"
+    "featured featured featured featured three three"
+    "four four five five six six";
+  grid-template-rows: repeat(3, minmax(clamp(132px, 15vh, 144px), auto));
+  gap: 6px;
+}
+
+.home-benefits-grid .home-benefit-card {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+  overflow: hidden;
+  padding: 10px;
+  border: 1px solid var(--accent-line);
+  border-radius: 16px;
+  background: linear-gradient(165deg, var(--tint-a) 0%, var(--tint-b) 100%);
+  box-shadow: 0 8px 20px rgb(18 21 43 / 5%);
+  transition: transform 240ms cubic-bezier(.2,.7,.2,1), border-color 240ms ease, box-shadow 240ms ease;
+  will-change: transform;
+}
+
+.home-benefits-grid .home-benefit-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.home-benefits-grid .benefit-number {
+  display: block;
+  margin: 0;
+  color: var(--accent);
+  font-family: 'Manrope', sans-serif;
+  font-size: 27px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -1.5px;
+}
+
+.home-benefits-grid .home-benefit-card h3 {
+  margin: 2px 0 2px;
+  color: #111827;
+  font-family: 'Manrope', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.home-benefits-grid .home-benefit-card p {
+  margin: 0;
+  color: #111827;
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: var(--p-weight);
+  line-height: var(--p-line);
+}
+
+.home-benefits-grid .home-card-decor {
+  position: absolute;
+  z-index: 0;
+  right: -28px;
+  bottom: -30px;
+  width: clamp(64px, 34%, 96px);
+  height: auto;
+  color: var(--accent);
+  opacity: .12;
+  pointer-events: none;
+  transition: transform 260ms cubic-bezier(.2,.7,.2,1), opacity 260ms ease, color 260ms ease;
+}
+
+.home-benefits-grid .home-benefit-card-2 { grid-area: two; --accent: #7c5cf0; --tint-a: #f4f1fe; --tint-b: #fbfaff; --accent-line: rgb(124 92 240 / 20%); --edge: #b9a6f6; --glow: rgba(124, 92, 240, .28); }
+.home-benefits-grid .home-benefit-card-3 { grid-area: three; --accent: #f59e0b; --tint-a: #fdf5e4; --tint-b: #fffdf6; --accent-line: rgb(245 158 11 / 24%); --edge: #f3c469; --glow: rgba(245, 158, 11, .28); }
+.home-benefits-grid .home-benefit-card-4 { grid-area: four; --accent: #ef4444; --tint-a: #fdeeed; --tint-b: #fffafa; --accent-line: rgb(239 68 68 / 20%); --edge: #f29b9b; --glow: rgba(239, 68, 68, .26); }
+.home-benefits-grid .home-benefit-card-5 { grid-area: five; --accent: #10b981; --tint-a: #ebfaf1; --tint-b: #f8fdf9; --accent-line: rgb(16 185 129 / 22%); --edge: #72d8b2; --glow: rgba(16, 185, 129, .28); }
+.home-benefits-grid .home-benefit-card-6 { grid-area: six; --accent: #5f6df2; --tint-a: #eef1fe; --tint-b: #fafbff; --accent-line: rgb(95 109 242 / 22%); --edge: #a5aff8; --glow: rgba(95, 109, 242, .3); }
+
+.home-benefits-grid .home-benefit-card-1 {
+  grid-area: featured;
+  --accent: #fff;
+  min-height: 0;
+  gap: 6px;
+  padding: clamp(12px, .9vw, 14px);
+  border: 1px solid rgb(255 255 255 / 24%);
+  background:
+    radial-gradient(120% 100% at 10% -4%, rgb(255 255 255 / 26%) 0%, transparent 52%),
+    linear-gradient(140deg, #38b6fa 0%, #2179f2 44%, #1a4ede 100%);
+  box-shadow: 0 20px 40px -12px rgb(23 82 214 / 36%);
+}
+
+.home-benefits-grid .home-benefit-card-1 .benefit-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 11px;
+  border: 1px solid rgb(255 255 255 / 26%);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 14%);
+  color: #eaf6ff;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  line-height: 1.1;
+}
+
+.home-benefits-grid .home-benefit-card-1 .benefit-number {
+  margin-top: 6px;
+  color: rgb(255 255 255 / 32%);
+  font-size: 27px;
+  font-weight: 700;
+  letter-spacing: -1.5px;
+}
+
+.home-benefits-grid .home-benefit-card-1 h3 {
+  max-width: 20ch;
+  margin-top: 4px;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -1px;
+}
+
+.home-benefits-grid .home-benefit-card-1 p {
+  max-width: 45ch;
+  color: var(--text-on-dark);
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: var(--p-weight);
+  line-height: var(--p-line);
+}
+
+.home-benefits-grid .home-benefit-card-1 .benefit-meta {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: auto;
+  padding-top: 6px;
+  color: rgb(255 255 255 / 94%);
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.benefit-badge-dot {
+  width: 6px;
+  height: 6px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: #7fe7d6;
+  box-shadow: 0 0 0 3px rgb(127 231 214 / 20%);
+}
+
+.benefit-meta-dots {
+  display: inline-flex;
+}
+
+.benefit-meta-dots i {
+  width: 12px;
+  height: 12px;
+  border: 2px solid rgb(255 255 255 / 35%);
+  border-radius: 50%;
+}
+
+.benefit-meta-dots i:nth-child(1) {
+  background: #8ad4f8;
+}
+
+.benefit-meta-dots i:nth-child(2) {
+  margin-left: -5px;
+  background: #4fe3c1;
+}
+
+.benefit-meta-dots i:nth-child(3) {
+  margin-left: -5px;
+  background: #9db1ff;
+}
+
+.home-benefits-grid .home-benefit-card-1 .home-card-decor {
+  right: -15px;
+  bottom: -26px;
+  width: clamp(96px, 29%, 128px);
+  color: #fff;
+  opacity: .15;
+}
+
+.home-benefits-grid .home-benefit-card:hover .home-card-decor,
+.home-benefits-grid .home-benefit-card:focus-visible .home-card-decor {
+  opacity: .22;
+  transform: translate(-4px, -4px);
+}
+
+.home-benefits-grid .home-benefit-card:hover,
+.home-benefits-grid .home-benefit-card:focus-visible {
+  transform: translateY(-5px) scale(1.008);
+  border-color: var(--edge);
+  box-shadow: 0 20px 36px -12px var(--glow), 0 8px 16px rgb(18 21 43 / 8%);
+}
+
+.home-benefits-section.is-entered .home-benefit-card {
+  animation: home-benefit-card-enter 400ms cubic-bezier(.2,.7,.2,1) both;
+}
+
+.home-benefits-section.is-entered .home-benefit-card:nth-child(2) { animation-delay: 60ms; }
+.home-benefits-section.is-entered .home-benefit-card:nth-child(3) { animation-delay: 120ms; }
+.home-benefits-section.is-entered .home-benefit-card:nth-child(4) { animation-delay: 180ms; }
+.home-benefits-section.is-entered .home-benefit-card:nth-child(5) { animation-delay: 240ms; }
+.home-benefits-section.is-entered .home-benefit-card:nth-child(6) { animation-delay: 300ms; }
+
+@keyframes home-benefit-card-enter {
+  from { opacity: 0; translate: 0 10px; }
+  to { opacity: 1; translate: 0 0; }
+}
+
+@media (max-width: 1050px) {
+  .home-benefits-section {
+    height: auto;
+    min-height: 0;
+    padding-block: 38px;
+  }
+
+  .home-benefits-heading .section-heading {
+    margin-bottom: 12px;
+  }
+
+  .home-benefits-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      "featured featured"
+      "two three"
+      "four five"
+      "six six";
+    grid-template-rows: auto;
+    gap: 10px;
+  }
+
+  .home-benefits-grid .home-benefit-card {
+    min-height: 145px;
+    padding: 13px;
+  }
+
+  .home-benefits-grid .home-benefit-card-1 {
+    min-height: 0;
+    padding: 18px;
+  }
+
+  .home-benefits-grid .home-benefit-card-1 .benefit-number {
+    font-size: 30px;
+  }
+
+  .home-benefits-grid .home-benefit-card-1 h3 {
+    font-size: 19px;
+  }
+
+  .home-benefits-grid .home-benefit-card-1 p {
+    font-size: var(--p-card);
+  }
+}
+
+@media (max-width: 767px) {
+  .home-benefits-grid {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "featured"
+      "two"
+      "three"
+      "four"
+      "five"
+      "six";
+    gap: 12px;
+    grid-template-rows: auto;
+  }
+
+  .home-benefits-grid .home-benefit-card {
+    min-height: 0;
+    padding: 16px;
+  }
+
+  .home-benefits-grid .home-benefit-card-1 {
+    min-height: 0;
+    padding: 18px;
+  }
+
+  .home-benefits-grid .home-benefit-card-1 .benefit-number {
+    font-size: 30px;
+  }
+
+  .home-benefits-grid .home-benefit-card-1 h3 {
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .home-benefits-grid .home-benefit-card-1 p {
+    font-size: var(--p-card);
+  }
+
+  .home-benefits-grid .home-benefit-card h3 {
+    font-size: 18px;
+  }
+
+  .home-benefits-grid .home-benefit-card p {
+    font-size: var(--p-card);
+  }
+}
+
+@media (max-width: 480px) {
+  .home-benefits-grid {
+    gap: 10px;
+  }
+
+  .home-benefits-grid .home-benefit-card {
+    padding: 14px;
+  }
+
+  .home-benefits-grid .home-benefit-card-1 {
+    padding: 16px;
+  }
+
+  .home-benefits-grid .home-benefit-card-1 .benefit-number {
+    font-size: 30px;
+  }
+
+  .home-benefits-grid .home-benefit-card-1 h3 {
+    font-size: 18px;
+  }
+
+  .home-benefits-grid .home-benefit-card-1 p {
+    font-size: var(--p-card);
+  }
+
+  .home-benefits-grid .home-benefit-card h3 {
+    font-size: 18px;
+  }
+
+  .home-benefits-grid .home-benefit-card p {
+    font-size: var(--p-card);
+  }
+}

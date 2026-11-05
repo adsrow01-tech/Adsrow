@@ -1,9 +1,10 @@
 import { Link } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import { ArrowUpRight, ArrowRight, CheckCircle2, Monitor, MapPin, Users, Target, Palette, ChartNoAxesCombined, Building2, UtensilsCrossed, Stethoscope, GraduationCap, Car, ShoppingBag, Eye, X, Check } from "lucide-react";
+import { ArrowUpRight, ArrowRight, Monitor, MapPin, Users, Target, Palette, ChartNoAxesCombined, Building2, UtensilsCrossed, Stethoscope, GraduationCap, Car, ShoppingBag, Eye, X, Check } from "lucide-react";
 import { FeatureCard, ComparisonTable, SectionHeading } from "../components/SiteComponents";
 import Adsrow99Banner from "../components/Adsrow99Banner";
 import VenueShowcaseCarousel from "../components/VenueShowcaseCarousel";
+import HomeHero from "../components/HomeHero";
 import { campaignPackages } from "../lib/siteContent";
 
 const benefits = [
@@ -155,35 +156,13 @@ function HomePage() {
 
   return (
     <>
-      <section className="home-hero home-hero-cinematic">
-        <div className="home-hero-media" aria-hidden="true">
-          {!prefersReducedMotion && (
-            <video
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="auto"
-              fetchPriority="high"
-              width="1376"
-              height="768"
-              tabIndex="-1"
-              src="/videos/download.mp4"
-            />
-          )}
-          <span className="home-hero-scrim" />
-        </div>
-        <div className="container home-hero-grid">
-          <div className="home-hero-copy">
-            <p className="eyebrow"><span className="eyebrow-dot" />VIJAYAWADA'S EVERYDAY SCREEN NETWORK</p>
-            <h1>Reach <span>20,000+ people</span> a day, right where they pause.</h1>
-            <p className="hero-description">Put your ad on digital screens in lift lobbies, cafés, gyms, hospitals, malls and offices. Pick your audience, book once and get proof every ad played, from ₹99 a day.</p>
-            <div className="hero-actions">
-              <Link className="button" to="/partner-form">Start My Campaign <ArrowUpRight size={16} /></Link>
-              <Link className="text-link" to="/network">Explore the Network <ArrowRight size={16} /></Link>
-            </div>
-            <p className="hero-trust"><CheckCircle2 size={17} />One booking · One invoice · One play report</p>
-          </div>
+      <HomeHero />
+
+      <section className="intro-strip home-proof-strip home-stats-strip">
+        <div ref={proofGridRef} className={`container stats-grid home-proof-grid ${prefersReducedMotion ? "is-reduced" : "is-motion"}`}>
+          <article className="stat-item home-card-interactive" tabIndex={0}><strong>20,000+</strong><span>daily audience</span></article>
+          <article className="stat-item home-card-interactive" tabIndex={0}><strong>75,000+</strong><span>monthly reach</span></article>
+          <article className="stat-item home-card-interactive" tabIndex={0}><strong>8.5 lakh+</strong><span>monthly ad views</span></article>
         </div>
       </section>
 
@@ -192,7 +171,7 @@ function HomePage() {
           <div className="home-quick-cards">
             <article className="home-quick-card home-quick-card-1">
               <span className="home-quick-card-num" aria-hidden="true"></span>
-              <p className="home-quick-card-eyebrow">Adsrow in 10 seconds</p>
+              <p className="home-quick-card-eyebrow">ADSROW IN 10 SECONDS</p>
               <h2 className="home-quick-card-title">Simple as<br />1·2·3</h2>
             </article>
             <article className="home-quick-card home-quick-card-2">
@@ -211,14 +190,6 @@ function HomePage() {
               <p className="home-quick-card-copy">Get a play report, QR scans and calls.</p>
             </article>
           </div>
-        </div>
-      </section>
-
-      <section className="intro-strip home-proof-strip">
-        <div ref={proofGridRef} className={`container stats-grid home-proof-grid ${prefersReducedMotion ? "is-reduced" : "is-motion"}`}>
-          <article className="stat-item home-card-interactive" tabIndex={0}><strong>20,000+</strong><span>daily audience</span></article>
-          <article className="stat-item home-card-interactive" tabIndex={0}><strong>75,000+</strong><span>monthly reach</span></article>
-          <article className="stat-item home-card-interactive" tabIndex={0}><strong>8.5 lakh+</strong><span>monthly ad views</span></article>
         </div>
       </section>
 
@@ -278,15 +249,15 @@ function HomePage() {
           <div className="home-network-cards">
             <div className="home-network-card">
               <div className="home-network-card-label">MORNING</div>
-              <div className="home-network-card-desc">Families in lift lobbies</div>
+              <div className="home-network-card-desc"><strong>Families in lift lobbies</strong></div>
             </div>
             <div className="home-network-card">
               <div className="home-network-card-label">NOON</div>
-              <div className="home-network-card-desc">Professionals in offices and cafés</div>
+              <div className="home-network-card-desc">Professionals in offices & cafés</div>
             </div>
             <div className="home-network-card">
               <div className="home-network-card-label">EVENING</div>
-              <div className="home-network-card-desc">Shoppers, gym-goers and patients</div>
+              <div className="home-network-card-desc">Shoppers & gym-goers </div>
             </div>
           </div>
         </div>

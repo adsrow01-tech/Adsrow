@@ -13,9 +13,9 @@ function NetworkPage() {
         <div className="container network-hero-grid">
           <div className="network-hero-copy">
             <p className="eyebrow">OUR NETWORK</p>
-            <h1>60 screens. 40 venues. Seven ways to reach Vijayawada.</h1>
+            <h1>60 screens. 40 venues. Six ways to reach Vijayawada.</h1>
             <p className="page-hero-description">
-              From apartment lifts to hospital receptions, our screens sit where people wait. Ask for the full venue list with screen photos.
+              Our screens sit where people wait. Ask for the full venue list with screen photos.
             </p>
             <Link className="button" to={enquiryLink}>
               Get the Venue List <ArrowUpRight size={16} />
@@ -32,7 +32,7 @@ function NetworkPage() {
       <section className="section network-venues-section">
         <div className="container">
           <SectionHeading
-            eyebrow="SEVEN VENUE TYPES"
+            eyebrow="SIX VENUE TYPES"
             title="Every venue, a different mindset."
             description="Choose the places that fit your audience. Ask the Adsrow team for current venue availability and screen photos."
           />

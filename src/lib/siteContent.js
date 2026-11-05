@@ -9,7 +9,6 @@ import {
   Building2Icon as Building2,
   CoffeeIcon as Coffee,
   DumbbellIcon as Dumbbell,
-  HeartPulseIcon as HeartPulse,
   ShoppingBagIcon as ShoppingBag,
   ShoppingBasketIcon as ShoppingBasket,
   BriefcaseIcon as BriefcaseBusiness,
@@ -51,13 +50,6 @@ export const venueCategories = [
     summary: "Health-focused, high-routine regulars.",
   },
   {
-    icon: HeartPulse,
-    title: "Hospital reception areas",
-    audience: "Patients and families, seated and attentive for long periods.",
-    bestFor: "Pharmacies, labs, health insurance, wellness and specialist care.",
-    summary: "Patients and families, waiting and attentive.",
-  },
-  {
     icon: ShoppingBag,
     title: "Shopping malls",
     audience: "Shoppers with time and money to spend, especially at weekends.",
@@ -89,7 +81,7 @@ export const audiencePacks = [
   {
     title: "Wellness Pack",
     category: "Health & wellness",
-    description: "Hospital receptions and gyms. Best for clinics, labs, pharmacies, insurance and nutrition brands.",
+    description: "Gyms. Best for clinics, labs, pharmacies, insurance and nutrition brands.",
   },
   {
     title: "Shopper Pack",
@@ -208,7 +200,7 @@ export const addOnAvailabilityNote = "Add-on availability depends on the campaig
 export const advertiserFaqs = [
   {
     question: "Where are your screens?",
-    answer: "60 screens across 40 venues in Vijayawada: apartment lift lobbies, cafés and restaurants, gyms, hospital receptions, malls, supermarkets, offices and commercial spaces.",
+    answer: "60 screens across 40 venues in Vijayawada: apartment lift lobbies, cafés and restaurants, gyms, malls, supermarkets, offices and commercial spaces.",
   },
   {
     question: "How much does a campaign cost?",
@@ -224,7 +216,7 @@ export const advertiserFaqs = [
   },
   {
     question: "Can I mix venue types in one campaign?",
-    answer: "Yes. For example, run in hospitals and gyms together to reach health-focused people across the city.",
+    answer: "Yes. For example, run in gyms together to reach health-focused people across the city.",
   },
   {
     question: "What kind of ad do I need?",
@@ -256,7 +248,7 @@ export const advertiserFaqs = [
   },
   {
     question: "Are any ads not allowed?",
-    answer: "Every ad is reviewed before it goes live. Some venues, such as hospitals, have stricter rules, and we'll tell you up front.",
+    answer: "Every ad is reviewed before it goes live. Some venues have stricter rules, and we'll tell you up front.",
   },
 ];
 
@@ -269,7 +261,7 @@ export const venuePartnerFaqs = [
   },
   {
     question: "Which venues can host?",
-    answer: "Apartment communities, cafés, restaurants, gyms, hospitals, clinics, malls, supermarkets, offices and commercial buildings with regular footfall.",
+    answer: "Apartment communities, cafés, restaurants, gyms, malls, supermarkets, offices and commercial buildings with regular footfall.",
   },
   {
     question: "How do we start?",
@@ -294,11 +286,6 @@ export const hostScreenBenefits = [
     icon: Dumbbell,
     title: "Gyms",
     description: "Show class timetables, trainer offers and membership deals between workouts.",
-  },
-  {
-    icon: HeartPulse,
-    title: "Hospitals & clinics",
-    description: "Share health tips, departments and visiting information. Waiting times feel shorter.",
   },
   {
     icon: ShoppingBag,
