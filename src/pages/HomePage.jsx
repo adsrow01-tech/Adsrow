@@ -289,6 +289,11 @@ function HomePage() {
               <div className="home-network-card-desc">Shoppers, gym-goers and patients</div>
             </div>
           </div>
+        </div>
+      </section>
+
+      <section className="section home-venues-section" aria-label="Venue selection">
+        <div className="container">
           <div className="home-network-venues">
             <h2>Home. Work. Coffee. Workout. <span>Your ad is part of their routine.</span></h2>
             <p className="home-venues-sub">Choose one type of place or mix them all. Each one reaches a different audience in a different frame of mind.</p>
