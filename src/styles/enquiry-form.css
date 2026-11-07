@@ -19,14 +19,14 @@
 
 .enquiry-header h2 {
   font-family: 'Manrope', sans-serif;
-  font-size: 28px;
-  font-weight: 700;
+  font-size: max(36px, 28px);
+  font-weight: var(--weight-section-headings);
   color: #12152B;
   margin: 0 0 8px;
 }
 
 .enquiry-header p {
-  font-size: 16px;
+  font-size: var(--p-lg);
   color: #334155;
   line-height: 1.6;
   margin: 0;
@@ -167,13 +167,14 @@
 .enquiry-success h3 {
   color: #16a34a;
   margin: 0 0 8px;
-  font-size: 18px;
+  font-size: var(--card-heading);
+  font-weight: var(--weight-card-headings);
 }
 
 .enquiry-success p {
   color: #15803d;
   margin: 0;
-  font-size: 14px;
+  font-size: var(--p-md);
 }
 
 /* Package Enquiry Section */
@@ -207,15 +208,15 @@
 
 .package-enquiry-header h2 {
   font-family: 'Manrope', sans-serif;
-  font-size: 32px;
-  font-weight: 700;
+  font-size: max(36px, 32px);
+  font-weight: var(--weight-section-headings);
   color: #12152B;
   margin: 0 0 16px;
   line-height: 1.3;
 }
 
 .package-enquiry-header p {
-  font-size: 17px;
+  font-size: var(--p-md);
   color: #334155;
   line-height: 1.7;
   margin: 0 0 24px;
@@ -265,14 +266,14 @@
 
 .sidebar-card h3 {
   font-family: 'Manrope', sans-serif;
-  font-size: 20px;
-  font-weight: 600;
+  font-size: var(--card-heading);
+  font-weight: var(--weight-card-headings);
   color: #12152B;
   margin: 0 0 12px;
 }
 
 .sidebar-card p {
-  font-size: 15px;
+  font-size: var(--supporting-text);
   color: #334155;
   line-height: 1.6;
   margin: 0 0 20px;
@@ -336,7 +337,7 @@
   }
   
   .package-enquiry-header h2 {
-    font-size: 28px;
+    font-size: 36px;
   }
   
   .package-enquiry-highlights {
@@ -360,7 +361,7 @@
   }
   
   .enquiry-header h2 {
-    font-size: 24px;
+    font-size: 36px;
   }
   
   .enquiry-submit-btn {

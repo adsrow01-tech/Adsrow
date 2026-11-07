@@ -83,9 +83,9 @@
 
 .card-deck-arrow:hover { background: #f3f7fb; transform: scale(1.05); }
 .card-deck-copy { min-width: 0; }
-.card-deck-copy h3 { margin: 0; font-family: Georgia, "Times New Roman", serif; font-size: clamp(25px, 3vw, 32px); font-weight: 500; line-height: 1.1; letter-spacing: -.5px; }
-.card-deck-copy p { margin: 8px 0 0; color: #334155; font-family: "DM Sans", sans-serif; font-size: 16px; line-height: 1.5; }
-.card-deck-count { display: flex; align-items: baseline; gap: 9px; color: #96a0ad; font-family: Georgia, "Times New Roman", serif; font-size: 15px; letter-spacing: 2px; white-space: nowrap; }
+.card-deck-copy h3 { margin: 0; font-family: 'Manrope', sans-serif; font-size: max(20px, clamp(25px, 3vw, 32px)); font-weight: var(--weight-card-headings); line-height: 1.1; letter-spacing: -.5px; }
+.card-deck-copy p { margin: 8px 0 0; color: #334155; font-family: var(--font-body); font-size: var(--card-paragraph); line-height: var(--p-line); }
+.card-deck-count { display: flex; align-items: baseline; gap: 9px; color: #96a0ad; font-family: 'Manrope', sans-serif; font-size: 15px; letter-spacing: 2px; white-space: nowrap; }
 .card-deck-count strong { color: #12152B; font-weight: 500; }
 
 @media (max-width: 680px) {

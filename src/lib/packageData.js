@@ -51,7 +51,6 @@ export const audiencePacks = [
     dailyPrice: 399,
     fit: ["dine", "nbhd"],
     greatFor: ["Movies & events", "Fashion & salons", "Mobiles & bikes", "Banks & cards", "Colleges"],
-    note: "Not for other restaurants or food brands.",
     details: [
       "Screens where diners sit and wait for their order",
       "Peak plays at lunch, evenings and weekends",
@@ -102,5 +101,3 @@ export const packageInclusions = [
   "QR scan tracking",
   "Family-friendly content check",
 ];
-
-export const packagePriceNote = "Package prices, audience figures and commitment savings shown here are reference values that need confirmation from Adsrow before a booking.";
