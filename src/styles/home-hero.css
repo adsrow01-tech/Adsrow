@@ -13,7 +13,7 @@
 .home-dynamic-eyebrow span { width: 7px; height: 7px; border-radius: 50%; background: #0fb98a; box-shadow: 0 0 0 0 rgb(15 185 138 / 50%); animation: homeHeroPulse 1.8s infinite; }
 .home-dynamic-copy h1 { max-width: 650px; margin: 18px 0 0; color: var(--hero-ink); font-family: 'Manrope', sans-serif; font-size: clamp(38px, 4.6vw, 58px); font-weight: 800; line-height: 1.05; letter-spacing: -2.4px; }
 .home-dynamic-highlight { color: var(--hero-bright); }
-.home-dynamic-rotator { display: grid; margin-top: 4px; color: var(--hero-blue); }
+.home-dynamic-rotator { display: grid; margin-top: 4px; color: var(--active-phrase-color, var(--hero-blue)); transition: color .55s ease; }
 .home-dynamic-rotator span { grid-area: 1 / 1; opacity: 0; transform: translateY(.45em); transition: opacity .5s ease, transform .5s ease; }
 .home-dynamic-rotator span.is-active { opacity: 1; transform: none; }
 .home-dynamic-description { max-width: 560px; margin: 20px 0 0; color: #334155; font-size: 18px; line-height: 1.6; }
@@ -36,7 +36,7 @@
 .home-dynamic-ad small { font-size: 10px; font-weight: 800; letter-spacing: 1.5px; opacity: .75; }
 .home-dynamic-ad strong { margin: 6px 0 12px; font-family: 'Manrope', sans-serif; font-size: 26px; font-weight: 800; line-height: 1.04; letter-spacing: -1px; }
 .home-dynamic-ad em { align-self: flex-start; padding: 7px 11px; border-radius: 6px; font-size: 12px; font-style: normal; font-weight: 800; }
-.home-dynamic-ad.project { background: linear-gradient(165deg, #e9f4fe, #fbfdff); color: var(--hero-blue); }
+.home-dynamic-ad.project { background: linear-gradient(165deg, #fff, #f7fbff); color: var(--hero-blue); }
 .home-dynamic-ad.project em { background: var(--hero-blue); color: white; }
 .home-dynamic-ad.cafe { background: linear-gradient(165deg, #f97316, #c2410c); color: white; }
 .home-dynamic-ad.cafe em { background: white; color: #c2410c; }

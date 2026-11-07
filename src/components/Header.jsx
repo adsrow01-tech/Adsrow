@@ -41,10 +41,10 @@ function Header() {
     { name: "Home", path: "/" },
     { name: "About Us", path: "/about" },
     { name: "Our Network", path: "/network" },
+    { name: "Packages", path: "/packages" },
   ];
 
   const moreLinks = [
-    { name: "Services", path: "/services" },
     { name: "How It Works", path: "/how-it-works" },
     { name: "Host a Screen", path: "/host-a-screen" },
     { name: "Contact Us", path: "/contact" },

@@ -72,39 +72,6 @@ export const venueCategories = [
   },
 ];
 
-export const audiencePacks = [
-  {
-    title: "Home Pack",
-    category: "Families at home",
-    description: "Apartment lift lobbies. Best for real estate, schools, food delivery and home services.",
-  },
-  {
-    title: "Wellness Pack",
-    category: "Health & wellness",
-    description: "Gyms. Best for clinics, labs, pharmacies, insurance and nutrition brands.",
-  },
-  {
-    title: "Shopper Pack",
-    category: "Shoppers",
-    description: "Malls and supermarkets. Best for FMCG, retail, fashion and store openings.",
-  },
-  {
-    title: "Work Pack",
-    category: "Professionals",
-    description: "Offices and commercial spaces. Best for banks, auto, real estate and B2B services.",
-  },
-  {
-    title: "Café Pack",
-    category: "Food & social",
-    description: "Cafés and restaurants. Best for events, entertainment, lifestyle and youth brands.",
-  },
-  {
-    title: "Full Network",
-    category: "Everyone",
-    description: "All 60 screens across 40 venues. Best for launches and city-wide takeovers.",
-  },
-];
-
 export const includedServices = [
   {
     title: "A city-wide screen network",
@@ -124,37 +91,13 @@ export const includedServices = [
   },
 ];
 
-export const campaignPackages = [
-  {
-    name: "Starter",
-    screens: "10",
-    duration: "7 days",
-    bestFor: "Testing an offer in one area or venue type",
-    price: null,
-  },
-  {
-    name: "Growth",
-    screens: "20",
-    duration: "15 days",
-    bestFor: "Restaurants, clinics and coaching centres",
-    price: null,
-  },
-  {
-    name: "Impact",
-    screens: "30",
-    duration: "30 days",
-    bestFor: "Launches and dealership drives",
-    price: null,
-  },
-  {
-    name: "Full Network",
-    screens: "Full network",
-    duration: "Custom",
-    bestFor: "City-wide takeovers by regional and national brands",
-    price: null,
-    customQuote: true,
-  },
-];
+export const campaignScreenPricing = {
+  2: 99,
+  4: 198,
+  6: 297,
+  8: 396,
+  10: 449,
+};
 
 export const campaignAddOns = [
   {
@@ -194,7 +137,6 @@ export const adSpecifications = [
 
 export const adSpecsTip = "One message, one offer, one action. Short and bold beats long and clever.";
 export const adStandards = "Every ad is reviewed before it goes live and matched to venues where it fits. We'll flag anything that needs changing.";
-export const campaignPackageNote = "Every package includes scheduling, remote ad updates and a play report.";
 export const addOnAvailabilityNote = "Add-on availability depends on the campaign and current network setup. Confirm details with the Adsrow team.";
 
 export const advertiserFaqs = [

@@ -3,7 +3,7 @@ import Layout from "./components/Layout";
 import Adsrow99Banner from "./components/Adsrow99Banner";
 import HomePage from "./pages/HomePage";
 import AboutPage from "./pages/AboutPage";
-import ServicesPage from "./pages/ServicesPage";
+import PackageComparisonPage from "./pages/PackageComparisonPage";
 import NetworkPage from "./pages/NetworkPage";
 import HowItWorksPage from "./pages/HowItWorksPage";
 import WhyAdsrowPage from "./pages/WhyAdsrowPage";
@@ -29,7 +29,12 @@ function LegacyLocationsRedirect() {
 
 function LegacyAdvertiseRedirect() {
   const location = useLocation();
-  return <Navigate to={`/services${location.search}`} replace />;
+  return <Navigate to={`/contact${location.search || "?type=advertiser"}`} replace />;
+}
+
+function LegacyPackagesRedirect() {
+  const location = useLocation();
+  return <Navigate to={`/packages${location.search}${location.hash}`} replace />;
 }
 
 function ProtectedDashboardPage() {
@@ -47,7 +52,8 @@ export default function App() {
       <Route element={<Layout />}>
         <Route path="/" element={<HomePage />} />
         <Route path="/about" element={<AboutPage />} />
-        <Route path="/services" element={<ServicesPage />} />
+        <Route path="/packages" element={<PackageComparisonPage />} />
+        <Route path="/package-comparison" element={<LegacyPackagesRedirect />} />
         <Route path="/network" element={<NetworkPage />} />
         <Route path="/locations" element={<LegacyLocationsRedirect />} />
         <Route path="/how-it-works" element={<HowItWorksPage />} />
