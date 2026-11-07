@@ -3,9 +3,9 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowUpRight, ArrowRight, Monitor, MapPin, Users, Target, Palette, ChartNoAxesCombined, Building2, UtensilsCrossed, Stethoscope, GraduationCap, Car, ShoppingBag, Eye, X, Check } from "lucide-react";
 import { FeatureCard, ComparisonTable, SectionHeading } from "../components/SiteComponents";
 import Adsrow99Banner from "../components/Adsrow99Banner";
-import VenueShowcaseCarousel from "../components/VenueShowcaseCarousel";
+import CardDeckCarousel from "../components/CardDeckCarousel";
 import HomeHero from "../components/HomeHero";
-import { campaignPackages } from "../lib/siteContent";
+import CampaignPackagesComparison from "../components/CampaignPackagesComparison";
 
 const benefits = [
   { icon: Target, title: "Target by place and mindset", description: "Pick the type of place, the area, or both. Show a new housing project in apartment communities, a protein brand in gyms and a dinner offer in restaurants." },
@@ -41,17 +41,27 @@ const homeComparisonRows = [
   ["Track enquiries", "No", "No", "QR + call tracking"],
 ];
 
+const statisticsTargets = [20000, 75000, 850000];
+
+function formatStatistic(value, index) {
+  if (index === 2 && value >= statisticsTargets[index]) return "8.5 lakh+";
+  return `${Math.floor(value).toLocaleString("en-IN")}+`;
+}
+
 function HomePage() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(() =>
     window.matchMedia("(prefers-reduced-motion: reduce)").matches
   );
   const proofGridRef = useRef(null);
+  const statisticsStartedRef = useRef(prefersReducedMotion);
+  const [statisticValues, setStatisticValues] = useState(() =>
+    prefersReducedMotion ? statisticsTargets : [0, 0, 0]
+  );
   const problemSectionRef = useRef(null);
   const networkSectionRef = useRef(null);
   const benefitsSectionRef = useRef(null);
   const advertisersSectionRef = useRef(null);
   const processSectionRef = useRef(null);
-  const packagesSectionRef = useRef(null);
   useEffect(() => {
     const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
     const updatePreference = () => setPrefersReducedMotion(preference.matches);
@@ -63,17 +73,51 @@ function HomePage() {
     const grid = proofGridRef.current;
     if (!grid) return undefined;
     if (prefersReducedMotion || !("IntersectionObserver" in window)) {
+      statisticsStartedRef.current = true;
+      setStatisticValues(statisticsTargets);
+      grid.classList.add("is-entered");
+      return undefined;
+    }
+    if (statisticsStartedRef.current) {
       grid.classList.add("is-entered");
       return undefined;
     }
 
+    let animationFrame = null;
+    const startCountUp = () => {
+      if (statisticsStartedRef.current) return;
+      statisticsStartedRef.current = true;
+      const duration = 2000;
+      let startTime = null;
+
+      const animate = (timestamp) => {
+        if (startTime === null) startTime = timestamp;
+        const progress = Math.min((timestamp - startTime) / duration, 1);
+        const easedProgress = progress < 0.5
+          ? 4 * progress ** 3
+          : 1 - ((-2 * progress + 2) ** 3) / 2;
+
+        setStatisticValues(statisticsTargets.map((target) =>
+          progress === 1 ? target : Math.floor(target * easedProgress)
+        ));
+
+        if (progress < 1) animationFrame = requestAnimationFrame(animate);
+      };
+
+      animationFrame = requestAnimationFrame(animate);
+    };
+
     const observer = new IntersectionObserver(([entry]) => {
       if (!entry.isIntersecting) return;
       grid.classList.add("is-entered");
+      startCountUp();
       observer.disconnect();
     }, { threshold: 0.12, rootMargin: "0px 0px -24px 0px" });
     observer.observe(grid);
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      if (animationFrame !== null) cancelAnimationFrame(animationFrame);
+    };
   }, [prefersReducedMotion]);
 
   useEffect(() => {
@@ -116,19 +160,6 @@ function HomePage() {
   }, [prefersReducedMotion]);
 
   useEffect(() => {
-    const section = packagesSectionRef.current;
-    if (!section || prefersReducedMotion || !("IntersectionObserver" in window)) return undefined;
-
-    const observer = new IntersectionObserver(([entry]) => {
-      if (!entry.isIntersecting) return;
-      section.classList.add("is-entered");
-      observer.disconnect();
-    }, { threshold: 0.12, rootMargin: "0px 0px -24px 0px" });
-    observer.observe(section);
-    return () => observer.disconnect();
-  }, [prefersReducedMotion]);
-
-  useEffect(() => {
     const section = networkSectionRef.current;
     if (!section || prefersReducedMotion || !("IntersectionObserver" in window)) return undefined;
 
@@ -158,14 +189,6 @@ function HomePage() {
     <>
       <HomeHero />
 
-      <section className="intro-strip home-proof-strip home-stats-strip">
-        <div ref={proofGridRef} className={`container stats-grid home-proof-grid ${prefersReducedMotion ? "is-reduced" : "is-motion"}`}>
-          <article className="stat-item home-card-interactive" tabIndex={0}><strong>20,000+</strong><span>daily audience</span></article>
-          <article className="stat-item home-card-interactive" tabIndex={0}><strong>75,000+</strong><span>monthly reach</span></article>
-          <article className="stat-item home-card-interactive" tabIndex={0}><strong>8.5 lakh+</strong><span>monthly ad views</span></article>
-        </div>
-      </section>
-
       <section className="home-quick-steps" aria-label="How Adsrow works in 10 seconds">
         <div className="container">
           <div className="home-quick-cards">
@@ -190,6 +213,14 @@ function HomePage() {
               <p className="home-quick-card-copy">Get a play report, QR scans and calls.</p>
             </article>
           </div>
+        </div>
+      </section>
+
+      <section className="intro-strip home-proof-strip home-stats-strip">
+        <div ref={proofGridRef} className={`container stats-grid home-proof-grid ${prefersReducedMotion ? "is-reduced" : "is-motion"}`}>
+          <article className="stat-item home-card-interactive" tabIndex={0}><strong>{formatStatistic(statisticValues[0], 0)}</strong><span>daily audience</span></article>
+          <article className="stat-item home-card-interactive" tabIndex={0}><strong>{formatStatistic(statisticValues[1], 1)}</strong><span>monthly reach</span></article>
+          <article className="stat-item home-card-interactive" tabIndex={0}><strong>{formatStatistic(statisticValues[2], 2)}</strong><span>monthly ad views</span></article>
         </div>
       </section>
 
@@ -270,7 +301,7 @@ function HomePage() {
             <p className="home-venues-sub">Choose one type of place or mix them all. Each one reaches a different audience in a different frame of mind.</p>
           </div>
         </div>
-        <VenueShowcaseCarousel />
+        <CardDeckCarousel />
 
         <div className="container"><div className="center-link"><Link className="text-link" to="/network">See the full network: venues, areas and screen photos <ArrowRight size={16} /></Link></div></div>
       </section>
@@ -469,26 +500,7 @@ function HomePage() {
         </div>
       </section>
 
-      <section ref={packagesSectionRef} className="section section-soft home-packages-section">
-        <div className="container">
-          <SectionHeading centered eyebrow="CAMPAIGN PACKAGES" className="home-section-heading" title={<>Start small. <span>Scale what works.</span></>} />
-          <div className="feature-grid feature-grid-four home-package-grid">
-            {campaignPackages.map(({ name, screens, duration, price, customQuote }, index) => (
-              <article
-                className={`feature-card home-card-interactive home-package-card home-package-card-${index + 1}`}
-                tabIndex={0}
-                key={name}
-              >
-                <span className="home-package-index" aria-hidden="true">{`0${index + 1}`}</span>
-                <h3>{name}</h3>
-                <p>{screens === "Full network" ? "Full network" : `${screens} screens`} · {duration}</p>
-                <strong className="home-price-placeholder">{customQuote ? "Custom quote" : price ? `From ₹${price}` : "Price on request"}</strong>
-              </article>
-            ))}
-          </div>
-          <div className="center-link"><Link className="button button-outline" to="/services">Compare Packages <ArrowRight size={16} /></Link></div>
-        </div>
-      </section>
+      <CampaignPackagesComparison />
 
       <section className="host-banner">
         <div className="container host-banner-inner">
@@ -499,7 +511,6 @@ function HomePage() {
             <ul className="host-venue-chips" aria-label="Venue types that host Adsrow screens">
               <li>Cafés</li>
               <li>Gyms</li>
-              <li>Clinics</li>
               <li>Malls</li>
               <li>Offices</li>
               <li>Apartments</li>

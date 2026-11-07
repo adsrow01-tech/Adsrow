@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { ArrowUpRight, MapPin, MessageCircle, Phone } from "lucide-react";
 import { PageHero } from "../components/SiteComponents";
-import { targetAreas } from "../lib/siteContent";
+import { campaignScreenPricing, targetAreas } from "../lib/siteContent";
 import { ENQUIRY_SERVER_MESSAGE, submitEnquiry, validateEnquiry } from "../lib/enquire";
 import { recordSubmittedEnquiry } from "../lib/dashboard";
 import { useAuth } from "../context/AuthContext";
@@ -159,11 +159,14 @@ function EnquiryServerError() {
   );
 }
 
-function EnquiryForm({ kind }) {
+function EnquiryForm({ kind, requestedScreens, requestedDailyPrice }) {
   const isAdvertiser = kind === "advertiser";
   const initial = isAdvertiser ? advertiserInitial : venueInitial;
   const requiredFields = isAdvertiser ? advertiserRequired : venueRequired;
-  const [form, setForm] = useState(initial);
+  const [form, setForm] = useState(() => ({
+    ...initial,
+    ...(isAdvertiser && requestedScreens ? { screens: requestedScreens, dailyPrice: requestedDailyPrice } : {}),
+  }));
   const [errors, setErrors] = useState({});
   const [status, setStatus] = useState("idle");
   const [errorMessage, setErrorMessage] = useState("");
@@ -217,6 +220,12 @@ function EnquiryForm({ kind }) {
 
   return (
     <form className="enquiry-form contact-form" ref={formRef} onSubmit={handleSubmit} noValidate>
+      {isAdvertiser && form.screens && (
+        <>
+          <input type="hidden" name="screens" value={form.screens} />
+          <input type="hidden" name="dailyPrice" value={form.dailyPrice} />
+        </>
+      )}
       <div className="form-row">
         <TextField id={`${kind}-name`} label="Your name" required error={errors.name} value={form.name} onChange={(event) => update("name", event.target.value)} placeholder="Full name" autoComplete="name" />
         {isAdvertiser
@@ -258,6 +267,7 @@ function EnquiryForm({ kind }) {
       {status === "error" && (errorMessage === ENQUIRY_SERVER_MESSAGE
         ? <EnquiryServerError />
         : <p className="form-status form-error" role="alert">{errorMessage}</p>)}
+      {isAdvertiser && form.screens && <p className="form-hint">Requested plan: {form.screens} screens at ₹{Number(form.dailyPrice).toLocaleString("en-IN")}/day.</p>}
       <button className="button" type="submit" disabled={status === "sending"}>
         {status === "sending" ? "Sending..." : isAdvertiser ? "Send Me a Plan" : "Request a Site Visit"}
         {status !== "sending" && <ArrowUpRight size={16} />}
@@ -282,6 +292,10 @@ function ContactPage() {
   const location = useLocation();
   const tabRefs = useRef([]);
   const [activeTab, setActiveTab] = useState(() => requestedTab(location.search));
+  const rawScreens = new URLSearchParams(location.search).get("screens");
+  const validScreens = ["2", "4", "6", "8", "10"].includes(rawScreens);
+  const requestedScreens = validScreens ? rawScreens : "";
+  const requestedDailyPrice = validScreens ? String(campaignScreenPricing[rawScreens]) : "";
 
   useEffect(() => setActiveTab(requestedTab(location.search)), [location.search]);
 
@@ -328,7 +342,12 @@ function ContactPage() {
               ))}
             </div>
             <div id="contact-panel-advertiser" role="tabpanel" aria-labelledby="contact-tab-advertiser" className="contact-form-panel" hidden={activeTab !== "advertiser"}>
-              <EnquiryForm kind="advertiser" />
+              <EnquiryForm
+                kind="advertiser"
+                requestedScreens={requestedScreens}
+                requestedDailyPrice={requestedDailyPrice}
+                key={`${requestedScreens || "default"}-${requestedDailyPrice}`}
+              />
             </div>
             <div id="contact-panel-venue" role="tabpanel" aria-labelledby="contact-tab-venue" className="contact-form-panel" hidden={activeTab !== "venue"}>
               <EnquiryForm kind="venue" />

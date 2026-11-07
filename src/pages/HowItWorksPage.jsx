@@ -8,7 +8,7 @@ const campaignTimelineDays = 7;
 const steps = [
   {
     title: "Choose your audience",
-    description: "Pick venue types, areas or an audience pack. Or tell us your goal and we'll suggest the strongest mix.",
+    description: "Pick venue types and areas, or tell us your goal and we'll suggest the strongest mix.",
   },
   {
     title: "Set your schedule",

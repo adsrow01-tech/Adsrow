@@ -3,11 +3,10 @@ import { ArrowRight, ArrowUpRight, CheckCircle2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import "../styles/home-hero.css";
 
-const moments = ["waiting for the lift.", "waiting for their order.", "resting between sets."];
 const creatives = [
-  { label: "YOUR PROJECT", title: "A new address. A fresh start.", action: "Discover more →", className: "project" },
-  { label: "YOUR CAFÉ", title: "Make time for something delicious.", action: "View the menu →", className: "cafe" },
-  { label: "YOUR BRAND", title: "Your ad, on screens across the city.", action: "Start a campaign →", className: "brand" },
+  { moment: "resting between sets.", phraseColor: "#0b8f78", label: "YOUR GYM", title: "Your ad, on screens across the city.", action: "Start a campaign →", className: "brand" },
+  { moment: "waiting for their order.", phraseColor: "#c2410c", label: "YOUR RESTAURANT", title: "Make time for something delicious.", action: "View the menu →", className: "cafe" },
+  { moment: "waiting for the lift.", phraseColor: "#0b3d91", label: "YOUR PROJECT", title: "A new address. A fresh start.", action: "Discover more →", className: "project" },
 ];
 const venues = [
   { image: "/venues/residential-lobby.jpg", label: "Lift lobbies", className: "lobby" },
@@ -17,6 +16,7 @@ const venues = [
 
 export default function HomeHero() {
   const [active, setActive] = useState(0);
+  const activeCreative = creatives[active];
   const [reducedMotion, setReducedMotion] = useState(() => window.matchMedia("(prefers-reduced-motion: reduce)").matches);
 
   useEffect(() => {
@@ -34,7 +34,7 @@ export default function HomeHero() {
     let visible = true;
     const start = () => {
       window.clearInterval(timer);
-      if (visible && !document.hidden) timer = window.setInterval(() => setActive((index) => (index + 1) % moments.length), 5000);
+      if (visible && !document.hidden) timer = window.setInterval(() => setActive((index) => (index + 1) % creatives.length), 5000);
     };
     const observer = "IntersectionObserver" in window
       ? new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; start(); }, { threshold: 0.2 })
@@ -55,9 +55,9 @@ export default function HomeHero() {
       <div className="home-dynamic-wrap">
         <div className="home-dynamic-copy">
           <p className="home-dynamic-eyebrow"><span aria-hidden="true" />Vijayawada's everyday screen network</p>
-          <h1 id="home-hero-title" aria-label="Reach 20,000+ people a day, right where they pause.">
+          <h1 id="home-hero-title" aria-label={`Reach 20,000+ people a day while they're ${activeCreative.moment}`}>
             Reach <span className="home-dynamic-highlight">20,000+ people</span> a day while they're
-            <span className="home-dynamic-rotator" aria-hidden="true">{moments.map((moment, index) => <span className={index === active ? "is-active" : ""} key={moment}>{moment}</span>)}</span>
+            <span className="home-dynamic-rotator" aria-hidden="true" style={{ "--active-phrase-color": activeCreative.phraseColor }}>{creatives.map((creative, index) => <span className={index === active ? "is-active" : ""} key={creative.className}>{creative.moment}</span>)}</span>
           </h1>
           <p className="home-dynamic-description">Put your ad on digital screens in apartment lift lobbies, restaurants, cafés and gyms. Pick your audience, book once and get proof every ad played, from ₹99 a day.</p>
           <div className="home-dynamic-actions">
