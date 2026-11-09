@@ -16,3 +16,9 @@ node_modules
 dist/
 .next/
 .DS_Store
+
+# Internal Adsrow audit reports
+ADSROW_*.md
+
+# Internal implementation checklist
+LEGAL_IMPLEMENTATION_CHECKLIST.md

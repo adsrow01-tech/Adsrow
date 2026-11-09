@@ -1,0 +1,34 @@
+# Adsrow React/Vite SPA rules for Apache/Hostinger.
+# Upload the contents of dist/ (including this file) into public_html.
+RewriteEngine On
+
+# Use the branded static document as Apache's actual 404 response.
+ErrorDocument 404 /404.html
+
+# Serve existing files and directories as-is.
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# A request that looks like a missing asset must remain a 404, not become HTML.
+RewriteCond %{REQUEST_URI} \.[^/]+$ [NC]
+RewriteRule ^ - [R=404,L]
+
+# These are valid client-side routes that are intentionally not prerendered
+# (auth, protected and legacy redirect flows). Keep them on the SPA entry.
+RewriteRule ^(login|signup|forgot-password|reset-password|dashboard|partner-form|advertise|advertise/enquiry|locations|package-comparison)(/)?$ index.html [L]
+RewriteRule ^blog/[^/]+/?$ index.html [L]
+
+# Unknown extensionless paths must be a real HTTP 404, not an indexable 200.
+RewriteRule ^ - [R=404,L]
+
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+</IfModule>
+
+# Add a reviewed Content-Security-Policy after confirming all external font,
+# map, Supabase, OAuth and form-provider origins used by the deployment.

@@ -347,7 +347,7 @@ export default function AudiencePacksComparison() {
       <div className="arap-wrap">
         <div className="arap-head">
           <div className="arap-eyebrow">Audience packs</div>
-          <h2 id="arap-title" className="arap-title">Choose who you want to reach. <span>We'll put you in front of them.</span></h2>
+          <h1 id="arap-title" className="arap-title">Choose who you want to reach. <span>We'll put you in front of them.</span></h1>
           <p className="arap-sub">Every pack targets a different crowd in a different mindset. Commit for longer and pay less every day.</p>
         </div>
 

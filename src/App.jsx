@@ -11,8 +11,10 @@ import HostAScreenPage from "./pages/HostAScreenPage";
 import ContactPage from "./pages/ContactPage";
 import { LoginPage, SignupPage } from "./pages/AuthPages";
 import { ForgotPasswordPage, ResetPasswordPage } from "./pages/AuthRecoveryPages";
-import { PrivacyPage, TermsPage } from "./pages/LegalPages";
+import { PrivacyPage, RefundPolicyPage, TermsPage } from "./pages/LegalPages";
 import DashboardPage from "./pages/DashboardPage";
+import NotFoundPage from "./pages/NotFoundPage";
+import { BlogArticlePage, BlogPage } from "./pages/BlogPage";
 import { useAuth } from "./context/AuthContext";
 import { getCurrentPath } from "./lib/redirect";
 
@@ -52,6 +54,8 @@ export default function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/packages" element={<PackageComparisonPage />} />
+        <Route path="/blog" element={<BlogPage />} />
+        <Route path="/blog/:slug" element={<BlogArticlePage />} />
         <Route path="/package-comparison" element={<LegacyPackagesRedirect />} />
         <Route path="/network" element={<NetworkPage />} />
         <Route path="/locations" element={<LegacyLocationsRedirect />} />
@@ -70,7 +74,8 @@ export default function App() {
         <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/terms" element={<TermsPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="/refund-policy" element={<RefundPolicyPage />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>
   );

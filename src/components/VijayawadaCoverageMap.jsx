@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import * as maplibregl from "maplibre-gl";
+import maplibreWorkerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?url";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { targetAreas } from "../lib/siteContent";
 
@@ -55,6 +56,12 @@ export default function VijayawadaCoverageMap() {
 
   useEffect(() => {
     if (!mapContainerRef.current || mapRef.current) return undefined;
+
+    // MapLibre's default worker URL points at its package-relative module,
+    // which Vite does not serve as a browser asset in production.  Vite's
+    // `?url` import gives us the emitted, deployment-safe worker URL while
+    // keeping this configuration out of the SSR render path.
+    maplibregl.setWorkerUrl(maplibreWorkerUrl);
 
     const map = new maplibregl.Map({
       container: mapContainerRef.current,

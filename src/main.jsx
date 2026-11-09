@@ -1,5 +1,5 @@
 import React from "react";
-import { createRoot } from "react-dom/client";
+import { createRoot, hydrateRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import "./globals.css";
@@ -7,10 +7,13 @@ import "./styles/adsrow-99-banner.css";
 import "./styles/home-benefits.css";
 import { AuthProvider } from "./context/AuthContext";
 
-createRoot(document.getElementById("root")).render(
+const rootElement = document.getElementById("root");
+const app = (
   <React.StrictMode>
     <BrowserRouter>
       <AuthProvider><App /></AuthProvider>
     </BrowserRouter>
   </React.StrictMode>
 );
+
+(rootElement.hasChildNodes() ? hydrateRoot(rootElement, app) : createRoot(rootElement).render(app));
