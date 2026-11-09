@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import { ArrowUpRight, ArrowRight, Monitor, MapPin, Users, Target, Palette, ChartNoAxesCombined, Building2, UtensilsCrossed, Stethoscope, GraduationCap, Car, ShoppingBag, Eye, X, Check } from "lucide-react";
+import { ArrowUpRight, ArrowRight, Monitor, MapPin, Users, Target, Palette, ChartNoAxesCombined, Building2, UtensilsCrossed, GraduationCap, Car, ShoppingBag, Eye, X, Check } from "lucide-react";
 import { FeatureCard, ComparisonTable, SectionHeading } from "../components/SiteComponents";
 import Adsrow99Banner from "../components/Adsrow99Banner";
 import CardDeckCarousel from "../components/CardDeckCarousel";
@@ -19,7 +19,7 @@ const benefits = [
 const categories = [
   { icon: Building2, title: "Real estate", label: "Homes · Offices", description: "Fill site visits from families at home and professionals at work." },
   { icon: UtensilsCrossed, title: "Restaurants & food brands", label: "Homes · Offices · Malls", description: "Win the ‘what’s for dinner?’ decision before it’s made." },
-  { icon: Stethoscope, title: "Clinics, labs & pharmacies", label: "Gyms · Homes", description: "Reach health-conscious people at the right moment." },
+  { icon: Target, title: "Nutrition & sportswear", label: "Gyms · Homes", description: "Reach health-focused people at the right moment." },
   { icon: GraduationCap, title: "Schools & coaching", label: "Homes · Malls", description: "Talk to parents before admission season begins." },
   { icon: Car, title: "Auto dealers", label: "Offices · Malls · Homes", description: "Book test drives with buyers who have time to think." },
   { icon: ShoppingBag, title: "Retail & FMCG", label: "Supermarkets · Malls · Cafés", description: "Be the last brand shoppers see before they choose." },
