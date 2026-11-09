@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { ArrowUpRight, Check } from "lucide-react";
+import { ArrowRight, ArrowUpRight, BarChart3, Building2, CalendarCheck, Check, Dumbbell, MousePointerClick, Utensils } from "lucide-react";
 import PackageEnquirySection from "./PackageEnquirySection";
 import {
   audiencePacks,
@@ -9,10 +9,14 @@ import {
   packageAudienceFilters,
   packageCommitments,
   packageInclusions,
-  packagePriceNote,
   tryItAudience,
 } from "../lib/packageData";
 import "../styles/audience-packs.css";
+
+/* Shared homepage icon set + pastel accent families for the pack tiles
+   (the same treatment as the home Campaign Packages teaser). */
+const packIcons = { neighbourhood: Building2, "dine-out": Utensils, fitness: Dumbbell };
+const packAccents = { neighbourhood: 1, "dine-out": 4, fitness: 3 };
 
 function indianPrice(value) {
   return value.toLocaleString("en-IN");
@@ -160,6 +164,11 @@ const bookingSteps = [
   { title: "Go live and track", description: "Send your ad or let us design it. Get proof of play and QR scan reports." },
 ];
 
+/* Booking-step tiles use the homepage How-It-Works recipe: numbered
+   pastel tiles (blue / green / orange) with an icon chip top-right. */
+const stepIcons = [MousePointerClick, CalendarCheck, BarChart3];
+const stepAccents = [1, 4, 3];
+
 const packageFaqs = [
   { question: "Is the price per day or per month?", answer: "Prices are shown per day so they're easy to compare, and billed monthly in advance. GST is extra." },
   { question: "Who can use the ₹99 Try It plan?", answer: "Try It is for your first campaign only: 30 days on the two locations nearest your business. After that, move to any pack." },
@@ -175,13 +184,22 @@ function BookingSteps() {
         <div className="pk-eyebrow">How booking works</div>
         <h2 className="pk-section-title" id="pk-steps-title">Pick a pack today. <span>Go live this week.</span></h2>
         <div className="pk-step-grid">
-          {bookingSteps.map((step, index) => (
-            <article key={step.title}>
-              <i aria-hidden="true">{index + 1}</i>
-              <h3>{step.title}</h3>
-              <p>{step.description}</p>
-            </article>
-          ))}
+          {bookingSteps.map((step, index) => {
+            const StepIcon = stepIcons[index] ?? null;
+            return (
+              <article
+                key={step.title}
+                className={`pk-step-card ads-card ads-card-interactive ads-accent-${stepAccents[index] ?? 1}`}
+              >
+                <div className="ads-card-head-row">
+                  <span className="ads-num" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+                  {StepIcon && <span className="feature-icon" aria-hidden="true"><StepIcon size={22} /></span>}
+                </div>
+                <h3>{step.title}</h3>
+                <p>{step.description}</p>
+              </article>
+            );
+          })}
         </div>
       </div>
     </section>
@@ -203,11 +221,13 @@ function PackageFinalCta() {
   return (
     <section className="pk-final-cta">
       <div className="pk-wrap">
-        <div className="pk-final-box">
-          <div><h2>Not sure which pack fits your business?</h2><p>Tell us what you sell and where. We'll recommend a pack and send a clear price.</p></div>
+        <div className="pk-final-box ads-card">
+          <div><h2>Not sure which pack fits <span>your business?</span></h2><p>Tell us what you sell and where. We'll recommend a pack and send a clear price.</p></div>
           <div className="pk-final-actions">
-            <Link className="pk-btn mint" to="/partner-form?type=advertiser">Get My Free Plan <ArrowUpRight size={16} aria-hidden="true" /></Link>
-            <PackageEnquirySection className="pk-btn outline" name="pack recommendation" dailyPrice={campaignScreenPricing[2]} months={1}>WhatsApp Us</PackageEnquirySection>
+            <Link className="pk-btn primary" to="/partner-form?type=advertiser">Get My Free Plan <ArrowUpRight size={16} aria-hidden="true" /></Link>
+            <PackageEnquirySection className="pk-final-link" name="pack recommendation" dailyPrice={campaignScreenPricing[2]} months={1}>
+              WhatsApp Us <ArrowRight size={15} aria-hidden="true" />
+            </PackageEnquirySection>
           </div>
         </div>
       </div>
@@ -217,10 +237,17 @@ function PackageFinalCta() {
 
 function AudiencePackCard({ pack, months, discount, highlighted, cardRef }) {
   const { daily } = currentPrices(pack.dailyPrice, discount, months);
+  const PackIcon = packIcons[pack.id] ?? Building2;
+  const accent = packAccents[pack.id] ?? 1;
   return (
-    <article ref={cardRef} id={pack.id} className={`arap-card${highlighted ? " hl" : ""}`} data-pack={pack.key}>
+    <article
+      ref={cardRef}
+      id={pack.id}
+      className={`arap-card ads-card ads-card-interactive ads-accent-${accent}${highlighted ? " hl" : ""}`}
+      data-pack={pack.key}
+    >
       <MatchLabel />
-      <div className="ic" aria-hidden="true">{pack.icon}</div>
+      <div className="ic" aria-hidden="true"><PackIcon size={22} /></div>
       <div className="arap-name">{pack.name}</div>
       <div className="arap-who">{pack.who}</div>
       <div className="arap-reach"><b>{pack.audience}</b> {pack.audienceDescription}</div>
@@ -230,7 +257,6 @@ function AudiencePackCard({ pack, months, discount, highlighted, cardRef }) {
         <div className="arap-tags">
           {pack.greatFor.map((tag) => <span key={tag}>{tag}</span>)}
         </div>
-        {pack.note && <div className="arap-not">{pack.note}</div>}
       </div>
       <details>
         <summary>What's inside</summary>
@@ -269,7 +295,6 @@ function CityPackCard({ months, discount, highlighted, cardRef }) {
         <PriceBlock basePrice={cityPack.dailyPrice} months={months} discount={discount} />
         <PartnerEnquiryLink
           className="arap-btn"
-          style={{ marginTop: 14 }}
           pack={cityPack.id}
           dailyPrice={daily}
           months={months}
@@ -390,7 +415,7 @@ export default function AudiencePacksComparison() {
               <b>₹{indianPrice(tryItDailyPrice)}</b><small>/day</small>
               <div className="arap-try-total">₹{indianPrice(tryItMonthlyPrice)} for 30 days</div>
             </div>
-            <PartnerEnquiryLink className="arap-btn" pack="try-it" dailyPrice={tryItDailyPrice} months={1} style={{ background: "var(--ink)", borderColor: "var(--ink)", color: "#fff", margin: 0 }}>
+            <PartnerEnquiryLink className="arap-btn" pack="try-it" dailyPrice={tryItDailyPrice} months={1}>
               Try It Now
             </PartnerEnquiryLink>
           </div>
@@ -421,7 +446,6 @@ export default function AudiencePacksComparison() {
         <div className="arap-foot">
           <div className="arap-foot-copy">
             <p className="arap-fine">Prices are per day, billed monthly in advance, GST extra. Minimum 30 days. Savings apply when you commit for 3 or 6 months. Try It is for first campaigns only. Add-ons: category lock (no competitor on your screens), double frequency, video production. Audience figures are estimates based on typical daily footfall.</p>
-            <p className="arap-confirmation-note">{packagePriceNote}</p>
           </div>
           <PackageEnquirySection className="arap-help" name={selectedPack?.name ?? "audience pack guidance"} dailyPrice={selectedPack?.dailyPrice ?? tryItDailyPrice} months={months} audience={selectedPack?.audience}>
             Not sure? WhatsApp us →
@@ -430,9 +454,9 @@ export default function AudiencePacksComparison() {
       </div>
       </section>
       <PackageComparisonTable />
+      <PackageFinalCta />
       <BookingSteps />
       <PackageFaqs />
-      <PackageFinalCta />
     </main>
   );
 }

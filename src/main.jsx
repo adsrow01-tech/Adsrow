@@ -1,11 +1,11 @@
 import React from "react";
 import { createRoot, hydrateRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
-import App from "./App";
 import "./globals.css";
 import "./styles/adsrow-99-banner.css";
 import "./styles/home-benefits.css";
 import { AuthProvider } from "./context/AuthContext";
+import App from "./App";
 
 const rootElement = document.getElementById("root");
 const app = (

@@ -280,7 +280,7 @@ function HomePage() {
           <div className="home-network-cards">
             <div className="home-network-card">
               <div className="home-network-card-label">MORNING</div>
-              <div className="home-network-card-desc"><strong>Families in lift lobbies</strong></div>
+              <div className="home-network-card-desc">Families in lift lobbies</div>
             </div>
             <div className="home-network-card">
               <div className="home-network-card-label">NOON</div>

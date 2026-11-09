@@ -1,61 +1,82 @@
+/* Home page — Campaign Packages teaser.
+   Layout (per brief): eyebrow top-left, heading + supporting copy left,
+   "See all packages & pricing" CTA right, ₹99 advertisers banner, four
+   package tiles in a row, audience chips below.
+
+   The four tiles reuse the shared .ads-card design system straight from
+   globals.css (pastel tint gradients, thin accent borders, soft shadow,
+   concentric bottom-right corner rings, per-card hover): the component
+   adds `ads-card ads-card-interactive ads-accent-N`. Numbers come from
+   .ads-num / .ads-card-head-row and the icon chip from .feature-icon —
+   the shared Lucide treatment. Only the section-specific bits live here. */
 .hpk {
-  --ink: #12152B;
-  --blue: #0B3D91;
-  --sky: #3BA7F2;
-  --mint: #7FE7D6;
-  --teal: #3ADFC2;
-  --line: #DCECF8;
-  --muted: #334155;
+  --teal: #3ADFC2; /* section-local accent; no global token exists */
   box-sizing: border-box;
   padding: 84px 0;
-  background: #F5FAFF;
+  background: #F5FAFF; /* same wash as the other homepage sections */
   color: var(--ink);
-  font-family: "DM Sans", sans-serif;
+  font-family: var(--font-body);
 }
 .hpk *, .hpk *::before, .hpk *::after { box-sizing: border-box; }
+
+/* Header row: heading block left, packages CTA bottom-aligned right. */
 .hpk-wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
 .hpk-top { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 30px; }
-.hpk-eyebrow { color: var(--blue); font-size: 11.5px; font-weight: 800; letter-spacing: 1.6px; text-transform: uppercase; }
-.hpk h2 { margin: 12px 0 0; font-family: "Manrope", sans-serif; font-size: clamp(30px, 3.8vw, 42px); font-weight: 800; line-height: 1.1; letter-spacing: -1.6px; }
+
+.hpk-eyebrow { color: var(--blue); font-size: 12.5px; font-weight: 800; letter-spacing: 1.6px; text-transform: uppercase; }
+.hpk h2 { margin: 12px 0 0; color: var(--ink); font-family: 'Manrope', sans-serif; font-size: max(36px, clamp(30px, 4vw, 46px)); font-weight: var(--weight-section-headings); line-height: 1.1; letter-spacing: -1.6px; }
 .hpk h2 span { color: var(--blue); }
-.hpk-sub { max-width: 560px; margin: 10px 0 0; color: var(--muted); font-size: 17px; line-height: 1.55; }
-.hpk-all { display: inline-flex; align-items: center; gap: 9px; padding: 15px 22px; border-radius: 8px; background: var(--blue); color: #fff; box-shadow: 0 14px 30px -12px rgb(11 61 145 / 60%); font-size: 15.5px; font-weight: 800; text-decoration: none; white-space: nowrap; transition: transform .15s; }
-.hpk-all:hover { transform: translateY(-2px); }
-.hpk-try { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; padding: 14px 20px; border-radius: 14px; background: linear-gradient(135deg, var(--mint), var(--teal)); color: var(--ink); font-weight: 800; text-decoration: none; }
-.hpk-try span { font-size: 15.5px; }
-.hpk-try small { margin-right: 10px; padding: 4px 8px; border-radius: 5px; background: var(--ink); color: #fff; font-size: 11px; letter-spacing: 1.3px; text-transform: uppercase; }
-.hpk-try b { font-family: "Manrope", sans-serif; }
+.hpk-sub { max-width: 560px; margin: 10px 0 0; color: var(--muted); font-size: var(--section-description); font-weight: var(--weight-paragraphs); line-height: var(--p-line); }
+
+/* CTA — a control, so it keeps the site's .button scale (outside the
+   type system) and its hover language: darken + deepen the shadow. */
+.hpk-all { display: inline-flex; align-items: center; gap: 9px; min-height: 54px; padding: 15px 22px; border-radius: 8px; background: var(--blue); color: #fff; box-shadow: 0 14px 30px -12px rgb(11 61 145 / 60%); font-size: 15.5px; font-weight: 800; text-decoration: none; white-space: nowrap; transition: background-color .15s ease, box-shadow .15s ease; }
+.hpk-all:hover { background: var(--blue-dark); box-shadow: 0 16px 34px -12px rgb(11 61 145 / 65%); }
+
+/* ₹99 first-campaign promoter strip. */
+.hpk-try { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; padding: 14px 20px; border-radius: 14px; background: linear-gradient(135deg, var(--mint), var(--teal)); color: var(--ink); font-weight: var(--weight-card-headings); text-decoration: none; }
+.hpk-try span { font-size: var(--p-lg); }
+.hpk-try small { margin-right: 10px; padding: 4px 8px; border-radius: 5px; background: var(--ink); color: #fff; font-size: 12.5px; font-weight: 800; letter-spacing: 1.3px; text-transform: uppercase; }
+.hpk-try b { font-family: 'Manrope', sans-serif; }
 .hpk-try > span:last-child { display: inline-flex; align-items: center; gap: 6px; }
-.hpk-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
-.hpk-card { display: flex; min-width: 0; flex-direction: column; gap: 6px; padding: 22px; border: 1px solid var(--line); border-radius: 18px; background: #fff; color: var(--ink); box-shadow: 0 10px 26px rgb(18 21 43 / 5%); text-decoration: none; transition: transform .15s, border-color .15s, box-shadow .15s; }
-.hpk-card:hover, .hpk-card:focus-visible { transform: translateY(-4px); border-color: var(--sky); box-shadow: 0 20px 40px -20px rgb(59 167 242 / 60%); }
-.hpk-card .ic { display: grid; width: 44px; height: 44px; place-items: center; margin-bottom: 8px; border: 1px solid var(--line); border-radius: 12px; background: #F5FAFF; font-size: 22px; }
-.hpk-card .nm { color: var(--blue); font-size: 11.5px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; }
-.hpk-card .who { font-family: "Manrope", sans-serif; font-size: 17px; font-weight: 800; line-height: 1.25; letter-spacing: -.4px; }
-.hpk-card .pr { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-top: auto; padding-top: 12px; border-top: 1px dashed var(--line); color: var(--muted); font-size: 13px; }
-.hpk-card .pr b { color: var(--ink); font-family: "Manrope", sans-serif; font-size: 20px; letter-spacing: -.6px; }
-.hpk-card .go { color: var(--blue); font-size: 14px; font-weight: 800; white-space: nowrap; }
-.hpk-card.dk { border-color: var(--ink); background: var(--ink); color: #fff; }
-.hpk-card.dk .ic { border-color: rgb(255 255 255 / 16%); background: rgb(255 255 255 / 8%); }
-.hpk-card.dk .nm, .hpk-card.dk .go { color: var(--mint); }
-.hpk-card.dk .pr { border-color: rgb(255 255 255 / 18%); color: #B8C1D4; }
-.hpk-card.dk .pr b { color: #fff; }
-.hpk-fit { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 22px; color: var(--muted); font-size: 14px; font-weight: 800; }
-.hpk-fit a { padding: 7px 12px; border: 1px solid var(--line); border-radius: 8px; background: #fff; color: var(--ink); font-size: 13.5px; font-weight: 700; text-decoration: none; }
+
+/* Four pack tiles — .ads-card/ads-accent-N owns the palette (tints,
+   border, rings, shadow, hover); this file only lays them out and keeps
+   the pack copy (kicker / title / price) on the Adsrow type ladder.
+   Accent colour trickles down here via the shared --accent variable. */
+.hpk-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
+.hpk-card { display: flex; min-width: 0; flex-direction: column; gap: 6px; }
+.hpk-card .feature-icon { margin: 0; width: 44px; height: 44px; border-radius: 12px; }
+.hpk-card .nm { color: var(--accent); font-size: 12.5px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; }
+.hpk-card .who { color: var(--ink); font-family: 'Manrope', sans-serif; font-size: var(--card-heading); font-weight: var(--weight-card-headings); line-height: 1.25; letter-spacing: -.4px; }
+.hpk-card .pr { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-top: auto; padding-top: 12px; border-top: 1px dashed var(--line); color: var(--muted); font-size: var(--supporting-text); }
+.hpk-card .pr b { color: var(--ink); font-family: 'Manrope', sans-serif; font-size: var(--card-heading); letter-spacing: -.6px; }
+.hpk-card .go { color: var(--accent); font-size: 14px; font-weight: 800; white-space: nowrap; }
+
+/* On hover the icon chip reacts with the card (home-category precedent). */
+.hpk-card.ads-card-interactive:hover .feature-icon,
+.hpk-card.ads-card-interactive:focus-visible .feature-icon { border-color: var(--edge); background: #fff; box-shadow: 0 6px 16px -6px var(--glow); }
+
+/* Audience chips row under the tiles. */
+.hpk-fit { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 22px; color: var(--muted); font-size: var(--supporting-text); font-weight: var(--weight-card-headings); }
+.hpk-fit a { padding: 7px 12px; border: 1px solid var(--line); border-radius: 8px; background: #fff; color: var(--ink); font-size: 13.5px; font-weight: 700; text-decoration: none; transition: border-color 150ms ease, color 150ms ease; }
 .hpk-fit a:hover { border-color: var(--blue); color: var(--blue); }
 .hpk a:focus-visible { outline: 3px solid rgb(59 167 242 / 45%); outline-offset: 3px; }
 
+/* Breakpoints mirror the sibling .home-package-grid: two columns on
+   tablet, one column from 600px down. No horizontal overflow at any width
+   (single-column grid + full-width CTA). */
 @media (max-width: 980px) {
-  .hpk-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .hpk-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .hpk-card { padding: 22px; }
 }
-@media (max-width: 560px) {
+@media (max-width: 600px) {
   .hpk { padding: 60px 0; }
   .hpk-wrap { padding: 0 16px; }
-  .hpk-grid { grid-template-columns: 1fr; }
+  .hpk-grid { grid-template-columns: 1fr; gap: 14px; }
   .hpk-all { width: 100%; justify-content: center; }
   .hpk-try { align-items: flex-start; flex-direction: column; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .hpk-all, .hpk-card { transition: none; }
-  .hpk-all:hover, .hpk-card:hover, .hpk-card:focus-visible { transform: none; }
+  .hpk-all, .hpk-fit a { transition: none; }
 }
