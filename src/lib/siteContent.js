@@ -46,7 +46,7 @@ export const venueCategories = [
     icon: Dumbbell,
     title: "Gyms",
     audience: "Health-focused regulars who come back several times a week.",
-    bestFor: "Nutrition, sportswear, diagnostics, insurance, healthy food.",
+    bestFor: "Nutrition, sportswear, insurance, healthy food.",
     summary: "Health-focused, high-routine regulars.",
   },
   {

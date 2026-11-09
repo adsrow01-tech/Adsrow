@@ -20,7 +20,6 @@ const venueTypes = [
   "Apartment community",
   "Café / restaurant",
   "Gym",
-  "Clinic",
   "Mall",
   "Supermarket",
   "Office / commercial",
@@ -229,14 +228,14 @@ function EnquiryForm({ kind, requestedScreens, requestedDailyPrice }) {
       <div className="form-row">
         <TextField id={`${kind}-name`} label="Your name" required error={errors.name} value={form.name} onChange={(event) => update("name", event.target.value)} placeholder="Full name" autoComplete="name" />
         {isAdvertiser
-          ? <TextField id="business-name" label="Business name" required error={errors.businessName} value={form.businessName} onChange={(event) => update("businessName", event.target.value)} placeholder="e.g. Sri Sai Diagnostics" autoComplete="organization" />
+          ? <TextField id="business-name" label="Business name" required error={errors.businessName} value={form.businessName} onChange={(event) => update("businessName", event.target.value)} placeholder="e.g. Sri Sai Foods" autoComplete="organization" />
           : <SelectField id="venue-type" label="Venue type" required error={errors.venueType} value={form.venueType} options={venueTypes} onChange={(event) => update("venueType", event.target.value)} />}
       </div>
 
       {isAdvertiser ? (
         <div className="form-row">
           <TextField id="advertiser-phone" label="Phone / WhatsApp" required error={errors.phone} value={form.phone} onChange={(event) => update("phone", event.target.value.replace(/\D/g, "").slice(0, 10))} placeholder="10-digit mobile number" type="tel" inputMode="numeric" autoComplete="tel-national" />
-          <SelectField id="promotion" label="What are you promoting?" required error={errors.promotion} value={form.promotion} options={["Real estate", "Food & restaurants", "Healthcare", "Education", "Automobile", "Retail & FMCG", "Finance", "Other"]} onChange={(event) => update("promotion", event.target.value)} />
+          <SelectField id="promotion" label="What are you promoting?" required error={errors.promotion} value={form.promotion} options={["Real estate", "Food & restaurants", "Nutrition & sportswear", "Education", "Automobile", "Retail & FMCG", "Finance", "Other"]} onChange={(event) => update("promotion", event.target.value)} />
         </div>
       ) : (
         <div className="form-row">

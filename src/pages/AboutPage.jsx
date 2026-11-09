@@ -29,7 +29,7 @@ function AboutPage() {
             <p className="eyebrow">ABOUT ADSROW</p>
             <h1>We connect local brands with the places people spend their day.</h1>
             <p className="page-hero-description">
-              Adsrow is a Vijayawada company building one screen network across the places people live, eat, shop, work and get well.
+              Adsrow is a Vijayawada company building one screen network across the places people live, eat, shop, work and wait.
             </p>
           </div>
           <figure className="about-hero-visual">
@@ -62,7 +62,7 @@ function AboutPage() {
             <p className="eyebrow">OUR STORY</p>
             <h2>Why we started</h2>
             <p>Local businesses had two options: a billboard few people noticed, or pamphlets that went straight in the bin.</p>
-            <p>Yet their customers spent hours each day waiting: in lift lobbies, cafés, clinics and checkout queues. We built Adsrow to put the right local message in those moments.</p>
+            <p>Yet their customers spent hours each day waiting: in lift lobbies, cafés and checkout queues. We built Adsrow to put the right local message in those moments.</p>
             <p>We began with a 30-screen pilot. Today we're building a 60-screen network across 40 venues, and we're still growing.</p>
           </div>
         </div>
