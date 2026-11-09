@@ -5,6 +5,8 @@ import React from "react";
 import { renderToString } from "react-dom/server";
 import { StaticRouter } from "react-router-dom";
 
+const startedAt = Date.now();
+const mark = (message) => console.log(`[prerender +${Date.now() - startedAt}ms] ${message}`);
 const root = path.resolve("dist");
 const routes = {
   "/": ["Adsrow | Local Digital Advertising", "Adsrow helps businesses reach local audiences through digital advertising screens.", "index, follow"],
@@ -24,6 +26,7 @@ const routes = {
 
 const escapeHtml = (value) => value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;");
 const template = await readFile(path.join(root, "index.html"), "utf8");
+mark("Loaded Vite HTML template");
 const cleanTemplate = template
   .replace(/\s*<title>[\s\S]*?<\/title>/i, "")
   .replace(/\s*<meta\s+name="description"[^>]*>/gi, "");
@@ -34,28 +37,55 @@ globalThis.window = { scrollY: 0, matchMedia: () => ({ matches: false, addEventL
 Object.defineProperty(globalThis, "navigator", { configurable: true, value: { userAgent: "Adsrow prerender" } });
 globalThis.document = { title: "", querySelector() { return null; }, createElement() { return {}; }, head: { appendChild() {} } };
 
-const vite = await createServer({ root: process.cwd(), server: { middlewareMode: true }, appType: "spa" });
-const [{ default: App }, { AuthProvider }] = await Promise.all([
-  vite.ssrLoadModule("/src/App.jsx"),
-  vite.ssrLoadModule("/src/context/AuthContext.jsx"),
-]);
+let vite;
+try {
+  // This is a one-shot SSR render, not a development server. Disabling the
+  // file watcher prevents chokidar handles from keeping the Node process alive
+  // after the generated files have been flushed.
+  vite = await createServer({
+    root: process.cwd(),
+    server: { middlewareMode: true, hmr: false, watch: null },
+    appType: "spa",
+  });
+  mark("Created Vite SSR server with file watching disabled");
+  const [{ default: App }, { AuthProvider }] = await Promise.all([
+    vite.ssrLoadModule("/src/App.jsx"),
+    vite.ssrLoadModule("/src/context/AuthContext.jsx"),
+  ]);
+  mark("Loaded React SSR modules");
 
-for (const [route, [title, description, robots]] of Object.entries(routes)) {
-  const appHtml = renderToString(React.createElement(StaticRouter, { location: route }, React.createElement(AuthProvider, null, React.createElement(App))));
-  const canonical = `https://adsrow.com${route === "/" ? "/" : route}`;
-  const metadata = `<title>${escapeHtml(title)}</title><meta name="description" content="${escapeHtml(description)}"><meta name="robots" content="${robots}"><link rel="canonical" href="${canonical}"><meta property="og:title" content="${escapeHtml(title)}"><meta property="og:description" content="${escapeHtml(description)}"><meta property="og:url" content="${canonical}"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${escapeHtml(title)}"><meta name="twitter:description" content="${escapeHtml(description)}">`;
-  const html = cleanTemplate.replace("</head>", `${metadata}</head>`).replace(/<div id="root">[\s\S]*?<\/div>/, `<div id="root">${appHtml}</div>`);
-  const directory = path.join(root, route === "/" ? "" : route.slice(1));
-  await mkdir(directory, { recursive: true });
-  await writeFile(path.join(directory, "index.html"), html);
+  for (const [route, [title, description, robots]] of Object.entries(routes)) {
+    const appHtml = renderToString(React.createElement(StaticRouter, { location: route }, React.createElement(AuthProvider, null, React.createElement(App))));
+    const canonical = `https://adsrow.com${route === "/" ? "/" : route}`;
+    const metadata = `<title>${escapeHtml(title)}</title><meta name="description" content="${escapeHtml(description)}"><meta name="robots" content="${robots}"><link rel="canonical" href="${canonical}"><meta property="og:title" content="${escapeHtml(title)}"><meta property="og:description" content="${escapeHtml(description)}"><meta property="og:url" content="${canonical}"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${escapeHtml(title)}"><meta name="twitter:description" content="${escapeHtml(description)}">`;
+    const html = cleanTemplate.replace("</head>", `${metadata}</head>`).replace(/<div id="root">[\s\S]*?<\/div>/, `<div id="root">${appHtml}</div>`);
+    const directory = path.join(root, route === "/" ? "" : route.slice(1));
+    await mkdir(directory, { recursive: true });
+    await writeFile(path.join(directory, "index.html"), html);
+    mark(`Wrote ${route === "/" ? "/" : route}`);
+  }
+
+  // Apache serves this document as the body of an HTTP 404 for paths that do
+  // not match a generated route. It uses the same hydrated React tree as the
+  // client-side wildcard route, so direct requests and client navigation agree.
+  const notFoundHtml = renderToString(React.createElement(StaticRouter, { location: "/__not-found__" }, React.createElement(AuthProvider, null, React.createElement(App))));
+  const notFoundMetadata = '<title>Page not found | Adsrow</title><meta name="description" content="The requested Adsrow page could not be found."><meta name="robots" content="noindex, nofollow"><meta property="og:title" content="Page not found | Adsrow"><meta property="og:description" content="The requested Adsrow page could not be found."><meta property="og:type" content="website"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Page not found | Adsrow"><meta name="twitter:description" content="The requested Adsrow page could not be found.">';
+  await writeFile(path.join(root, "404.html"), cleanTemplate.replace("</head>", `${notFoundMetadata}</head>`).replace(/<div id="root">[\s\S]*?<\/div>/, `<div id="root">${notFoundHtml}</div>`));
+  mark(`Wrote 404.html; rendered ${Object.keys(routes).length} route documents`);
+} finally {
+  if (vite) {
+    mark("Closing Vite SSR server");
+    await vite.close();
+    mark("Vite SSR server closed");
+  }
 }
 
-// Apache serves this document as the body of an HTTP 404 for paths that do
-// not match a generated route. It uses the same hydrated React tree as the
-// client-side wildcard route, so direct requests and client navigation agree.
-const notFoundHtml = renderToString(React.createElement(StaticRouter, { location: "/__not-found__" }, React.createElement(AuthProvider, null, React.createElement(App))));
-const notFoundMetadata = '<title>Page not found | Adsrow</title><meta name="description" content="The requested Adsrow page could not be found."><meta name="robots" content="noindex, nofollow"><meta property="og:title" content="Page not found | Adsrow"><meta property="og:description" content="The requested Adsrow page could not be found."><meta property="og:type" content="website"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Page not found | Adsrow"><meta name="twitter:description" content="The requested Adsrow page could not be found.">';
-await writeFile(path.join(root, "404.html"), cleanTemplate.replace("</head>", `${notFoundMetadata}</head>`).replace(/<div id="root">[\s\S]*?<\/div>/, `<div id="root">${notFoundHtml}</div>`));
-
-await vite.close();
-console.log(`Rendered ${Object.keys(routes).length} React route documents and 404.html.`);
+const activeHandles = typeof process._getActiveHandles === "function"
+  ? process._getActiveHandles().map((handle) => handle?.constructor?.name || "unknown")
+  : [];
+const activeRequests = typeof process._getActiveRequests === "function"
+  ? process._getActiveRequests().map((request) => request?.constructor?.name || "unknown")
+  : [];
+mark(`Open handles after cleanup: ${activeHandles.length ? activeHandles.join(", ") : "none"}`);
+mark(`Open requests after cleanup: ${activeRequests.length ? activeRequests.join(", ") : "none"}`);
+mark("Prerender complete; allowing Node to exit naturally");

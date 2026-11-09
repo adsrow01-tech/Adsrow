@@ -44,6 +44,7 @@ jobs:
         run: npm ci
 
       - name: Build application and prerender routes
+        timeout-minutes: 5
         run: npm run build
 
       - name: Validate production artifact
