@@ -1,10 +1,13 @@
 export default function BrandWordmark() {
   return (
-    <span className="header-wordmark" aria-hidden="true">
-      <span className="wordmark-ads">ads</span>
-      <span className="wordmark-row">row</span>
-      <span className="wordmark-dot">.</span>
-      <sup>®</sup>
-    </span>
+    <img
+      className="header-logo"
+      src="/brand/adsrow-logo-primary.png"
+      alt="Adsrow"
+      width={149}
+      height={32}
+      loading="eager"
+      decoding="async"
+    />
   );
 }

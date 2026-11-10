@@ -9,10 +9,10 @@ function Footer() {
           <Link to="/" className="brand footer-brand" aria-label="Adsrow home">
             <img
               className="footer-logo"
-              src="/adsrow-logo-footer-white.png"
+              src="/brand/adsrow-logo-white.png"
               alt="Adsrow"
-              width={2065}
-              height={762}
+              width={140}
+              height={30}
             />
           </Link>
 
