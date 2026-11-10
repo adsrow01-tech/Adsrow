@@ -1,0 +1,5 @@
+# The registration endpoint is intentionally unauthenticated at the Edge
+# gateway because it creates the first user session. It performs its own
+# origin, input, legal-version and server-secret checks.
+[functions.register-with-legal]
+verify_jwt = false
