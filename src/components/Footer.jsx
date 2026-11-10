@@ -33,6 +33,9 @@ function Footer() {
           <Link to="/packages">Packages</Link>
           <Link to="/network">Our Network</Link>
           <Link to="/faqs">FAQs</Link>
+          <Link to="/terms">Terms of Service (Draft)</Link>
+          <Link to="/privacy">Privacy Policy (Draft)</Link>
+          <Link to="/refund-policy">Refund &amp; Cancellation (Draft)</Link>
         </div>
 
         <div className="footer-column">

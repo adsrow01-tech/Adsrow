@@ -128,8 +128,8 @@ Deno.serve(async (request) => {
           <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width:100%;max-width:640px;background-color:#ffffff;border:1px solid #e4ebf3;border-radius:16px;box-shadow:0 10px 28px rgba(23,35,61,0.07);">
             <tr>
               <td style="padding:30px 40px 24px;border-bottom:1px solid #edf1f6;">
-                <a href="https://adsrow01.vercel.app" style="display:inline-block;text-decoration:none;">
-                  <img src="https://adsrow01.vercel.app/adsrow-logo.png" width="144" alt="Adsrow" style="display:block;width:144px;height:auto;border:0;">
+                <a href="https://adsrow.com" style="display:inline-block;text-decoration:none;">
+                  <img src="https://adsrow.com/adsrow-logo.png" width="144" alt="Adsrow" style="display:block;width:144px;height:auto;border:0;">
                 </a>
               </td>
             </tr>
@@ -145,7 +145,7 @@ Deno.serve(async (request) => {
                 <table role="presentation" cellspacing="0" cellpadding="0" border="0">
                   <tr>
                     <td style="border-radius:8px;background-color:#104493;">
-                      <a href="https://adsrow01.vercel.app" style="display:inline-block;padding:15px 24px;border:1px solid #104493;border-radius:8px;color:#ffffff;font-size:15px;font-weight:700;line-height:1.2;text-decoration:none;">Explore Adsrow</a>
+                      <a href="https://adsrow.com" style="display:inline-block;padding:15px 24px;border:1px solid #104493;border-radius:8px;color:#ffffff;font-size:15px;font-weight:700;line-height:1.2;text-decoration:none;">Explore Adsrow</a>
                     </td>
                   </tr>
                 </table>

@@ -42,6 +42,7 @@ function Header() {
     { name: "About Us", path: "/about" },
     { name: "Our Network", path: "/network" },
     { name: "Packages", path: "/packages" },
+    { name: "Blog", path: "/blog" },
   ];
 
   const moreLinks = [
