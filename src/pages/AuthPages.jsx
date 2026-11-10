@@ -147,7 +147,7 @@ function AuthPage({ mode }) {
     <section className="auth-page">
       <div className="auth-decoration" aria-hidden="true"><span /><span /><span /></div>
       <aside className="auth-aside">
-        <Link to="/" className="auth-wordmark" aria-label="Adsrow home"><span>ads</span><b>row</b><i>.</i><sup>®</sup></Link>
+        <Link to="/" className="auth-wordmark" aria-label="Adsrow home"><img src="/brand/adsrow-logo-primary.png" alt="Adsrow" width={149} height={32} /></Link>
         <div className="auth-aside-copy">
           <p className="auth-aside-kicker">LOCAL ADVERTISING, MADE SIMPLE</p>
           <h2>{signup ? "Reach the right people, right where they live." : "Reach people where they pause."}</h2>
