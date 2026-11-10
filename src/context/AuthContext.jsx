@@ -1,14 +1,17 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { isSupabaseConfigured, supabase } from "../lib/supabase";
 import { sendWelcomeEmail } from "../lib/welcomeEmail";
+import LoadingScreen from "../components/LoadingScreen";
 
-const AuthContext = createContext({ user: null, session: null, loading: true, signOut: async () => {} });
+const AuthContext = createContext({ user: null, session: null, loading: true, signingOut: false, signOut: async () => {} });
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(isSupabaseConfigured);
+  const [signingOut, setSigningOut] = useState(false);
   const authRevision = useRef(0);
+  const signOutInFlight = useRef(null);
 
   useEffect(() => {
     if (!supabase) return;
@@ -48,14 +51,37 @@ export function AuthProvider({ children }) {
   }, []);
 
   async function signOut() {
-    authRevision.current += 1;
-    setSession(null);
-    setUser(null);
-    setLoading(false);
-    if (supabase) await supabase.auth.signOut({ scope: "local" });
+    if (signOutInFlight.current) return signOutInFlight.current;
+
+    const request = (async () => {
+      setSigningOut(true);
+      try {
+        if (supabase) {
+          const { error } = await supabase.auth.signOut({ scope: "local" });
+          if (error) throw error;
+        }
+        authRevision.current += 1;
+        setSession(null);
+        setUser(null);
+        setLoading(false);
+      } finally {
+        setSigningOut(false);
+      }
+    })();
+
+    signOutInFlight.current = request;
+    try {
+      await request;
+    } finally {
+      if (signOutInFlight.current === request) signOutInFlight.current = null;
+    }
   }
 
-  return <AuthContext.Provider value={{ user, session, loading, signOut }}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={{ user, session, loading, signingOut, signOut }}>
+      {loading ? <LoadingScreen /> : children}
+    </AuthContext.Provider>
+  );
 }
 
 export function useAuth() {

@@ -51,7 +51,7 @@ export default function DashboardPage() {
             <p className="dashboard-label">Submitted enquiries</p>
             <strong>{count}</strong>
             <small>Tracked from this browser</small>
-            <Link to="/partner-form" className="dashboard-link">Start an enquiry <ArrowRight size={16} /></Link>
+            <Link to="/contact" className="dashboard-link">Start an enquiry <ArrowRight size={16} /></Link>
           </article>
 
           <article className="dashboard-card ads-card ads-card-interactive ads-accent-6">

@@ -78,7 +78,7 @@ export const privacySections = [
 
 function slugify(value) { return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
 
-function LegalLayout({ eyebrow, title, documentDate, sections }) {
+function LegalLayout({ title, documentDate, sections }) {
   useEffect(() => {
     document.title = `${title} | Adsrow`;
     let robots = document.querySelector('meta[name="robots"]');
@@ -90,10 +90,8 @@ function LegalLayout({ eyebrow, title, documentDate, sections }) {
     <main className="legal-page section">
       <div className="container legal-container">
         <Link to="/" className="legal-back">← Back to Adsrow</Link>
-        <p className="eyebrow">{eyebrow}</p>
         <h1 className="page-title">{title}</h1>
         <p className="legal-meta">Adsrow Media Network Private Limited · {documentDate}</p>
-        <div className="legal-draft-notice" role="note"><strong>DRAFT — UNDER LEGAL REVIEW</strong><br />This document contains square-bracket placeholders and drafting notes. It is not ready for public publication until the business owner and an Indian advocate or CA complete and approve it.</div>
         <nav className="legal-toc" aria-label={`${title} contents`}><strong>Contents</strong><ol>{sections.map(([heading]) => <li key={heading}><a href={`#${slugify(heading)}`}>{heading}</a></li>)}</ol></nav>
         <div className="legal-content">{sections.map(([heading, text]) => <section className="legal-section" id={slugify(heading)} key={heading}><h2>{heading}</h2>{text.split(/\n\n+/).map((paragraph, index) => { const lines = paragraph.split("\n"); return <p key={`${heading}-${index}`}>{lines.map((line, lineIndex) => <span key={lineIndex}>{line}{lineIndex < lines.length - 1 && <br />}</span>)}</p>; })}</section>)}</div>
       </div>
@@ -101,6 +99,6 @@ function LegalLayout({ eyebrow, title, documentDate, sections }) {
   );
 }
 
-export function TermsPage() { return <LegalLayout eyebrow="LEGAL · DRAFT" title="Terms of Service" documentDate="Effective date: [●] · Last updated: [●]" sections={termsSections} />; }
-export function RefundPolicyPage() { return <LegalLayout eyebrow="LEGAL · DRAFT" title="Refund and Cancellation Policy" documentDate="Effective date: [●] · Last updated: [●]" sections={refundSections} />; }
-export function PrivacyPage() { return <LegalLayout eyebrow="LEGAL · DRAFT" title="Privacy Policy" documentDate="Effective date: [●] · Last updated: [●]" sections={privacySections} />; }
+export function TermsPage() { return <LegalLayout title="Terms of Service" documentDate="Effective date: [●] · Last updated: [●]" sections={termsSections} />; }
+export function RefundPolicyPage() { return <LegalLayout title="Refund and Cancellation Policy" documentDate="Effective date: [●] · Last updated: [●]" sections={refundSections} />; }
+export function PrivacyPage() { return <LegalLayout title="Privacy Policy" documentDate="Effective date: [●] · Last updated: [●]" sections={privacySections} />; }

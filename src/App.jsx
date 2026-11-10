@@ -1,6 +1,7 @@
 import React, { Suspense } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import Layout from "./components/Layout";
+import LoadingScreen from "./components/LoadingScreen";
 import { useAuth } from "./context/AuthContext";
 import { getCurrentPath } from "./lib/redirect";
 import { lazyRoute } from "./lib/lazyRoute";
@@ -26,6 +27,29 @@ const NotFoundPage = lazyRoute(() => import("./pages/NotFoundPage"));
 const BlogArticlePage = lazyRoute(() => import("./pages/BlogPage").then(({ BlogArticlePage: component }) => ({ default: component })));
 const BlogPage = lazyRoute(() => import("./pages/BlogPage").then(({ BlogPage: component }) => ({ default: component })));
 const AdminPage = lazyRoute(() => import("./pages/AdminPages").then(({ ProtectedAdminPage: component }) => ({ default: component })));
+
+class AppErrorBoundary extends React.Component {
+  state = { hasError: false };
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  render() {
+    if (!this.state.hasError) return this.props.children;
+    return (
+      <div className="loading-screen" role="alert">
+        <div className="loading-screen-content">
+          <img className="loading-screen-logo" src="/brand/adsrow-logo-primary.png" alt="Adsrow" width={180} height={39} />
+          <p className="loading-screen-error">We couldn't load Adsrow right now.</p>
+          <button className="loading-screen-retry" type="button" onClick={() => window.location.reload()}>
+            Try again
+          </button>
+        </div>
+      </div>
+    );
+  }
+}
 
 function LegacyPartnerFormRedirect() {
   const location = useLocation();
@@ -58,9 +82,11 @@ function ProtectedDashboardPage() {
 
 export default function App() {
   return (
-    <Suspense fallback={<section className="section"><div className="container"><p>Loading Adsrow…</p></div></section>}>
+    <AppErrorBoundary>
+      <Suspense fallback={<LoadingScreen />}>
       <Routes>
         <Route path="/admin" element={<AdminPage />} />
+        <Route path="/partner-form" element={<LegacyPartnerFormRedirect />} />
         <Route element={<Layout />}>
         <Route path="/" element={<HomePage />} />
         <Route path="/about" element={<AboutPage />} />
@@ -74,7 +100,6 @@ export default function App() {
         <Route path="/why-adsrow" element={<WhyAdsrowPage />} />
         <Route path="/faqs" element={<FaqsPage />} />
         <Route path="/advertise" element={<LegacyAdvertiseRedirect />} />
-        <Route path="/partner-form" element={<LegacyPartnerFormRedirect />} />
         <Route path="/advertise/enquiry" element={<LegacyPartnerFormRedirect />} />
         <Route path="/dashboard" element={<ProtectedDashboardPage />} />
         <Route path="/host-a-screen" element={<HostAScreenPage />} />
@@ -89,7 +114,8 @@ export default function App() {
         <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>
-    </Suspense>
+      </Suspense>
+    </AppErrorBoundary>
   );
 }
 

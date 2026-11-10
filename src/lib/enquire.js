@@ -82,6 +82,10 @@ export async function submitEnquiry(values) {
     if (!response.ok || data.success !== true) {
       throw new Error(ENQUIRY_SERVER_MESSAGE);
     }
+    // Email delivery succeeded: mirror the enquiry into the dashboard's
+    // `requests` table in the background. A record-store failure must never
+    // block the site form (it is fully handled inside the helper).
+    void recordEnquiryToSupabase(values);
     return data;
   } catch (error) {
     if (error instanceof Error && error.message === ENQUIRY_SERVER_MESSAGE) throw error;

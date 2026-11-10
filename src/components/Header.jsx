@@ -17,24 +17,25 @@ function Header() {
   const lastCompactRef = useRef(isCompact);
   const transitionStartRectsRef = useRef(null);
   const transitionFrameRef = useRef(0);
-  const { user, signOut } = useAuth();
+  const { user, signOut, signingOut } = useAuth();
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
   async function handleSignOut() {
+    if (signingOut) return;
     try {
       await signOut();
+      setMenuOpen(false);
+      navigate("/", { replace: true });
     } catch {
-      // Local state is cleared immediately even if Supabase sign-out fails.
+      // Keep the current authenticated session and page when sign-out fails.
+      return;
     }
-    setMenuOpen(false);
-    navigate("/", { replace: true });
   }
 
   function handleNavLinkClick() {
     setMenuOpen(false);
     setMoreOpen(false);
-    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
   }
 
   const primaryLinks = [
@@ -213,7 +214,8 @@ function Header() {
   return (
     <header className={`site-header${isCompact ? " is-compact" : ""}`}>
       <div className="container header-inner">
-        <div className="header-brand-cta">
+        {/* LEFT group: logo. The Partner CTA moved to the RIGHT group. */}
+        <div className="header-left header-brand-cta">
           <Link
             to="/"
             className="brand header-brand"
@@ -223,12 +225,9 @@ function Header() {
           >
             <BrandWordmark />
           </Link>
-          <Link to="/partner-form" className="button desktop-contact" ref={partnerCtaRef}>
-            Partner with Adsrow <ArrowUpRight size={16} />
-          </Link>
         </div>
 
-        <nav id="primary-navigation" className={`nav-links ${menuOpen ? "is-open" : ""}`}>
+        <nav id="primary-navigation" className={`header-center nav-links ${menuOpen ? "is-open" : ""}`}>
           {primaryLinks.map((link) => (
             <NavLink
               key={link.path}
@@ -291,22 +290,37 @@ function Header() {
           ))}
 
           <Link
-            to="/partner-form"
+            to="/contact"
             className="button mobile-contact"
             onClick={() => setMenuOpen(false)}
           >
             Partner with Adsrow <ArrowUpRight size={16} />
           </Link>
-          {user ? <><Link to="/dashboard" className="auth-nav-link mobile-auth-link" onClick={() => setMenuOpen(false)}>Dashboard</Link><button className="mobile-auth-link" onClick={handleSignOut}>Sign out</button></> : <>
+          {user ? <><Link to="/dashboard" className="auth-nav-link mobile-auth-link" onClick={() => setMenuOpen(false)}>Dashboard</Link><button className="mobile-auth-link" type="button" onClick={handleSignOut} disabled={signingOut} aria-busy={signingOut}>Sign out</button></> : <>
             <Link to="/login" className="auth-nav-link mobile-auth-link" onClick={() => setMenuOpen(false)}>Log in</Link>
             <Link to="/signup" className="button mobile-signup" onClick={() => setMenuOpen(false)}>Create account</Link>
           </>}
         </nav>
 
-        {user ? <div className="header-account"><Link to="/dashboard" className="header-user" title="Open your dashboard" aria-label={`Open dashboard for ${user.email || "your account"}`}><CircleUserRound size={23} /><span className="header-user-label">{user.user_metadata?.full_name || user.email}</span></Link><button className="header-signout" onClick={handleSignOut}>Sign out</button></div> : <div className="header-auth-links">
+        {/* RIGHT group: profile + username + Sign out (or Log in / Sign up),
+            then the Partner CTA — one packed group at the right edge. */}
+        <div className="header-right">
+          {user ? <div className="header-account">
+            <Link to="/dashboard" className="header-user-icon" title="Open your dashboard" aria-label={`Open dashboard for ${user.email || "your account"}`}>
+              <CircleUserRound size={23} aria-hidden="true" />
+            </Link>
+            <Link to="/dashboard" className="header-user-name" title={user.user_metadata?.full_name || user.email}>
+              <span className="header-user-label">{user.user_metadata?.full_name || user.email}</span>
+            </Link>
+            <button className="header-signout" type="button" onClick={handleSignOut} disabled={signingOut} aria-busy={signingOut}>Sign out</button>
+          </div> : <div className="header-auth-links">
           <Link to="/login" className="header-login">Log in</Link>
           <Link to="/signup" className="button header-signup">Sign up</Link>
         </div>}
+          <Link to="/contact" className="button desktop-contact" ref={partnerCtaRef}>
+            Partner with Adsrow <ArrowUpRight size={16} />
+          </Link>
+        </div>
         <button
           type="button"
           className="menu-toggle"
