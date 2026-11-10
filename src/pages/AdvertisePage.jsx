@@ -44,7 +44,7 @@ function AdvertisePage() {
         <div className="container text-center">
           <h2 className="section-title">Ready to plan your campaign?</h2>
           <p className="body-copy">Share your goals and target communities with Adsrow.</p>
-          <Link className="button" to="/partner-form">Start Your Campaign <ArrowRight size={16} /></Link>
+          <Link className="button" to="/contact">Start Your Campaign <ArrowRight size={16} /></Link>
         </div>
       </section>
 

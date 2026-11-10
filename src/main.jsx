@@ -6,6 +6,7 @@ import "./styles/adsrow-99-banner.css";
 import "./styles/home-benefits.css";
 import { AuthProvider } from "./context/AuthContext";
 import App from "./App";
+import "./styles/loading-screen.css";
 
 const rootElement = document.getElementById("root");
 const app = (

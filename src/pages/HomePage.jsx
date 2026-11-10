@@ -443,7 +443,7 @@ function HomePage() {
                     TARGETED BY DESIGN
                   </span>
                 )}
-                <span className="benefit-number" aria-hidden="true">{`0${index + 1}`}</span>
+                <span className="benefit-number" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
                 <h3>{benefit.title}</h3>
                 <p>{benefit.description}</p>
                 {index === 0 && (
@@ -528,7 +528,7 @@ function HomePage() {
             <p>Get a free plan with venues, a schedule and a clear price. No obligation.</p>
           </div>
           <div className="cta-actions">
-            <Link className="button" to="/partner-form">Get My Free Plan <ArrowUpRight size={16} /></Link>
+            <Link className="button" to="/contact">Get My Free Plan <ArrowUpRight size={16} /></Link>
             <a className="text-link" href="https://wa.me/918374622055" target="_blank" rel="noreferrer">WhatsApp Us <ArrowRight size={16} /></a>
           </div>
         </div>

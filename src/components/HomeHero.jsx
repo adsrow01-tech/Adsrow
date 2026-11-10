@@ -61,7 +61,7 @@ export default function HomeHero() {
           </h1>
           <p className="home-dynamic-description">Put your ad on digital screens in apartment lift lobbies, restaurants, cafés and gyms. Pick your audience, book once and get proof every ad played, from ₹99 a day.</p>
           <div className="home-dynamic-actions">
-            <Link className="home-dynamic-primary" to="/partner-form">Start My Campaign <ArrowUpRight size={16} /></Link>
+            <Link className="home-dynamic-primary" to="/contact">Start My Campaign <ArrowUpRight size={16} /></Link>
             <Link className="home-dynamic-secondary" to="/network">Explore the Network <ArrowRight size={16} /></Link>
           </div>
           <p className="home-dynamic-trust"><CheckCircle2 size={18} />One booking · One invoice · One play report</p>

@@ -31,7 +31,7 @@ function currentPrices(dailyPrice, discount, months) {
 function PartnerEnquiryLink({ pack, months, dailyPrice, children, className = "arap-btn", style }) {
   const params = new URLSearchParams({ pack, term: String(months), dailyPrice: String(dailyPrice) });
   if (pack === "try-it") params.set("screens", "2");
-  return <Link className={className} style={style} to={`/partner-form?${params.toString()}`}>{children}</Link>;
+  return <Link className={className} style={style} to={`/contact?${params.toString()}`}>{children}</Link>;
 }
 
 function useAnimatedPrices(basePrice, months, discount) {
@@ -224,7 +224,7 @@ function PackageFinalCta() {
         <div className="pk-final-box ads-card">
           <div><h2>Not sure which pack fits <span>your business?</span></h2><p>Tell us what you sell and where. We'll recommend a pack and send a clear price.</p></div>
           <div className="pk-final-actions">
-            <Link className="pk-btn primary" to="/partner-form?type=advertiser">Get My Free Plan <ArrowUpRight size={16} aria-hidden="true" /></Link>
+            <Link className="pk-btn primary" to="/contact?type=advertiser">Get My Free Plan <ArrowUpRight size={16} aria-hidden="true" /></Link>
             <PackageEnquirySection className="pk-final-link" name="pack recommendation" dailyPrice={campaignScreenPricing[2]} months={1}>
               WhatsApp Us <ArrowRight size={15} aria-hidden="true" />
             </PackageEnquirySection>

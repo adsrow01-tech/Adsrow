@@ -59,7 +59,7 @@ export default function PackageComparison() {
             <article
               key={pack.id}
               className={`package-comparison-card ${selectedPack === pack.id ? "highlighted" : ""}`}
-              onClick={() => handlePackageSelect(pack.id)}
+              onClick={() => handlePackSelect(pack.id)}
             >
               <div className="package-comparison-number">0{packages.findIndex(p => p.id === pack.id) + 1}</div>
               <h3 className="package-comparison-name">{pack.name}</h3>

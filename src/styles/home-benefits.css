@@ -73,12 +73,12 @@
 .home-benefits-grid .benefit-number {
   display: block;
   margin: 0;
-  color: #334155;
+  color: var(--accent);
   font-family: 'Manrope', sans-serif;
-  font-size: var(--card-heading);
-  font-weight: var(--weight-card-headings);
+  font-size: 13px;
+  font-weight: 800;
   line-height: 1;
-  letter-spacing: -1.5px;
+  letter-spacing: .08em;
 }
 
 .home-benefits-grid .home-benefit-card h3 {
@@ -149,9 +149,9 @@
 .home-benefits-grid .home-benefit-card-1 .benefit-number {
   margin-top: 6px;
   color: rgba(255,255,255,0.90);
-  font-size: var(--card-heading);
-  font-weight: var(--weight-card-headings);
-  letter-spacing: -1.5px;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: .08em;
 }
 
 .home-benefits-grid .home-benefit-card-1 h3 {
@@ -287,10 +287,6 @@
     padding: 18px;
   }
 
-  .home-benefits-grid .home-benefit-card-1 .benefit-number {
-    font-size: 30px;
-  }
-
   .home-benefits-grid .home-benefit-card-1 h3 {
     font-size: 20px;
   }
@@ -324,10 +320,6 @@
     padding: 18px;
   }
 
-  .home-benefits-grid .home-benefit-card-1 .benefit-number {
-    font-size: var(--card-heading);
-  }
-
   .home-benefits-grid .home-benefit-card-1 h3 {
     font-size: var(--card-heading);
     font-weight: var(--weight-card-headings);
@@ -358,10 +350,6 @@
 
   .home-benefits-grid .home-benefit-card-1 {
     padding: 16px;
-  }
-
-  .home-benefits-grid .home-benefit-card-1 .benefit-number {
-    font-size: var(--card-heading);
   }
 
   .home-benefits-grid .home-benefit-card-1 h3 {
