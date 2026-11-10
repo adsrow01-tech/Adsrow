@@ -17,7 +17,13 @@ RewriteRule ^ - [R=404,L]
 # These are valid client-side routes that are intentionally not prerendered
 # (auth, protected and legacy redirect flows). Keep them on the SPA entry.
 RewriteRule ^(login|signup|forgot-password|reset-password|dashboard|partner-form|advertise|advertise/enquiry|locations|package-comparison)(/)?$ index.html [L]
-RewriteRule ^blog/[^/]+/?$ index.html [L]
+
+# Blog article slugs are intentionally NOT whitelisted here. Articles are
+# pending publication and are neither linked nor prerendered yet, so any slug
+# without a prerendered page must return a real 404 instead of the SPA shell
+# (otherwise unknown slugs serve the homepage document with its canonical).
+# Once an article is published, its prerendered dist/blog/<slug>/ directory is
+# served automatically by the existing-files rule above.
 
 # Unknown extensionless paths must be a real HTTP 404, not an indexable 200.
 RewriteRule ^ - [R=404,L]
@@ -27,7 +33,7 @@ RewriteRule ^ - [R=404,L]
   Header always set X-Frame-Options "SAMEORIGIN"
   Header always set Referrer-Policy "strict-origin-when-cross-origin"
   Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
-  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+  Header always set Strict-Transport-Security "max-age=31536000"
 </IfModule>
 
 # Add a reviewed Content-Security-Policy after confirming all external font,

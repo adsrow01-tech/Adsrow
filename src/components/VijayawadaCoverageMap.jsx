@@ -1,6 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import * as maplibregl from "maplibre-gl";
-import maplibreWorkerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?url";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { targetAreas } from "../lib/siteContent";
 
@@ -56,111 +54,123 @@ export default function VijayawadaCoverageMap() {
 
   useEffect(() => {
     if (!mapContainerRef.current || mapRef.current) return undefined;
+    let active = true;
+    let map;
 
-    // MapLibre's default worker URL points at its package-relative module,
-    // which Vite does not serve as a browser asset in production.  Vite's
-    // `?url` import gives us the emitted, deployment-safe worker URL while
-    // keeping this configuration out of the SSR render path.
-    maplibregl.setWorkerUrl(maplibreWorkerUrl);
+    async function initializeMap() {
+      const [maplibreModule, workerModule] = await Promise.all([
+        import("maplibre-gl"),
+        import("maplibre-gl/dist/maplibre-gl-worker.mjs?url"),
+      ]);
+      const maplibregl = maplibreModule.default || maplibreModule;
+      const maplibreWorkerUrl = workerModule.default || workerModule;
+      if (!active || !mapContainerRef.current || mapRef.current) return;
 
-    const map = new maplibregl.Map({
-      container: mapContainerRef.current,
-      style: OPEN_STREET_MAP_STYLE,
-      center: VIJAYAWADA_CENTER,
-      zoom: 12.1,
-      minZoom: 10.5,
-      maxZoom: 16,
-      attributionControl: false,
-    });
-    mapRef.current = map;
-    map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
-    map.addControl(new maplibregl.AttributionControl({ compact: true, customAttribution: "© OpenStreetMap contributors" }), "bottom-right");
+      maplibregl.setWorkerUrl(maplibreWorkerUrl);
+      map = new maplibregl.Map({
+        container: mapContainerRef.current,
+        style: OPEN_STREET_MAP_STYLE,
+        center: VIJAYAWADA_CENTER,
+        zoom: 12.1,
+        minZoom: 10.5,
+        maxZoom: 16,
+        attributionControl: false,
+      });
+      mapRef.current = map;
+      map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
+      map.addControl(new maplibregl.AttributionControl({ compact: true, customAttribution: "© OpenStreetMap contributors" }), "bottom-right");
 
-    map.on("load", () => {
-      mapHasLoadedRef.current = true;
-      setMapStatus("ready");
-    });
-    map.on("error", () => {
-      if (!mapHasLoadedRef.current) setMapStatus("error");
-    });
+      map.on("load", () => {
+        mapHasLoadedRef.current = true;
+        setMapStatus("ready");
+      });
+      map.on("error", () => {
+        if (!mapHasLoadedRef.current) setMapStatus("error");
+      });
 
-    const markerElements = screenAreas.map((area) => {
-      const markerElement = document.createElement("button");
-      markerElement.type = "button";
-      markerElement.className = "home-maplibre-screen-marker";
-      markerElement.title = `${area.name} — demo area marker`;
-      markerElement.setAttribute("aria-label", `${area.name}, demo screen area marker`);
-      markerElement.innerHTML = "<span class=\"home-maplibre-screen-glow\"></span><span class=\"home-maplibre-screen-display\"><span></span></span>";
+      const markerElements = screenAreas.map((area) => {
+        const markerElement = document.createElement("button");
+        markerElement.type = "button";
+        markerElement.className = "home-maplibre-screen-marker";
+        markerElement.title = `${area.name} — demo area marker`;
+        markerElement.setAttribute("aria-label", `${area.name}, demo screen area marker`);
+        markerElement.innerHTML = "<span class=\"home-maplibre-screen-glow\"></span><span class=\"home-maplibre-screen-display\"><span></span></span>";
 
-      const marker = new maplibregl.Marker({ element: markerElement, anchor: "center" })
-        .setLngLat([area.lon, area.lat])
-        .addTo(map);
-      markerElement.addEventListener("click", (event) => {
-        event.stopPropagation();
-        new maplibregl.Popup({ closeButton: true, closeOnClick: true, offset: 22, className: "adsrow-map-popup" })
+        const marker = new maplibregl.Marker({ element: markerElement, anchor: "center" })
           .setLngLat([area.lon, area.lat])
-          .setHTML(popupMarkup(area.name))
           .addTo(map);
+        markerElement.addEventListener("click", (event) => {
+          event.stopPropagation();
+          new maplibregl.Popup({ closeButton: true, closeOnClick: true, offset: 22, className: "adsrow-map-popup" })
+            .setLngLat([area.lon, area.lat])
+            .setHTML(popupMarkup(area.name))
+            .addTo(map);
+        });
+        return { marker, markerElement };
       });
-      return { marker, markerElement };
-    });
-    markersRef.current = markerElements;
+      markersRef.current = markerElements;
 
-    function updateMarkerVisibility() {
-      const showIndividualMarkers = map.getZoom() >= 11.5;
-      markerElements.forEach(({ markerElement }) => {
-        markerElement.style.display = showIndividualMarkers ? "grid" : "none";
+      function updateMarkerVisibility() {
+        const showIndividualMarkers = map.getZoom() >= 11.5;
+        markerElements.forEach(({ markerElement }) => {
+          markerElement.style.display = showIndividualMarkers ? "grid" : "none";
+        });
+      }
+
+      map.on("load", () => {
+        map.addSource("adsrow-screen-areas", {
+          type: "geojson",
+          data: areaFeatureCollection(),
+          cluster: true,
+          clusterMaxZoom: 11.4,
+          clusterRadius: 60,
+        });
+        map.addLayer({
+          id: "adsrow-screen-clusters",
+          type: "circle",
+          source: "adsrow-screen-areas",
+          filter: ["has", "point_count"],
+          paint: {
+            "circle-color": "#164A9A",
+            "circle-radius": ["step", ["get", "point_count"], 22, 5, 27, 8, 32],
+            "circle-stroke-color": "#00E6E2",
+            "circle-stroke-width": 3,
+            "circle-opacity": .96,
+          },
+        });
+        map.addLayer({
+          id: "adsrow-screen-cluster-count",
+          type: "symbol",
+          source: "adsrow-screen-areas",
+          filter: ["has", "point_count"],
+          layout: { "text-field": ["get", "point_count_abbreviated"], "text-size": 14 },
+          paint: { "text-color": "#FFFFFF" },
+        });
+        updateMarkerVisibility();
       });
+      map.on("zoom", updateMarkerVisibility);
+      map.on("click", "adsrow-screen-clusters", async (event) => {
+        const feature = event.features?.[0];
+        if (!feature) return;
+        const clusterId = feature.properties?.cluster_id;
+        const source = map.getSource("adsrow-screen-areas");
+        if (!source || clusterId === undefined) return;
+        const expansionZoom = await source.getClusterExpansionZoom(clusterId);
+        map.easeTo({ center: feature.geometry.coordinates, zoom: expansionZoom });
+      });
+      map.on("mouseenter", "adsrow-screen-clusters", () => { map.getCanvas().style.cursor = "pointer"; });
+      map.on("mouseleave", "adsrow-screen-clusters", () => { map.getCanvas().style.cursor = ""; });
     }
 
-    map.on("load", () => {
-      map.addSource("adsrow-screen-areas", {
-        type: "geojson",
-        data: areaFeatureCollection(),
-        cluster: true,
-        clusterMaxZoom: 11.4,
-        clusterRadius: 60,
-      });
-      map.addLayer({
-        id: "adsrow-screen-clusters",
-        type: "circle",
-        source: "adsrow-screen-areas",
-        filter: ["has", "point_count"],
-        paint: {
-          "circle-color": "#164A9A",
-          "circle-radius": ["step", ["get", "point_count"], 22, 5, 27, 8, 32],
-          "circle-stroke-color": "#00E6E2",
-          "circle-stroke-width": 3,
-          "circle-opacity": .96,
-        },
-      });
-      map.addLayer({
-        id: "adsrow-screen-cluster-count",
-        type: "symbol",
-        source: "adsrow-screen-areas",
-        filter: ["has", "point_count"],
-        layout: { "text-field": ["get", "point_count_abbreviated"], "text-size": 14 },
-        paint: { "text-color": "#FFFFFF" },
-      });
-      updateMarkerVisibility();
+    initializeMap().catch(() => {
+      if (active) setMapStatus("error");
     });
-    map.on("zoom", updateMarkerVisibility);
-    map.on("click", "adsrow-screen-clusters", async (event) => {
-      const feature = event.features?.[0];
-      if (!feature) return;
-      const clusterId = feature.properties?.cluster_id;
-      const source = map.getSource("adsrow-screen-areas");
-      if (!source || clusterId === undefined) return;
-      const expansionZoom = await source.getClusterExpansionZoom(clusterId);
-      map.easeTo({ center: feature.geometry.coordinates, zoom: expansionZoom });
-    });
-    map.on("mouseenter", "adsrow-screen-clusters", () => { map.getCanvas().style.cursor = "pointer"; });
-    map.on("mouseleave", "adsrow-screen-clusters", () => { map.getCanvas().style.cursor = ""; });
 
     return () => {
+      active = false;
       markersRef.current.forEach(({ marker }) => marker.remove());
       markersRef.current = [];
-      map.remove();
+      if (map) map.remove();
       mapRef.current = null;
     };
   }, []);

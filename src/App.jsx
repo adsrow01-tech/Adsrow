@@ -1,22 +1,30 @@
+import React, { Suspense } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import Layout from "./components/Layout";
-import HomePage from "./pages/HomePage";
-import AboutPage from "./pages/AboutPage";
-import PackageComparisonPage from "./pages/PackageComparisonPage";
-import NetworkPage from "./pages/NetworkPage";
-import HowItWorksPage from "./pages/HowItWorksPage";
-import WhyAdsrowPage from "./pages/WhyAdsrowPage";
-import FaqsPage from "./pages/FaqsPage";
-import HostAScreenPage from "./pages/HostAScreenPage";
-import ContactPage from "./pages/ContactPage";
-import { LoginPage, SignupPage } from "./pages/AuthPages";
-import { ForgotPasswordPage, ResetPasswordPage } from "./pages/AuthRecoveryPages";
-import { PrivacyPage, RefundPolicyPage, TermsPage } from "./pages/LegalPages";
-import DashboardPage from "./pages/DashboardPage";
-import NotFoundPage from "./pages/NotFoundPage";
-import { BlogArticlePage, BlogPage } from "./pages/BlogPage";
 import { useAuth } from "./context/AuthContext";
 import { getCurrentPath } from "./lib/redirect";
+import { lazyRoute } from "./lib/lazyRoute";
+
+const HomePage = lazyRoute(() => import("./pages/HomePage"));
+const AboutPage = lazyRoute(() => import("./pages/AboutPage"));
+const PackageComparisonPage = lazyRoute(() => import("./pages/PackageComparisonPage"));
+const NetworkPage = lazyRoute(() => import("./pages/NetworkPage"));
+const HowItWorksPage = lazyRoute(() => import("./pages/HowItWorksPage"));
+const WhyAdsrowPage = lazyRoute(() => import("./pages/WhyAdsrowPage"));
+const FaqsPage = lazyRoute(() => import("./pages/FaqsPage"));
+const HostAScreenPage = lazyRoute(() => import("./pages/HostAScreenPage"));
+const ContactPage = lazyRoute(() => import("./pages/ContactPage"));
+const LoginPage = lazyRoute(() => import("./pages/AuthPages").then(({ LoginPage: component }) => ({ default: component })));
+const SignupPage = lazyRoute(() => import("./pages/AuthPages").then(({ SignupPage: component }) => ({ default: component })));
+const ForgotPasswordPage = lazyRoute(() => import("./pages/AuthRecoveryPages").then(({ ForgotPasswordPage: component }) => ({ default: component })));
+const ResetPasswordPage = lazyRoute(() => import("./pages/AuthRecoveryPages").then(({ ResetPasswordPage: component }) => ({ default: component })));
+const PrivacyPage = lazyRoute(() => import("./pages/LegalPages").then(({ PrivacyPage: component }) => ({ default: component })));
+const RefundPolicyPage = lazyRoute(() => import("./pages/LegalPages").then(({ RefundPolicyPage: component }) => ({ default: component })));
+const TermsPage = lazyRoute(() => import("./pages/LegalPages").then(({ TermsPage: component }) => ({ default: component })));
+const DashboardPage = lazyRoute(() => import("./pages/DashboardPage"));
+const NotFoundPage = lazyRoute(() => import("./pages/NotFoundPage"));
+const BlogArticlePage = lazyRoute(() => import("./pages/BlogPage").then(({ BlogArticlePage: component }) => ({ default: component })));
+const BlogPage = lazyRoute(() => import("./pages/BlogPage").then(({ BlogPage: component }) => ({ default: component })));
 
 function LegacyPartnerFormRedirect() {
   const location = useLocation();
@@ -49,8 +57,9 @@ function ProtectedDashboardPage() {
 
 export default function App() {
   return (
-    <Routes>
-      <Route element={<Layout />}>
+    <Suspense fallback={<section className="section"><div className="container"><p>Loading Adsrow…</p></div></section>}>
+      <Routes>
+        <Route element={<Layout />}>
         <Route path="/" element={<HomePage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/packages" element={<PackageComparisonPage />} />
@@ -76,7 +85,19 @@ export default function App() {
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/refund-policy" element={<RefundPolicyPage />} />
         <Route path="*" element={<NotFoundPage />} />
-      </Route>
-    </Routes>
+        </Route>
+      </Routes>
+    </Suspense>
   );
+}
+
+const lazyRoutes = [
+  HomePage, AboutPage, PackageComparisonPage, NetworkPage, HowItWorksPage,
+  WhyAdsrowPage, FaqsPage, HostAScreenPage, ContactPage, LoginPage, SignupPage,
+  ForgotPasswordPage, ResetPasswordPage, PrivacyPage, RefundPolicyPage,
+  TermsPage, DashboardPage, NotFoundPage, BlogArticlePage, BlogPage,
+];
+
+export function preloadAppRoutes() {
+  return Promise.all(lazyRoutes.map((route) => route.preload()));
 }

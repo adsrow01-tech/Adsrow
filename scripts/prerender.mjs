@@ -45,14 +45,20 @@ try {
   vite = await createServer({
     root: process.cwd(),
     server: { middlewareMode: true, hmr: false, watch: null },
+    // The prerender process loads every route deliberately, so Vite's
+    // dependency discovery is unnecessary and would start an esbuild worker
+    // that can outlive the one-shot render.
+    optimizeDeps: { noDiscovery: true },
     appType: "spa",
   });
   mark("Created Vite SSR server with file watching disabled");
-  const [{ default: App }, { AuthProvider }] = await Promise.all([
+  const [{ default: App, preloadAppRoutes }, { AuthProvider }] = await Promise.all([
     vite.ssrLoadModule("/src/App.jsx"),
     vite.ssrLoadModule("/src/context/AuthContext.jsx"),
   ]);
   mark("Loaded React SSR modules");
+  await preloadAppRoutes();
+  mark("Preloaded route modules");
 
   for (const [route, [title, description, robots]] of Object.entries(routes)) {
     const appHtml = renderToString(React.createElement(StaticRouter, { location: route }, React.createElement(AuthProvider, null, React.createElement(App))));
@@ -75,7 +81,12 @@ try {
 } finally {
   if (vite) {
     mark("Closing Vite SSR server");
+    for (const environment of Object.values(vite.environments || {})) {
+      await environment._pluginContainer?.close?.();
+      await environment._runner?.close?.();
+    }
     await vite.close();
+    if (vite.watcher?.close) await vite.watcher.close();
     mark("Vite SSR server closed");
   }
 }
@@ -88,4 +99,11 @@ const activeRequests = typeof process._getActiveRequests === "function"
   : [];
 mark(`Open handles after cleanup: ${activeHandles.length ? activeHandles.join(", ") : "none"}`);
 mark(`Open requests after cleanup: ${activeRequests.length ? activeRequests.join(", ") : "none"}`);
+// All route files have been flushed and Vite's server has been closed above.
+// Unref only residual watcher/worker handles so Node can finish naturally;
+// this does not terminate the process or skip pending work.
+for (const handle of process._getActiveHandles?.() || []) {
+  const name = handle?.constructor?.name;
+  if (["FSWatcher", "MessagePort", "ChildProcess"].includes(name)) handle.unref?.();
+}
 mark("Prerender complete; allowing Node to exit naturally");
