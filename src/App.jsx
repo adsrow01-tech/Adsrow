@@ -25,6 +25,7 @@ const DashboardPage = lazyRoute(() => import("./pages/DashboardPage"));
 const NotFoundPage = lazyRoute(() => import("./pages/NotFoundPage"));
 const BlogArticlePage = lazyRoute(() => import("./pages/BlogPage").then(({ BlogArticlePage: component }) => ({ default: component })));
 const BlogPage = lazyRoute(() => import("./pages/BlogPage").then(({ BlogPage: component }) => ({ default: component })));
+const AdminPage = lazyRoute(() => import("./pages/AdminPages").then(({ ProtectedAdminPage: component }) => ({ default: component })));
 
 function LegacyPartnerFormRedirect() {
   const location = useLocation();
@@ -59,6 +60,7 @@ export default function App() {
   return (
     <Suspense fallback={<section className="section"><div className="container"><p>Loading Adsrow…</p></div></section>}>
       <Routes>
+        <Route path="/admin" element={<AdminPage />} />
         <Route element={<Layout />}>
         <Route path="/" element={<HomePage />} />
         <Route path="/about" element={<AboutPage />} />
@@ -95,7 +97,7 @@ const lazyRoutes = [
   HomePage, AboutPage, PackageComparisonPage, NetworkPage, HowItWorksPage,
   WhyAdsrowPage, FaqsPage, HostAScreenPage, ContactPage, LoginPage, SignupPage,
   ForgotPasswordPage, ResetPasswordPage, PrivacyPage, RefundPolicyPage,
-  TermsPage, DashboardPage, NotFoundPage, BlogArticlePage, BlogPage,
+  TermsPage, DashboardPage, NotFoundPage, BlogArticlePage, BlogPage, AdminPage,
 ];
 
 export function preloadAppRoutes() {

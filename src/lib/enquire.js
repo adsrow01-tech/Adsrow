@@ -19,6 +19,36 @@ export function validateEnquiry(values = {}, requiredFields = []) {
   return errors;
 }
 
+// Maps every public enquiry type to its dashboard record type.
+function resolveRequestType(enquiryType) {
+  const value = String(enquiryType ?? "").toLowerCase();
+  if (value.includes("venue") || value.includes("host")) return "partner";
+  if (value.includes("creative support")) return "support";
+  return "contact";
+}
+
+// Records every enquiry in the Supabase `requests` table (the admin dashboard's
+// source of truth) IN ADDITION to the Web3Forms email delivery, which stays the
+// primary channel. A record-store failure must never block the site form: the
+// enquiry still went through to the inbox, so every failure here is silent.
+async function recordEnquiryToSupabase(values) {
+  try {
+    const { supabase, isSupabaseConfigured } = await import("./supabase");
+    if (!isSupabaseConfigured || !supabase) return;
+    await supabase.from("requests").insert({
+      request_type: resolveRequestType(values.enquiryType),
+      name: String(values.name ?? "").trim(),
+      email: String(values.email ?? "").trim(),
+      phone: String(values.phone ?? "").trim(),
+      message: String(values.message ?? "").trim(),
+      details: Object.fromEntries(Object.entries(values).filter(([key, value]) =>
+        !["enquiryType", "name", "email", "phone", "message"].includes(key) && value !== undefined && value !== null && String(value).trim() !== "" && !Array.isArray(value))),
+    });
+  } catch {
+    // Email delivery already succeeded; missing dashboard rows are not fatal.
+  }
+}
+
 export async function submitEnquiry(values) {
   const accessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY;
 

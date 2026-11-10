@@ -5,41 +5,64 @@ import { isSupabaseConfigured, supabase } from "../lib/supabase";
 import GoogleIcon from "../components/GoogleIcon";
 import { useAuth } from "../context/AuthContext";
 import { getSafeNextPath } from "../lib/redirect";
-import { privacySections, termsSections } from "./LegalPages";
+import { privacySections, refundSections, termsSections } from "./LegalPages";
 import { createTermsContentHash, hasLocalTermsAcceptance, persistPendingTermsAcceptance, savePendingTermsAcceptance } from "../lib/termsAcceptance";
 
 const TERMS_READY_FOR_ACCEPTANCE = false;
 const TERMS_CONTENT_HASH = createTermsContentHash(termsSections.map(([heading, text]) => `${heading}\n${text}`).join("\n"));
+const PRIVACY_CONTENT_HASH = createTermsContentHash(privacySections.map(([heading, text]) => `${heading}\n${text}`).join("\n"));
 
-function LegalDocumentModal({ documentType, onAccepted, onClose, onOpenPrivacy }) {
-  const isTerms = documentType === "terms";
-  const sections = isTerms ? termsSections : privacySections;
-  const title = isTerms ? "Terms & Conditions" : "Privacy Policy";
-  const scrollRef = useRef(null);
-  const [atEnd, setAtEnd] = useState(false);
-  const [checked, setChecked] = useState(false);
+function LegalDocumentModal({ initialDocument, onAccepted, onClose }) {
+  const [activeDocument, setActiveDocument] = useState(initialDocument === "privacy" ? "privacy" : "terms");
+  const [readDocuments, setReadDocuments] = useState({});
+  const [agreed, setAgreed] = useState(false);
   const [error, setError] = useState("");
-  function updatePosition() {
+  const scrollRef = useRef(null);
+  const scrollTops = useRef({});
+  // Terms and Privacy are the required documents; the Refund policy is viewable
+  // in the same modal as "review only" and is not part of the agreement checkbox.
+  const REQUIRED_DOCUMENTS = ["terms", "privacy"];
+  const LEGAL_DOCUMENTS = {
+    terms: { title: "Terms & Conditions", contentHash: TERMS_CONTENT_HASH, sections: termsSections },
+    privacy: { title: "Privacy Policy", contentHash: PRIVACY_CONTENT_HASH, sections: privacySections },
+    refund: { title: "Refund & Cancellation Policy", contentHash: null, sections: refundSections },
+  };
+  const documentMeta = LEGAL_DOCUMENTS[activeDocument];
+  const requiredRead = REQUIRED_DOCUMENTS.every((document) => readDocuments[document]);
+  function markReadToEnd() {
     const node = scrollRef.current;
-    if (node) setAtEnd(node.scrollTop + node.clientHeight >= node.scrollHeight - 8);
+    if (node && node.scrollTop + node.clientHeight >= node.scrollHeight - 8) {
+      setReadDocuments((current) => (current[activeDocument] ? current : { ...current, [activeDocument]: true }));
+    }
   }
-  function accept() {
-    if (!checked || !atEnd) return;
-    if (!TERMS_READY_FOR_ACCEPTANCE) return;
-    try { savePendingTermsAcceptance(TERMS_CONTENT_HASH); onAccepted(); onClose(); } catch { setError("We could not save your acceptance. Please try again."); }
+  function switchDocument(nextDocument) {
+    const node = scrollRef.current;
+    if (node) scrollTops.current[activeDocument] = node.scrollTop;
+    setActiveDocument(nextDocument);
   }
+  useEffect(() => {
+    const node = scrollRef.current;
+    if (node) node.scrollTop = scrollTops.current[activeDocument] ?? 0;
+    // A document can already fit entirely on screen; check once after paint.
+    requestAnimationFrame(markReadToEnd);
+  }, [activeDocument]);
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => { document.body.style.overflow = previousOverflow; };
   }, []);
+  function accept() {
+    if (!agreed || !requiredRead || !TERMS_READY_FOR_ACCEPTANCE) return;
+    try { savePendingTermsAcceptance(REQUIRED_DOCUMENTS.map((document) => ({ type: document, contentHash: LEGAL_DOCUMENTS[document].contentHash }))); onAccepted(); onClose(); } catch { setError("We could not save your acceptance. Please try again."); }
+  }
   return <div className="terms-modal-overlay"><section className="terms-gate terms-modal" role="dialog" aria-modal="true" aria-labelledby="terms-gate-title">
-    <div className="terms-gate-header"><div className="terms-modal-heading"><div><p className="eyebrow">ADSROW LEGAL · DRAFT</p><h1 id="terms-gate-title">{title}</h1></div><button type="button" className="terms-modal-close" onClick={onClose} aria-label="Close legal document"><X size={20} /></button></div><p>Please read the document before creating your account.</p><p>Adsrow Media Network Private Limited · Effective date: [●] · Last updated: [●]</p></div>
+    <div className="terms-gate-header"><div className="terms-modal-heading"><div><p className="eyebrow">ADSROW LEGAL · DRAFT</p><h1 id="terms-gate-title">{documentMeta.title}</h1>{activeDocument === "refund" && <button type="button" className="legal-inline-link terms-modal-back" onClick={() => switchDocument("terms")}>← Back to Terms &amp; Privacy</button>}</div><button type="button" className="terms-modal-close" onClick={onClose} aria-label="Close legal document"><X size={20} /></button></div><p>Please read each required document before creating your account.</p><p>Adsrow Media Network Private Limited · Effective date: [●] · Last updated: [●]</p>
+    <div className="terms-tabs" role="tablist" aria-label="Legal documents">{Object.entries(LEGAL_DOCUMENTS).map(([key, meta]) => <button key={key} type="button" role="tab" aria-selected={activeDocument === key} data-read={readDocuments[key] ? "true" : undefined} className="terms-tab" onClick={() => key === activeDocument ? undefined : switchDocument(key)}>{meta.title}{!REQUIRED_DOCUMENTS.includes(key) && <span className="terms-tab-note">review only</span>}</button>)}</div></div>
     <div className="terms-gate-notice" role="note"><strong>DRAFT — UNDER LEGAL REVIEW</strong><br />This document contains unresolved placeholders and must be completed and approved before publication.</div>
-    <div className="terms-gate-document" ref={scrollRef} onScroll={updatePosition} tabIndex={0} aria-label="Adsrow Terms and Conditions document">
-      {sections.map(([heading, text]) => <section key={heading}><h2>{heading}</h2>{text.split(/\n\n+/).map((paragraph, index) => <p key={index}>{paragraph.split("\n").map((line, lineIndex, lines) => <span key={lineIndex}>{line}{lineIndex < lines.length - 1 && <br />}</span>)}</p>)}</section>)}
+    <div className="terms-gate-document" ref={scrollRef} onScroll={markReadToEnd} tabIndex={0} aria-label={`Adsrow ${documentMeta.title} document`}>
+      {documentMeta.sections.map(([heading, text]) => <section key={heading}><h2>{heading}</h2>{text.split(/\n\n+/).map((paragraph, index) => <p key={index}>{paragraph.split("\n").map((line, lineIndex, lines) => <span key={lineIndex}>{line}{lineIndex < lines.length - 1 && <br />}</span>)}</p>)}</section>)}
     </div>
-    <div className="terms-gate-acceptance">{isTerms && <><label><input type="checkbox" checked={checked} onChange={(event) => setChecked(event.target.checked)} disabled={!atEnd || !TERMS_READY_FOR_ACCEPTANCE} /> <span>I have read and agree to the Adsrow Terms &amp; Conditions and acknowledge the <button type="button" className="legal-inline-link" onClick={onOpenPrivacy}>Privacy Policy</button>.</span></label><p className="terms-gate-progress">{!TERMS_READY_FOR_ACCEPTANCE ? "Acceptance is unavailable while this policy remains a draft." : atEnd ? "You have reached the end of the document." : "Scroll to the end of the document to continue."}</p>{error && <p className="form-status form-error" role="alert">{error}</p>}<button className="button terms-gate-button" type="button" disabled={!checked || !atEnd || !TERMS_READY_FOR_ACCEPTANCE} onClick={accept}>Accept &amp; Continue <ArrowRight size={17} /></button></>}<p className="terms-gate-related"><Link to="/refund-policy">Refund &amp; Cancellation Policy</Link></p></div>
+    <div className="terms-gate-acceptance"><label><input type="checkbox" checked={agreed} onChange={(event) => setAgreed(event.target.checked)} disabled={!requiredRead || !TERMS_READY_FOR_ACCEPTANCE} /> <span>I have read and agree to the Adsrow Terms &amp; Conditions and acknowledge the Privacy Policy.</span></label><p className="terms-gate-progress">{!TERMS_READY_FOR_ACCEPTANCE ? "Acceptance is unavailable while the legal documents await approval." : !requiredRead ? "Scroll to the end of each required document to continue." : agreed ? "You have reached the end of each required document and agreed to proceed." : "Check the box to confirm you agree."}</p>{error && <p className="form-status form-error" role="alert">{error}</p>}<button className="button terms-gate-button" type="button" disabled={!agreed || !requiredRead || !TERMS_READY_FOR_ACCEPTANCE} onClick={accept}>Accept &amp; Continue <ArrowRight size={17} /></button></div>
   </section></div>;
 }
 
@@ -55,7 +78,7 @@ function AuthPage({ mode }) {
   const [password, setPassword] = useState("");
   const [status, setStatus] = useState("idle");
   const [message, setMessage] = useState("");
-  const [acceptedTerms, setAcceptedTerms] = useState(() => signup && hasLocalTermsAcceptance(TERMS_CONTENT_HASH));
+  const [acceptedTerms, setAcceptedTerms] = useState(() => signup && hasLocalTermsAcceptance({ terms: TERMS_CONTENT_HASH, privacy: PRIVACY_CONTENT_HASH }));
   const [activeLegalDocument, setActiveLegalDocument] = useState(null);
 
   useEffect(() => {
@@ -143,7 +166,7 @@ function AuthPage({ mode }) {
 
   return (
     <>
-    {signup && activeLegalDocument && <LegalDocumentModal documentType={activeLegalDocument} onAccepted={() => setAcceptedTerms(true)} onClose={() => setActiveLegalDocument(null)} onOpenPrivacy={() => setActiveLegalDocument("privacy")} />}
+    {signup && activeLegalDocument && <LegalDocumentModal initialDocument={activeLegalDocument} onAccepted={() => setAcceptedTerms(true)} onClose={() => setActiveLegalDocument(null)} />}
     <section className="auth-page">
       <div className="auth-decoration" aria-hidden="true"><span /><span /><span /></div>
       <aside className="auth-aside">

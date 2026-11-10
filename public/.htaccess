@@ -15,8 +15,8 @@ RewriteCond %{REQUEST_URI} \.[^/]+$ [NC]
 RewriteRule ^ - [R=404,L]
 
 # These are valid client-side routes that are intentionally not prerendered
-# (auth, protected and legacy redirect flows). Keep them on the SPA entry.
-RewriteRule ^(login|signup|forgot-password|reset-password|dashboard|partner-form|advertise|advertise/enquiry|locations|package-comparison)(/)?$ index.html [L]
+# (auth, protected, admin and legacy redirect flows). Keep them on the SPA entry.
+RewriteRule ^(login|signup|forgot-password|reset-password|dashboard|admin|partner-form|advertise|advertise/enquiry|locations|package-comparison)(/)?$ index.html [L]
 
 # Blog article slugs are intentionally NOT whitelisted here. Articles are
 # pending publication and are neither linked nor prerendered yet, so any slug
