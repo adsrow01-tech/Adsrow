@@ -1,6 +1,5 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
-import { isSupabaseConfigured, supabase } from "../lib/supabase";
-import { sendWelcomeEmail } from "../lib/welcomeEmail";
+import { isSupabaseConfigured } from "../lib/supabaseConfig";
 import LoadingScreen from "../components/LoadingScreen";
 
 const AuthContext = createContext({ user: null, session: null, loading: true, signingOut: false, signOut: async () => {} });
@@ -12,42 +11,63 @@ export function AuthProvider({ children }) {
   const [signingOut, setSigningOut] = useState(false);
   const authRevision = useRef(0);
   const signOutInFlight = useRef(null);
+  const supabaseRef = useRef(null);
 
   useEffect(() => {
-    if (!supabase) return;
     let active = true;
+    let subscription;
+    let sessionRevision = authRevision.current;
     const queueWelcomeEmail = () => {
       window.setTimeout(() => {
-        void sendWelcomeEmail().catch(() => {
+        void import("../lib/welcomeEmail").then(({ sendWelcomeEmail }) => sendWelcomeEmail()).catch(() => {
           // Welcome email delivery is retried on the next authenticated session.
         });
       }, 0);
     };
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      authRevision.current += 1;
-      if (active) {
-        setSession(session ?? null);
-        setUser(session?.user ?? null);
-        setLoading(false);
-        if (session?.user?.email_confirmed_at) queueWelcomeEmail();
-      }
-    });
-    const initialRevision = authRevision.current;
-    supabase.auth.getSession().then(({ data, error }) => {
-      if (!active || initialRevision !== authRevision.current) return;
-      const restoredSession = error ? null : data.session ?? null;
-      setSession(restoredSession);
-      setUser(restoredSession?.user ?? null);
+    if (!isSupabaseConfigured) {
       setLoading(false);
-      if (!error && data.session?.user?.email_confirmed_at) queueWelcomeEmail();
+      return () => { active = false; };
+    }
+
+    import("../lib/supabase").then(({ supabase }) => {
+      if (!active) return;
+      supabaseRef.current = supabase;
+      if (!supabase) {
+        setLoading(false);
+        return;
+      }
+
+      const { data: { subscription: authSubscription } } = supabase.auth.onAuthStateChange((_event, nextSession) => {
+        authRevision.current += 1;
+        if (active) {
+          setSession(nextSession ?? null);
+          setUser(nextSession?.user ?? null);
+          setLoading(false);
+          if (nextSession?.user?.email_confirmed_at) queueWelcomeEmail();
+        }
+      });
+      subscription = authSubscription;
+      sessionRevision = authRevision.current;
+      return supabase.auth.getSession().then(({ data, error }) => {
+        if (!active || sessionRevision !== authRevision.current) return;
+        const restoredSession = error ? null : data.session ?? null;
+        setSession(restoredSession);
+        setUser(restoredSession?.user ?? null);
+        setLoading(false);
+        if (!error && data.session?.user?.email_confirmed_at) queueWelcomeEmail();
+      });
     }).catch(() => {
-      if (active && initialRevision === authRevision.current) {
+      if (active && sessionRevision === authRevision.current) {
         setSession(null);
         setUser(null);
         setLoading(false);
       }
     });
-    return () => { active = false; subscription.unsubscribe(); };
+    return () => {
+      active = false;
+      subscription?.unsubscribe();
+      supabaseRef.current = null;
+    };
   }, []);
 
   async function signOut() {
@@ -56,8 +76,8 @@ export function AuthProvider({ children }) {
     const request = (async () => {
       setSigningOut(true);
       try {
-        if (supabase) {
-          const { error } = await supabase.auth.signOut({ scope: "local" });
+        if (supabaseRef.current) {
+          const { error } = await supabaseRef.current.auth.signOut({ scope: "local" });
           if (error) throw error;
         }
         authRevision.current += 1;
