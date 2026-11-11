@@ -1,37 +1,31 @@
-# Hostinger deployment
+# Hostinger deployment configuration
 
-GitHub Actions builds and smoke-tests the site for pull requests to `main`. A successful push to `main`, or a manual run, then deploys the exact tested `dist/` artifact to the Hostinger temporary domain through FTP. Deployments are serialized. The FTP action does not clean the destination, so the first deployment preserves existing files; obsolete hashed assets can be removed later after the live site has been verified and a backup exists.
+The production workflow builds and smoke-tests the site for pull requests, but deploys only for a push to `main` or a manual dispatch whose selected ref is `main` and whose deployment target input is `main`. The `hostinger-production` environment remains required.
 
-## GitHub setup
+## GitHub environment secrets
 
-Create the `hostinger-production` environment in repository settings. Enable required reviewers there if the repository plan supports environment protection. Add these environment secrets after confirming the Hostinger account settings:
+Add these secrets to the `hostinger-production` environment:
 
-- `HOSTINGER_FTP_SERVER`
-- `HOSTINGER_FTP_USERNAME`
-- `HOSTINGER_FTP_PASSWORD`
-- `HOSTINGER_FTP_DIRECTORY` — absolute FTP path to the temporary domain's document root, ending in `public_html/` (or the account's confirmed equivalent).
+- `HOSTINGER_FTP_SERVER`: the Hostinger FTP hostname whose TLS certificate matches that exact name.
+- `HOSTINGER_FTP_USERNAME`: the restricted deployment account username.
+- `HOSTINGER_FTP_PASSWORD`: that account's password.
+- `HOSTINGER_FTP_DIRECTORY`: the manually verified path relative to the FTP account's visible root, including a trailing slash. Do not put the absolute Hostinger filesystem path here.
 
-The repository contains no Hostinger account configuration, so the FTP server, username, and exact document-root path must be read from Hostinger hPanel. The workflow refuses deployment when the directory secret is absent or does not identify a `public_html` path. Set it to the temporary domain's root, never the primary domain's root. Upload contents are only the generated `dist/` files, including `.htaccess`.
+Hostinger lists `/home/u252911033/domains/adsrow.com/public_html` as the account directory, and says this account is restricted to that directory. The FTP action's `server-dir` is resolved by the FTP server relative to the account's FTP-visible working root. If the restricted account opens directly inside its assigned directory, the correct value is `./`; this must be confirmed by logging in with this restricted account and checking its initial directory before the secret is set. Do not use `/home/u252911033/domains/adsrow.com/public_html/` as `server-dir` unless the FTP client visibly exposes that path and the action can access it. The workflow requires a relative path ending in `/` and rejects absolute paths and parent traversal.
 
-No prior workflow files or deployment history were present in this checkout, so earlier Actions failures or timeouts could not be inspected. The build job has a 15-minute limit and the deploy job a 10-minute limit; the prerender step is included in `npm run build` and runs only once per workflow.
+## Explicit FTPS verification
 
-## Checks
+`SamKirkland/FTP-Deploy-Action@v4.3.5` supports `protocol: ftps` (explicit TLS), port selection, and strict certificate verification. A read-only handshake to `ftp.adsrow.com:21` received `AUTH SSL successful`, confirming explicit FTPS is enabled at the endpoint. The endpoint's certificate validation then failed with `SEC_E_WRONG_PRINCIPAL`: the certificate does not match `ftp.adsrow.com`. The workflow therefore uses explicit FTPS with `security: strict`, and will stop before transferring files until `HOSTINGER_FTP_SERVER` is set to a Hostinger-provided hostname matching the certificate, or Hostinger corrects the certificate. Do not change security to `loose` or fall back to plain FTP for production credentials.
 
-CI verifies the entry documents, Apache rules, all current prerendered routes, representative JS/CSS assets and favicon. It runs the local Hostinger preview and checks the homepage, auth shell routes, prerendered routes, and genuine 404 responses for unknown paths and missing assets. No separate automated unit-test script is currently defined in `package.json`.
+Hostinger's standard FTP setup guide currently tells customers to use plain FTP on port 21, so confirm the correct FTPS hostname and certificate with the exact hPanel account before the first run. See [Hostinger's FTP details guide](https://www.hostinger.com/support/1714427-how-to-find-ftp-details-on-hostinger-dashboard-at-hostinger/) and the [FTP-Deploy-Action v4.3.5 configuration](https://github.com/SamKirkland/FTP-Deploy-Action/blob/v4.3.5/README.md).
 
-## Temporary-domain verification
+## First-run checks
 
-After the first deploy, check the temporary domain over HTTP and HTTPS: homepage and hero animation on desktop/mobile; `/login`, `/signup`, `/forgot-password`, `/reset-password`, and `/network`; a prerendered page; an unknown URL and missing asset returning 404; CSS, JavaScript, WebP, and font requests; and the active `.htaccess` behavior. Confirm the FTP root from the deployed files before considering the deployment complete. The workflow itself does not claim live verification.
+- Verify the account's FTP-visible root using the restricted deployment account; set `HOSTINGER_FTP_DIRECTORY` to `./` only if the initial directory is the website root.
+- Confirm the hPanel-provided FTPS hostname matches its TLS certificate; keep `security: strict`.
+- Create `hostinger-production` and configure required reviewers if available.
+- Add the FTP values as environment secrets. Never place the password in repository files or logs.
+- Review the deployment diff and ensure `dist/.htaccess`, `dist/app.html`, `dist/index.html`, and route documents are present in the artifact.
+- Allow the first deployment only from `main` after these checks. Do not run a production deployment as part of configuration verification.
 
-## adsrow.com go-live checklist
-
-- Map `adsrow.com` to the intended Hostinger site in hPanel; confirm the temporary deployment first.
-- Review DNS A/AAAA/CNAME records and TTL, then make any DNS change manually.
-- Issue and verify the HTTPS certificate before enabling canonical HTTPS redirects.
-- Confirm canonical metadata and sitemap URLs for `https://adsrow.com`.
-- Review redirects from `www` and legacy URLs, and verify no redirect loops.
-- Add production URLs to Supabase allowed redirect URLs and OAuth provider callback settings.
-- Set and verify production environment variables in the hosting build/deploy configuration as needed.
-- Test contact form delivery end to end.
-- Review legal acceptance flow and published legal documents.
-- Keep the existing Vercel deployment available as a rollback until Hostinger and domain checks pass.
+The artifact upload explicitly includes hidden files. The FTP deploy uses only the downloaded `dist/` artifact, retains `.htaccess`, excludes repository metadata, and keeps `dangerous-clean-slate: false`. No DNS changes or Vercel changes are part of this workflow.
