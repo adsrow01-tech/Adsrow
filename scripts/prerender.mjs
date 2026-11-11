@@ -74,6 +74,14 @@ try {
   // Apache serves this document as the body of an HTTP 404 for paths that do
   // not match a generated route. It uses the same hydrated React tree as the
   // client-side wildcard route, so direct requests and client navigation agree.
+  // Non-prerendered SPA routes (auth, protected, admin, legacy redirects) are
+  // served this document by .htaccess. Its root is deliberately EMPTY so the
+  // client createRoot() renders fresh instead of hydrating another route's
+  // markup, and it carries no canonical/title from any prerendered route.
+  const appMetadata = '<title>Adsrow</title><meta name="description" content="Sign in to or manage your Adsrow advertising account."><meta name="robots" content="noindex, nofollow">';
+  await writeFile(path.join(root, "app.html"), cleanTemplate.replace("</head>", `${appMetadata}</head>`).replace(/<div id="root">[\s\S]*?<\/div>/, '<div id="root"></div>'));
+  mark("Wrote app.html (empty React root for SPA routes)");
+
   const notFoundHtml = renderToString(React.createElement(StaticRouter, { location: "/__not-found__" }, React.createElement(AuthProvider, null, React.createElement(App))));
   const notFoundMetadata = '<title>Page not found | Adsrow</title><meta name="description" content="The requested Adsrow page could not be found."><meta name="robots" content="noindex, nofollow"><meta property="og:title" content="Page not found | Adsrow"><meta property="og:description" content="The requested Adsrow page could not be found."><meta property="og:type" content="website"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Page not found | Adsrow"><meta name="twitter:description" content="The requested Adsrow page could not be found.">';
   await writeFile(path.join(root, "404.html"), cleanTemplate.replace("</head>", `${notFoundMetadata}</head>`).replace(/<div id="root">[\s\S]*?<\/div>/, `<div id="root">${notFoundHtml}</div>`));

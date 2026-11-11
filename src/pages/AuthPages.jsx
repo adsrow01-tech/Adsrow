@@ -9,7 +9,7 @@ import { registerWithLegal } from "../lib/registration";
 import { privacySections, refundSections, termsSections } from "./LegalPages";
 import { createTermsContentHash } from "../lib/termsAcceptance";
 
-const TERMS_READY_FOR_ACCEPTANCE = false;
+const TERMS_READY_FOR_ACCEPTANCE = true;
 const TERMS_CONTENT_HASH = createTermsContentHash(termsSections.map(([heading, text]) => `${heading}\n${text}`).join("\n"));
 const PRIVACY_CONTENT_HASH = createTermsContentHash(privacySections.map(([heading, text]) => `${heading}\n${text}`).join("\n"));
 

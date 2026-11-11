@@ -42,6 +42,7 @@ export default function HomeHero() {
     observer?.observe(hero);
     const onVisibility = () => start();
     document.addEventListener("visibilitychange", onVisibility);
+    // Start animation when component mounts and hero is visible
     start();
     return () => {
       window.clearInterval(timer);
@@ -57,7 +58,7 @@ export default function HomeHero() {
           <p className="home-dynamic-eyebrow"><span aria-hidden="true" />Vijayawada's everyday screen network</p>
           <h1 id="home-hero-title" aria-label={`Reach 20,000+ people a day while they're ${activeCreative.moment}`}>
             Reach <span className="home-dynamic-highlight">20,000+ people</span> a day while they're
-            <span className="home-dynamic-rotator" aria-hidden="true" style={{ "--active-phrase-color": activeCreative.phraseColor }}>{creatives.map((creative, index) => <span className={index === active ? "is-active" : ""} key={creative.className}>{creative.moment}</span>)}</span>
+            <span className="home-dynamic-rotator" aria-hidden="true" style={{ "--active-phrase-color": activeCreative.phraseColor }}>{creatives.map((creative, index) => <span className={index === active ? "is-active" : ""} key={creative.className}>{index === active ? creative.moment : null}</span>)}</span>
           </h1>
           <p className="home-dynamic-description">Put your ad on digital screens in apartment lift lobbies, restaurants, cafés and gyms. Pick your audience, book once and get proof every ad played, from ₹99 a day.</p>
           <div className="home-dynamic-actions">
@@ -71,7 +72,7 @@ export default function HomeHero() {
           {venues.map((venue) => <div className={`home-dynamic-photo ${venue.className}`} key={venue.label}><img src={venue.image} alt="" /><span>{venue.label}</span></div>)}
           <div className="home-dynamic-device"><div className="home-dynamic-screen">
             <span className="home-dynamic-live"><i />LIVE</span>
-            <div className="home-dynamic-ads">{creatives.map((creative, index) => <div className={`home-dynamic-ad ${creative.className}${index === active ? " is-active" : ""}`} key={creative.className}><small>{creative.label}</small><strong>{creative.title}</strong><em>{creative.action}</em></div>)}</div>
+            <div className="home-dynamic-ads">{creatives.map((creative, index) => <div className={`home-dynamic-ad ${creative.className}${index === active ? " is-active" : ""}`} key={creative.className}>{index === active && (<><small>{creative.label}</small><strong>{creative.title}</strong><em>{creative.action}</em></>)}</div>)}</div>
           </div></div>
           <div className="home-dynamic-price"><small>From</small>₹99/day</div>
         </div>

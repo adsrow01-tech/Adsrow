@@ -294,7 +294,7 @@ function Header() {
             className="button mobile-contact"
             onClick={() => setMenuOpen(false)}
           >
-            Partner with Adsrow <ArrowUpRight size={16} />
+            Talk to Expert <ArrowUpRight size={16} />
           </Link>
           {user ? <><Link to="/dashboard" className="auth-nav-link mobile-auth-link" onClick={() => setMenuOpen(false)}>Dashboard</Link><button className="mobile-auth-link" type="button" onClick={handleSignOut} disabled={signingOut} aria-busy={signingOut}>Sign out</button></> : <>
             <Link to="/login" className="auth-nav-link mobile-auth-link" onClick={() => setMenuOpen(false)}>Log in</Link>
@@ -318,7 +318,7 @@ function Header() {
           <Link to="/signup" className="button header-signup">Sign up</Link>
         </div>}
           <Link to="/contact" className="button desktop-contact" ref={partnerCtaRef}>
-            Partner with Adsrow <ArrowUpRight size={16} />
+            Talk to Expert <ArrowUpRight size={16} />
           </Link>
         </div>
         <button
