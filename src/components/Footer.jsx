@@ -51,7 +51,7 @@ function Footer() {
           <h3>Have a campaign in mind?</h3>
           <p>Tell us what you want to promote and discuss your options.</p>
           <Link to="/contact" className="footer-link">
-            Partner with Adsrow <ArrowUpRight size={16} />
+            Talk to Expert <ArrowUpRight size={16} />
           </Link>
         </div>
       </div>
