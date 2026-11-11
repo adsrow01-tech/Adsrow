@@ -6,6 +6,13 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      deployment_target:
+        description: Production deployment target
+        required: true
+        type: choice
+        options:
+          - main
 
 permissions:
   contents: read
@@ -73,7 +80,10 @@ jobs:
   deploy:
     name: Deploy to Hostinger
     needs: build
-    if: github.event_name != 'pull_request'
+    if: >-
+      github.ref == 'refs/heads/main' &&
+      (github.event_name == 'push' ||
+      (github.event_name == 'workflow_dispatch' && inputs.deployment_target == 'main'))
     runs-on: ubuntu-latest
     timeout-minutes: 10
     environment:
@@ -93,9 +103,10 @@ jobs:
         run: |
           set -euo pipefail
           test -n "$FTP_SERVER" && test -n "$FTP_USERNAME" && test -n "$FTP_PASSWORD"
-          test -n "$FTP_DIRECTORY" || { echo 'Set HOSTINGER_FTP_DIRECTORY to the confirmed temporary-domain document root.'; exit 1; }
-          case "$FTP_DIRECTORY" in /*) ;; *) echo 'FTP directory must be an absolute path.'; exit 1;; esac
-          case "$FTP_DIRECTORY" in *public_html*) ;; *) echo 'FTP directory must identify the intended public_html site root.'; exit 1;; esac
+          test -n "$FTP_DIRECTORY" || { echo 'Set HOSTINGER_FTP_DIRECTORY to the manually verified FTP-root-relative website directory.'; exit 1; }
+          case "$FTP_DIRECTORY" in /*) echo 'FTP directory must be relative to the FTP account root.'; exit 1;; esac
+          case "/$FTP_DIRECTORY" in */../*|*/./../*|*/..|*/.) echo 'FTP directory must not traverse above or ambiguously refer to the FTP root.'; exit 1;; esac
+          case "$FTP_DIRECTORY" in */) ;; *) echo 'FTP directory must end with /.'; exit 1;; esac
           test -s dist/.htaccess && test -s dist/index.html && test -s dist/app.html
       - name: Deploy verified build
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
@@ -103,9 +114,13 @@ jobs:
           server: ${{ secrets.HOSTINGER_FTP_SERVER }}
           username: ${{ secrets.HOSTINGER_FTP_USERNAME }}
           password: ${{ secrets.HOSTINGER_FTP_PASSWORD }}
+          protocol: ftps
+          port: 21
+          security: strict
           local-dir: dist/
           server-dir: ${{ secrets.HOSTINGER_FTP_DIRECTORY }}
           dangerous-clean-slate: false
+          log-level: minimal
           exclude: |
             **/.git*
             **/.git*/**
