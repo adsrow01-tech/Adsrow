@@ -5,8 +5,9 @@ import { isSupabaseConfigured, supabase } from "../lib/supabase";
 import GoogleIcon from "../components/GoogleIcon";
 import { useAuth } from "../context/AuthContext";
 import { getSafeNextPath } from "../lib/redirect";
+import { registerWithLegal } from "../lib/registration";
 import { privacySections, refundSections, termsSections } from "./LegalPages";
-import { createTermsContentHash, hasLocalTermsAcceptance, persistPendingTermsAcceptance, savePendingTermsAcceptance } from "../lib/termsAcceptance";
+import { createTermsContentHash } from "../lib/termsAcceptance";
 
 const TERMS_READY_FOR_ACCEPTANCE = false;
 const TERMS_CONTENT_HASH = createTermsContentHash(termsSections.map(([heading, text]) => `${heading}\n${text}`).join("\n"));
@@ -53,7 +54,8 @@ function LegalDocumentModal({ initialDocument, onAccepted, onClose }) {
   }, []);
   function accept() {
     if (!agreed || !requiredRead || !TERMS_READY_FOR_ACCEPTANCE) return;
-    try { savePendingTermsAcceptance(REQUIRED_DOCUMENTS.map((document) => ({ type: document, contentHash: LEGAL_DOCUMENTS[document].contentHash }))); onAccepted(); onClose(); } catch { setError("We could not save your acceptance. Please try again."); }
+    onAccepted(REQUIRED_DOCUMENTS.map((document) => ({ type: document, contentHash: LEGAL_DOCUMENTS[document].contentHash })));
+    onClose();
   }
   return <div className="terms-modal-overlay"><section className="terms-gate terms-modal" role="dialog" aria-modal="true" aria-labelledby="terms-gate-title">
     <div className="terms-gate-header"><div className="terms-modal-heading"><div><h1 id="terms-gate-title">{documentMeta.title}</h1>{activeDocument === "refund" && <button type="button" className="legal-inline-link terms-modal-back" onClick={() => switchDocument("terms")}>← Back to Terms &amp; Privacy</button>}</div><button type="button" className="terms-modal-close" onClick={onClose} aria-label="Close legal document"><X size={20} /></button></div><p>Please read each required document before creating your account.</p><p>Adsrow Media Network Private Limited · Effective date: [●] · Last updated: [●]</p>
@@ -77,21 +79,14 @@ function AuthPage({ mode }) {
   const [password, setPassword] = useState("");
   const [status, setStatus] = useState("idle");
   const [message, setMessage] = useState("");
-  const [acceptedTerms, setAcceptedTerms] = useState(() => signup && hasLocalTermsAcceptance({ terms: TERMS_CONTENT_HASH, privacy: PRIVACY_CONTENT_HASH }));
+  const [acceptedDocuments, setAcceptedDocuments] = useState({});
   const [activeLegalDocument, setActiveLegalDocument] = useState(null);
 
   useEffect(() => {
     if (!authLoading && user) {
-      persistPendingTermsAcceptance(user.id).then((result) => {
-        if (result.error && signup) {
-          setStatus("error");
-          setMessage("We could not record your Terms acceptance. Please contact Adsrow before continuing.");
-          return;
-        }
-        navigate(nextPath, { replace: true });
-      });
+      navigate(nextPath, { replace: true });
     }
-  }, [authLoading, user, nextPath, navigate, signup]);
+  }, [authLoading, user, nextPath, navigate]);
 
   useEffect(() => {
     const notice = searchParams.get("message");
@@ -100,6 +95,12 @@ function AuthPage({ mode }) {
 
   async function handleSubmit(event) {
     event.preventDefault();
+    const acceptedTerms = acceptedDocuments.terms === TERMS_CONTENT_HASH && acceptedDocuments.privacy === PRIVACY_CONTENT_HASH;
+    if (signup && !acceptedTerms) {
+      setStatus("error");
+      setMessage("Please review and accept the Terms & Conditions and Privacy Policy before creating an account.");
+      return;
+    }
     if (!isSupabaseConfigured) {
       setStatus("error");
       setMessage("Account access is not configured yet. Please contact Adsrow.");
@@ -110,30 +111,17 @@ function AuthPage({ mode }) {
     setMessage("");
     try {
       const result = signup
-        ? await supabase.auth.signUp({
-            email: email.trim(),
-            password,
-            options: {
-              data: { full_name: name.trim() },
-              emailRedirectTo: new URL(`/login?next=${encodeURIComponent(nextPath)}&message=${encodeURIComponent("Email verified. You can continue.")}`, window.location.origin).toString(),
-            },
-          })
+        ? await registerWithLegal({ email: email.trim(), password, fullName: name.trim(), nextPath })
         : await supabase.auth.signInWithPassword({ email: email.trim(), password });
 
       if (result.error) throw result.error;
 
-      if (signup && !result.data.session) {
+      if (signup && result.requiresEmailConfirmation) {
         setStatus("success");
         setMessage("Your account is ready. Check your email for a confirmation link. After verification, you will return to your requested page.");
         return;
       }
 
-      const acceptance = await persistPendingTermsAcceptance(result.data?.user?.id);
-      if (acceptance.error && signup) {
-        setStatus("error");
-        setMessage("We could not record your Terms acceptance. Please contact Adsrow before continuing.");
-        return;
-      }
       navigate(nextPath, { replace: true });
     } catch (error) {
       setStatus("error");
@@ -165,7 +153,7 @@ function AuthPage({ mode }) {
 
   return (
     <>
-    {signup && activeLegalDocument && <LegalDocumentModal initialDocument={activeLegalDocument} onAccepted={() => setAcceptedTerms(true)} onClose={() => setActiveLegalDocument(null)} />}
+    {signup && activeLegalDocument && <LegalDocumentModal initialDocument={activeLegalDocument} onAccepted={(entries) => setAcceptedDocuments(Object.fromEntries(entries.map((entry) => [entry.type, entry.contentHash])))} onClose={() => setActiveLegalDocument(null)} />}
     <section className="auth-page">
       <div className="auth-decoration" aria-hidden="true"><span /><span /><span /></div>
       <aside className="auth-aside">

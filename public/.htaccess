@@ -2,6 +2,12 @@
 # Upload the contents of dist/ (including this file) into public_html.
 RewriteEngine On
 
+# Canonical HTTPS for the production host only. Temporary hosts and local
+# previews are deliberately left untouched.
+RewriteCond %{HTTPS} !=on
+RewriteCond %{HTTP_HOST} ^(?:www\.)?adsrow\.com$ [NC]
+RewriteRule ^ https://adsrow.com%{REQUEST_URI} [R=301,L,NE]
+
 # Use the branded static document as Apache's actual 404 response.
 ErrorDocument 404 /404.html
 
@@ -34,6 +40,30 @@ RewriteRule ^ - [R=404,L]
   Header always set Referrer-Policy "strict-origin-when-cross-origin"
   Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
   Header always set Strict-Transport-Security "max-age=31536000"
+</IfModule>
+
+<IfModule mod_mime.c>
+  AddType application/javascript .js .mjs
+  AddType application/wasm .wasm
+  AddType image/svg+xml .svg
+</IfModule>
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml
+  AddOutputFilterByType DEFLATE application/javascript application/json application/wasm
+  AddOutputFilterByType DEFLATE image/svg+xml
+</IfModule>
+
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/html "access plus 0 seconds"
+  ExpiresByType application/json "access plus 0 seconds"
+  ExpiresByType text/css "access plus 1 month"
+  ExpiresByType application/javascript "access plus 1 month"
+  ExpiresByType image/png "access plus 1 month"
+  ExpiresByType image/jpeg "access plus 1 month"
+  ExpiresByType image/webp "access plus 1 month"
+  ExpiresByType image/x-icon "access plus 1 month"
 </IfModule>
 
 # Add a reviewed Content-Security-Policy after confirming all external font,
