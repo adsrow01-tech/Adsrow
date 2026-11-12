@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { ArrowUpRight, ArrowRight, Monitor, MapPin, Users, Target, Palette, ChartNoAxesCombined, Building2, UtensilsCrossed, GraduationCap, Car, ShoppingBag, Eye, X, Check } from "lucide-react";
-import { FeatureCard, ComparisonTable, SectionHeading } from "../components/SiteComponents";
+import { FeatureCard, SectionHeading } from "../components/SiteComponents";
 import Adsrow99Banner from "../components/Adsrow99Banner";
 import CardDeckCarousel from "../components/CardDeckCarousel";
 import HomeHero from "../components/HomeHero";
@@ -30,15 +30,6 @@ const steps = [
   { icon: MapPin, title: "Get your plan", description: "Venues, schedule and price, sent to you." },
   { icon: Palette, title: "Send your ad", description: "Use your own, or our team designs it." },
   { icon: Monitor, title: "Go live. Track it.", description: "Play reports, QR scans and calls." },
-];
-
-const homeComparisonRows = [
-  ["Reaches people while they wait", "No, they're driving", "Rarely", "Yes, at 40 venues"],
-  ["Target a mindset", "No", "No", "Homes, health, shopping, work"],
-  ["Choose exact locations", "One site", "Hard to control", "Pick venues and areas"],
-  ["Change your ad", "Reprint and remount", "Reprint", "In minutes"],
-  ["Proof your ad ran", "A photo, if you ask", "None", "Play report"],
-  ["Track enquiries", "No", "No", "QR + call tracking"],
 ];
 
 const statisticsTargets = [20000, 75000, 850000];
@@ -490,13 +481,6 @@ function HomePage() {
             {steps.map(({ icon: Icon, ...step }, index) => <FeatureCard key={step.title} className={`home-card-interactive home-process-card home-process-card-${index + 1}`} tabIndex={0} number={`0${index + 1}`} icon={Icon} {...step} />)}
           </div>
           <div className="center-link"><Link className="button button-outline" to="/how-it-works">See the Full Process <ArrowRight size={16} /></Link></div>
-        </div>
-      </section>
-
-      <section className="section section-navy home-comparison-section">
-        <div className="container comparison-block home-comparison-block">
-          <h2 className="home-heading home-comparison-heading">Same budget. <span>Smarter placement.</span></h2>
-          <ComparisonTable rows={homeComparisonRows} highlightAdsrow />
         </div>
       </section>
 

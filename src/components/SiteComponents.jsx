@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { ArrowUpRight, Check } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { submitEnquiry } from "../lib/enquire";
 import { recordSubmittedEnquiry } from "../lib/dashboard";
@@ -81,7 +81,7 @@ const comparisonRows = [
   ["Track enquiries", "No", "No", "QR and call tracking"],
 ];
 
-export function ComparisonTable({ rows = comparisonRows, highlightAdsrow = false }) {
+export function ComparisonTable({ rows = comparisonRows }) {
   return (
     <div className="comparison-wrap" role="region" aria-label="Advertising format comparison" tabIndex="0">
       <table className="comparison-table">
@@ -99,16 +99,7 @@ export function ComparisonTable({ rows = comparisonRows, highlightAdsrow = false
               <th scope="row">{benefit}</th>
               <td>{billboard}</td>
               <td>{pamphlets}</td>
-              <td className={highlightAdsrow ? "comparison-adsrow-cell" : undefined}>
-                {highlightAdsrow ? (
-                  <span className="comparison-adsrow-value">
-                    <Check size={15} strokeWidth={2.75} aria-hidden="true" />
-                    {adsrow}
-                  </span>
-                ) : (
-                  adsrow
-                )}
-              </td>
+              <td>{adsrow}</td>
             </tr>
           ))}
         </tbody>
