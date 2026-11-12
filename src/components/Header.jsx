@@ -7,7 +7,7 @@ import BrandWordmark from "./BrandWordmark";
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
-  const [isCompact, setIsCompact] = useState(() => window.scrollY > 28);
+  const [isCompact, setIsCompact] = useState(false);
   const brandRef = useRef(null);
   const partnerCtaRef = useRef(null);
   const moreWrapperRef = useRef(null);
@@ -17,7 +17,7 @@ function Header() {
   const lastCompactRef = useRef(isCompact);
   const transitionStartRectsRef = useRef(null);
   const transitionFrameRef = useRef(0);
-  const { user, signOut, signingOut } = useAuth();
+  const { user, loading: authLoading, signOut, signingOut } = useAuth();
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
@@ -296,7 +296,7 @@ function Header() {
           >
             Talk to Expert <ArrowUpRight size={16} />
           </Link>
-          {user ? <><Link to="/dashboard" className="auth-nav-link mobile-auth-link" onClick={() => setMenuOpen(false)}>Dashboard</Link><button className="mobile-auth-link" type="button" onClick={handleSignOut} disabled={signingOut} aria-busy={signingOut}>Sign out</button></> : <>
+          {authLoading ? null : user ? <><Link to="/dashboard" className="auth-nav-link mobile-auth-link" onClick={() => setMenuOpen(false)}>Dashboard</Link><button className="mobile-auth-link" type="button" onClick={handleSignOut} disabled={signingOut} aria-busy={signingOut}>Sign out</button></> : <>
             <Link to="/login" className="auth-nav-link mobile-auth-link" onClick={() => setMenuOpen(false)}>Log in</Link>
             <Link to="/signup" className="button mobile-signup" onClick={() => setMenuOpen(false)}>Create account</Link>
           </>}
@@ -305,7 +305,7 @@ function Header() {
         {/* RIGHT group: profile + username + Sign out (or Log in / Sign up),
             then the Partner CTA — one packed group at the right edge. */}
         <div className="header-right">
-          {user ? <div className="header-account">
+          {authLoading ? <div className="header-auth-links" aria-hidden="true" /> : user ? <div className="header-account">
             <Link to="/dashboard" className="header-user-icon" title="Open your dashboard" aria-label={`Open dashboard for ${user.email || "your account"}`}>
               <CircleUserRound size={23} aria-hidden="true" />
             </Link>
