@@ -95,7 +95,6 @@ function AuthPage({ mode }) {
 
   async function handleSubmit(event) {
     event.preventDefault();
-    if (authLoading || user) return;
     const acceptedTerms = acceptedDocuments.terms === TERMS_CONTENT_HASH && acceptedDocuments.privacy === PRIVACY_CONTENT_HASH;
     if (signup && !acceptedTerms) {
       setStatus("error");
@@ -131,7 +130,6 @@ function AuthPage({ mode }) {
   }
 
   async function signInWithGoogle() {
-    if (authLoading || user) return;
     if (!isSupabaseConfigured) {
       setStatus("error");
       setMessage("Account access is not configured yet. Please contact Adsrow.");
@@ -176,7 +174,7 @@ function AuthPage({ mode }) {
           ? "Create an account to manage your profile and see enquiries submitted from this browser."
           : "Log in to manage your Adsrow profile and keep track of enquiries from this browser."}</p>
 
-        <button className="google-auth-button" type="button" onClick={signInWithGoogle} disabled={status === "loading" || authLoading || Boolean(user)}>
+        <button className="google-auth-button" type="button" onClick={signInWithGoogle} disabled={status === "loading"}>
           <GoogleIcon />{status === "loading" ? "Connecting to Google…" : `${signup ? "Sign up" : "Sign in"} with Google`}
         </button>
         <div className="auth-divider"><span>or continue with email</span></div>
@@ -187,7 +185,7 @@ function AuthPage({ mode }) {
           <label>Password<span className="auth-input"><LockKeyhole size={17} /><input type="password" autoComplete={signup ? "new-password" : "current-password"} value={password} onChange={(e) => setPassword(e.target.value)} placeholder={signup ? "At least 8 characters" : "Your password"} minLength={signup ? 8 : undefined} required /></span></label>
           {!signup && <Link to="/forgot-password" className="auth-forgot">Forgot your password?</Link>}
           {message && <p className={`form-status ${status === "error" ? "form-error" : "form-success"}`} role={status === "error" ? "alert" : "status"}>{message}</p>}
-          <button className="button auth-submit" type="submit" disabled={status === "loading" || authLoading || Boolean(user)}>{status === "loading" ? "Please wait…" : signup ? "Create Account" : "Log In"}<ArrowRight size={17} /></button>
+          <button className="button auth-submit" type="submit" disabled={status === "loading"}>{status === "loading" ? "Please wait…" : signup ? "Create Account" : "Log In"}<ArrowRight size={17} /></button>
         </form>
 
         {signup && <p className="auth-legal-links"><button type="button" onClick={() => setActiveLegalDocument("terms")}>Terms &amp; Conditions</button><span> · </span><button type="button" onClick={() => setActiveLegalDocument("privacy")}>Privacy Policy</button></p>}

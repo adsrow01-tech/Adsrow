@@ -248,7 +248,7 @@ function AudiencePackCard({ pack, months, discount, highlighted, cardRef }) {
     >
       <MatchLabel />
       <div className="ic" aria-hidden="true"><PackIcon size={22} /></div>
-      <h3 className="arap-name">{pack.name}</h3>
+      <div className="arap-name">{pack.name}</div>
       <div className="arap-who">{pack.who}</div>
       <div className="arap-reach"><b>{pack.audience}</b> {pack.audienceDescription}</div>
       <PriceBlock basePrice={pack.dailyPrice} months={months} discount={discount} />
@@ -281,7 +281,7 @@ function CityPackCard({ months, discount, highlighted, cardRef }) {
       <MatchLabel />
       <div>
         <span className="badge">{cityPack.badge}</span>
-        <h3 className="arap-name">{cityPack.name}</h3>
+        <div className="arap-name">{cityPack.name}</div>
         <div className="arap-who">{cityPack.who}</div>
         <div className="arap-reach"><b>{cityPack.audience}</b> {cityPack.audienceDescription}</div>
       </div>
@@ -309,8 +309,12 @@ function CityPackCard({ months, discount, highlighted, cardRef }) {
 export default function AudiencePacksComparison() {
   const location = useLocation();
   const navigate = useNavigate();
-  const [months, setMonths] = useState(1);
-  const [selectedBusiness, setSelectedBusiness] = useState(null);
+  const initialParams = new URLSearchParams(location.search);
+  const initialTerm = Number(initialParams.get("term"));
+  const [months, setMonths] = useState(() => packageCommitments.some((term) => term.months === initialTerm) ? initialTerm : 1);
+  const [selectedBusiness, setSelectedBusiness] = useState(() =>
+    packageAudienceFilters.find((fit) => fit.slug === initialParams.get("for")) ?? null
+  );
   const cardRefs = useRef({});
   const discount = packageCommitments.find((term) => term.months === months)?.discount ?? 0;
 
@@ -363,7 +367,7 @@ export default function AudiencePacksComparison() {
     : null;
 
   return (
-    <div className="package-page">
+    <main className="package-page">
       <section className="arap" id="packages" aria-labelledby="arap-title">
       <div className="arap-wrap">
         <div className="arap-head">
@@ -453,6 +457,6 @@ export default function AudiencePacksComparison() {
       <PackageFinalCta />
       <BookingSteps />
       <PackageFaqs />
-    </div>
+    </main>
   );
 }

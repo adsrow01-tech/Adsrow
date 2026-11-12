@@ -17,12 +17,11 @@ const venues = [
 export default function HomeHero() {
   const [active, setActive] = useState(0);
   const activeCreative = creatives[active];
-  const [reducedMotion, setReducedMotion] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(() => window.matchMedia("(prefers-reduced-motion: reduce)").matches);
 
   useEffect(() => {
     const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
     const update = () => setReducedMotion(preference.matches);
-    update();
     preference.addEventListener("change", update);
     return () => preference.removeEventListener("change", update);
   }, []);

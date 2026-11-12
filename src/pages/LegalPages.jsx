@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useEffect } from "react";
 
 // The supplied DOCX files are the source of truth. Keeping the text in structured
 // arrays makes placeholders and drafting notes easy to replace before publication.
@@ -78,8 +79,15 @@ export const privacySections = [
 function slugify(value) { return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
 
 function LegalLayout({ title, documentDate, sections }) {
+  useEffect(() => {
+    document.title = `${title} | Adsrow`;
+    let robots = document.querySelector('meta[name="robots"]');
+    if (!robots) { robots = document.createElement("meta"); robots.name = "robots"; document.head.appendChild(robots); }
+    robots.content = "noindex, nofollow";
+    return () => { document.title = "Adsrow | Local Digital Advertising"; };
+  }, [title]);
   return (
-    <div className="legal-page section">
+    <main className="legal-page section">
       <div className="container legal-container">
         <Link to="/" className="legal-back">← Back to Adsrow</Link>
         <h1 className="page-title">{title}</h1>
@@ -87,7 +95,7 @@ function LegalLayout({ title, documentDate, sections }) {
         <nav className="legal-toc" aria-label={`${title} contents`}><strong>Contents</strong><ol>{sections.map(([heading]) => <li key={heading}><a href={`#${slugify(heading)}`}>{heading}</a></li>)}</ol></nav>
         <div className="legal-content">{sections.map(([heading, text]) => <section className="legal-section" id={slugify(heading)} key={heading}><h2>{heading}</h2>{text.split(/\n\n+/).map((paragraph, index) => { const lines = paragraph.split("\n"); return <p key={`${heading}-${index}`}>{lines.map((line, lineIndex) => <span key={lineIndex}>{line}{lineIndex < lines.length - 1 && <br />}</span>)}</p>; })}</section>)}</div>
       </div>
-    </div>
+    </main>
   );
 }
 
