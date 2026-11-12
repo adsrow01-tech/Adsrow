@@ -29,6 +29,7 @@ function WhyAdsrowPage() {
               decor
               number={`0${index + 1}`}
               className="why-reason-card"
+              headingLevel={2}
             />
           ))}
         </div>

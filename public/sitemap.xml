@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://adsrow.com/</loc></url>
-  <url><loc>https://adsrow.com/about</loc></url>
-  <url><loc>https://adsrow.com/network</loc></url>
-  <url><loc>https://adsrow.com/packages</loc></url>
-  <url><loc>https://adsrow.com/how-it-works</loc></url>
-  <url><loc>https://adsrow.com/why-adsrow</loc></url>
-  <url><loc>https://adsrow.com/faqs</loc></url>
-  <url><loc>https://adsrow.com/blog</loc></url>
-  <url><loc>https://adsrow.com/contact</loc></url>
-  <url><loc>https://adsrow.com/host-a-screen</loc></url>
+  <url><loc>https://adsrow.com/about/</loc></url>
+  <url><loc>https://adsrow.com/network/</loc></url>
+  <url><loc>https://adsrow.com/packages/</loc></url>
+  <url><loc>https://adsrow.com/how-it-works/</loc></url>
+  <url><loc>https://adsrow.com/why-adsrow/</loc></url>
+  <url><loc>https://adsrow.com/faqs/</loc></url>
+  <url><loc>https://adsrow.com/contact/</loc></url>
+  <url><loc>https://adsrow.com/host-a-screen/</loc></url>
 </urlset>

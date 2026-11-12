@@ -39,10 +39,11 @@ export function SectionHeading({ eyebrow, title, description, centered = false, 
    oversized outline icon in the background, `styled` builds a
    number + icon header row. */
 
-export function FeatureCard({ icon: Icon, title, description, number, className = "", tabIndex, index, decor = false, styled = false }) {
+export function FeatureCard({ icon: Icon, title, description, number, className = "", tabIndex, index, decor = false, styled = false, headingLevel = 3 }) {
   const themes = ["ads-card", "ads-card-interactive"];
   if (typeof index === "number") themes.push(`ads-accent-${(index % 6) + 1}`);
   const base = ["feature-card", ...themes, className].filter(Boolean).join(" ");
+  const Heading = `h${headingLevel}`;
 
   return (
     <article className={base} tabIndex={tabIndex}>
@@ -65,7 +66,7 @@ export function FeatureCard({ icon: Icon, title, description, number, className 
         </>
       )}
 
-      <h3>{title}</h3>
+      <Heading>{title}</Heading>
       <p>{description}</p>
 
       {decor && Icon && <Icon className="ads-card-decor" aria-hidden="true" />}

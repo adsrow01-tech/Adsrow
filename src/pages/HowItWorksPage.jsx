@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
 
@@ -29,25 +28,8 @@ const steps = [
 ];
 
 function HowItWorksPage() {
-  useEffect(() => {
-    const previousTitle = document.title;
-    const descriptionMeta = document.querySelector('meta[name="description"]');
-    const previousDescription = descriptionMeta?.getAttribute("content");
-
-    document.title = "How It Works | Adsrow";
-    descriptionMeta?.setAttribute(
-      "content",
-      "See how Adsrow helps businesses plan, launch, and manage digital screen advertising across Vijayawada."
-    );
-
-    return () => {
-      document.title = previousTitle;
-      if (previousDescription !== null) descriptionMeta?.setAttribute("content", previousDescription);
-    };
-  }, []);
-
   return (
-    <main className="how-it-works-page">
+    <div className="how-it-works-page">
       <section className="how-hero">
         <div className="container how-hero-inner">
           <p className="eyebrow">HOW IT WORKS</p>
@@ -92,7 +74,7 @@ function HowItWorksPage() {
           </Link>
         </div>
       </section>
-    </main>
+    </div>
   );
 }
 

@@ -5,6 +5,7 @@ import LoadingScreen from "./components/LoadingScreen";
 import { useAuth } from "./context/AuthContext";
 import { getCurrentPath } from "./lib/redirect";
 import { lazyRoute } from "./lib/lazyRoute";
+import RouteSeo from "./components/RouteSeo";
 
 const HomePage = lazyRoute(() => import("./pages/HomePage"));
 const AboutPage = lazyRoute(() => import("./pages/AboutPage"));
@@ -83,6 +84,7 @@ function ProtectedDashboardPage() {
 export default function App() {
   return (
     <AppErrorBoundary>
+      <RouteSeo />
       <Suspense fallback={<LoadingScreen />}>
       <Routes>
         <Route path="/admin" element={<AdminPage />} />
@@ -119,13 +121,41 @@ export default function App() {
   );
 }
 
-const lazyRoutes = [
+const prerenderedRoutes = [
   HomePage, AboutPage, PackageComparisonPage, NetworkPage, HowItWorksPage,
-  WhyAdsrowPage, FaqsPage, HostAScreenPage, ContactPage, LoginPage, SignupPage,
-  ForgotPasswordPage, ResetPasswordPage, PrivacyPage, RefundPolicyPage,
-  TermsPage, DashboardPage, NotFoundPage, BlogArticlePage, BlogPage, AdminPage,
+  WhyAdsrowPage, FaqsPage, HostAScreenPage, ContactPage, PrivacyPage,
+  RefundPolicyPage, TermsPage, NotFoundPage, BlogPage,
 ];
 
-export function preloadAppRoutes() {
-  return Promise.all(lazyRoutes.map((route) => route.preload()));
+const routesByPath = {
+  "/": HomePage,
+  "/about": AboutPage,
+  "/packages": PackageComparisonPage,
+  "/blog": BlogPage,
+  "/network": NetworkPage,
+  "/how-it-works": HowItWorksPage,
+  "/why-adsrow": WhyAdsrowPage,
+  "/faqs": FaqsPage,
+  "/host-a-screen": HostAScreenPage,
+  "/contact": ContactPage,
+  "/login": LoginPage,
+  "/signup": SignupPage,
+  "/forgot-password": ForgotPasswordPage,
+  "/reset-password": ResetPasswordPage,
+  "/terms": TermsPage,
+  "/privacy": PrivacyPage,
+  "/refund-policy": RefundPolicyPage,
+  "/dashboard": DashboardPage,
+  "/admin": AdminPage,
+};
+
+export function preloadRoute(pathname) {
+  const normalizedPath = pathname === "/" ? "/" : pathname.replace(/\/+$/, "");
+  const route = routesByPath[normalizedPath]
+    || (normalizedPath.startsWith("/blog/") ? BlogArticlePage : NotFoundPage);
+  return route.preload();
+}
+
+export function preloadPublicRoutes() {
+  return Promise.all(prerenderedRoutes.map((route) => route.preload()));
 }
