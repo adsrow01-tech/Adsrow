@@ -1582,10 +1582,6 @@ video.hero-image { display: block; }
 .page-hero h1 { max-width: 800px; margin: 15px 0 13px; font-size: max(48px, clamp(38px, 5vw, 55px)); font-weight: var(--weight-main-titles); }
 .page-hero-description { max-width: 690px; margin: 0; color: var(--text-dark); font-family: 'Manrope', sans-serif; font-size: var(--p-lg); font-weight: var(--p-weight); line-height: 1.65; }
 .page-hero > .container > .button { margin-top: 23px; }
-.section-navy { background: var(--navy); color: white; }
-.section-navy .section-title { color: white; }
-.section-navy .body-copy { color: #E7EBF4; }
-.section-navy .eyebrow-light { color: var(--mint); }
 .why-home-grid { display: grid; grid-template-columns: .85fr 1.15fr; align-items: center; gap: 60px; }
 .why-points { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .why-points p { display: flex; min-height: 78px; align-items: center; gap: 12px; margin: 0; padding: 15px; border: 1px solid rgb(255 255 255 / 12%); border-radius: 8px; color: #eef2f8; font-size: var(--p-card); font-weight: var(--p-weight); line-height: var(--p-line); }
@@ -1741,9 +1737,6 @@ video.hero-image { display: block; }
 .audience-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .location-status-card .location-status { margin: 0 0 10px; color: var(--blue); font-size: 10px; font-weight: 800; letter-spacing: .07em; line-height: 1.45; text-transform: uppercase; }
 .location-status-card .feature-icon { margin-bottom: 13px; }
-.comparison-block { margin-top: 42px; }
-.comparison-block h3 { margin: 0 0 9px; color: #fff; font-family: 'Manrope', sans-serif; font-size: clamp(23px, 3vw, 30px); font-weight: 800; letter-spacing: -.7px; }
-.comparison-block > p { max-width: 760px; margin: 0 0 20px; color: #DDE3EE; font-size: var(--p-md); font-weight: var(--p-weight); line-height: var(--p-line); }
 .comparison-wrap { width: 100%; overflow-x: auto; border: 1px solid var(--line); border-radius: 9px; background: #fff; -webkit-overflow-scrolling: touch; }
 .comparison-table { width: 100%; min-width: 670px; border-collapse: collapse; color: var(--ink); font-size: 13px; line-height: 1.5; }
 .comparison-table th, .comparison-table td { padding: 13px 15px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
@@ -1752,10 +1745,6 @@ video.hero-image { display: block; }
 .comparison-table tbody th { min-width: 220px; font-weight: 700; }
 .comparison-table tbody td:last-child { color: var(--blue); font-weight: 700; }
 .comparison-table tbody tr:last-child th, .comparison-table tbody tr:last-child td { border-bottom: 0; }
-.section-navy .comparison-wrap { border-color: rgb(255 255 255 / 16%); }
-.section-navy .comparison-table thead th:not(:last-child) { background: #eaf0f7; }
-.section-navy .comparison-table thead th:last-child { background: var(--mint); color: var(--navy); }
-.section-navy .comparison-table tbody th, .section-navy .comparison-table tbody td { border-color: #e5edf4; }
 
 @media (max-width: 820px) {
   .pilot-highlights { grid-template-columns: 1fr; gap: 12px; }
@@ -1766,7 +1755,6 @@ video.hero-image { display: block; }
   .pilot-highlights .stat-item { padding: 12px; }
   .pilot-highlights .stat-item + .stat-item { border-top: 1px solid var(--line); border-left: 0; }
   .audience-grid { grid-template-columns: 1fr; }
-  .comparison-block { margin-top: 30px; }
   .comparison-table th, .comparison-table td { padding: 11px 12px; }
 }
 
@@ -2100,6 +2088,8 @@ video.hero-image { display: block; }
 .home-advertisers-section.is-entered .home-category-card:nth-child(6) { animation-delay: 350ms; }
 @keyframes home-category-card-enter { from { opacity: 0; translate: 0 13px; } to { opacity: 1; translate: 0 0; } }
 .home-process-section { background: #f5faff; }
+.home-process-section { padding-bottom: 32px; }
+.home-process-section + .hpk { padding-top: 32px; }
 .home-process-section > .container > .section-heading { max-width: 760px; margin-bottom: 30px; }
 .home-process-section > .container > .section-heading h2 { font-size: max(36px, clamp(32px, 4vw, 46px)); }
 .home-process-cards { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
@@ -2128,6 +2118,10 @@ video.hero-image { display: block; }
 .home-process-section.is-entered .home-process-card:nth-child(4) { animation-delay: 240ms; }
 @keyframes home-process-card-enter { from { opacity: 0; translate: 0 13px; } to { opacity: 1; translate: 0 0; } }
 .home-process-section .center-link { margin-top: 30px; }
+@media (max-width: 600px) {
+  .home-process-section { padding-bottom: 24px; }
+  .home-process-section + .hpk { padding-top: 24px; }
+}
 .home-packages-section { background: #eef3f9; }
 .home-packages-section > .container > .section-heading { max-width: 760px; margin: 0 auto 30px; }
 .home-packages-section > .container > .section-heading h2 { font-size: max(36px, clamp(32px, 4vw, 46px)); }
@@ -2158,7 +2152,6 @@ video.hero-image { display: block; }
 @keyframes home-package-card-enter { from { opacity: 0; translate: 0 13px; } to { opacity: 1; translate: 0 0; } }
 .home-packages-section .center-link { margin-top: 30px; }
 .home-price-placeholder { display: block; margin-top: 18px; color: var(--blue); font-size: var(--supporting-text); }
-.home-comparison-block { margin-top: 0; }
 .home-heading {
   color: var(--ink);
   font-family: 'Manrope', sans-serif;
@@ -2170,8 +2163,6 @@ video.hero-image { display: block; }
 }
 .home-heading span,
 .home-section-heading h2 span { color: var(--blue); }
-.home-comparison-heading { margin: 0 0 14px; }
-.comparison-block .home-comparison-heading { color: #fff; }
 .home-heading-on-dark { color: #fff; }
 .home-heading-on-dark span { color: var(--mint); }
 
@@ -2229,219 +2220,6 @@ video.hero-image { display: block; }
 .home-process-section .center-link .button,
 .home-packages-section .center-link .button {
   font-size: 15px;
-}
-/* ── Homepage comparison: "Same budget. Smarter placement." ──────
-   Premium rework scoped to this section only. Tokens live on
-   .home-comparison-section and inherit down, so the shared light-theme
-   comparison table used on other routes stays exactly as it was. */
-.home-comparison-section {
-  --cmp-surface: #ffffff;
-  --cmp-accent: #12bd9c;
-  --cmp-accent-bright: #3adfc2;
-  --cmp-accent-deep: #0c8f77;
-  --cmp-blue: #0b3d91;
-  --cmp-header-a: #f7fafe;
-  --cmp-header-b: #e8f0fa;
-  --cmp-tint-a: #f1fdf9;
-  --cmp-tint-b: #e1f7ee;
-  --cmp-tint-hover-a: #e6faf4;
-  --cmp-tint-hover-b: #d5f2e8;
-  --cmp-row-hover: #f4f9fe;
-  --cmp-radius: 20px;
-  --cmp-pad-x: 18px;
-  --cmp-divider: #eef2f8;
-  --cmp-divider-soft: #f2f5fa;
-  --cmp-seam: rgb(13 168 140 / 28%);
-}
-
-/* Atmosphere: deep navy with quiet ambient light and a hairline aurora. */
-.section-navy.home-comparison-section {
-  position: relative;
-  overflow: hidden;
-  background:
-    radial-gradient(1100px 480px at 16% -12%, rgb(59 167 242 / 9%), transparent 62%),
-    radial-gradient(860px 440px at 88% 8%, rgb(58 223 194 / 7%), transparent 60%),
-    radial-gradient(900px 500px at 62% 118%, rgb(11 61 145 / 22%), transparent 66%),
-    var(--navy);
-}
-.home-comparison-section::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgb(127 231 214 / 32%), transparent);
-  pointer-events: none;
-}
-
-/* Heading: balanced spacing, refined blue accent that reads on navy. */
-.home-comparison-section .home-comparison-heading {
-  margin: 0 0 clamp(26px, 3.2vw, 38px);
-}
-.home-comparison-section .home-comparison-heading span { color: var(--sky); }
-@supports ((background-clip: text) or (-webkit-background-clip: text)) {
-  .home-comparison-section .home-comparison-heading span {
-    color: transparent;
-    -webkit-text-fill-color: transparent;
-    background-image: linear-gradient(97deg, #74c4f8 4%, #7feada 94%);
-    background-repeat: no-repeat;
-    -webkit-background-clip: text;
-    background-clip: text;
-  }
-}
-
-/* Card shell: fine edge, soft realistic depth, subtle rim light. */
-.home-comparison-block .comparison-wrap {
-  width: 100%;
-  max-width: 100%;
-  overflow-x: auto;
-  border: 1px solid rgb(255 255 255 / 26%);
-  border-radius: var(--cmp-radius);
-  background: var(--cmp-surface);
-  box-shadow:
-    0 42px 88px -36px rgb(2 6 23 / 80%),
-    0 16px 40px -22px rgb(2 6 23 / 52%),
-    0 1px 0 rgb(255 255 255 / 32%),
-    0 0 0 10px rgb(255 255 255 / 3%);
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: thin;
-  scrollbar-color: rgb(18 21 43 / 24%) transparent;
-}
-.home-comparison-block .comparison-wrap:focus-visible {
-  outline: 3px solid var(--sky);
-  outline-offset: 5px;
-}
-.home-comparison-block .comparison-wrap::-webkit-scrollbar { height: 10px; }
-.home-comparison-block .comparison-wrap::-webkit-scrollbar-track { background: transparent; }
-.home-comparison-block .comparison-wrap::-webkit-scrollbar-thumb {
-  background: rgb(18 21 43 / 22%);
-  border: 3px solid transparent;
-  border-radius: 999px;
-  background-clip: content-box;
-}
-
-.home-comparison-block .comparison-table {
-  width: 100%;
-  min-width: 680px;
-  border-collapse: separate;
-  border-spacing: 0;
-  font-size: 14px;
-  line-height: 1.55;
-}
-
-/* Consistent cell rhythm: equal heights, aligned baselines. */
-.home-comparison-block .comparison-table th,
-.home-comparison-block .comparison-table td {
-  padding: 16px var(--cmp-pad-x);
-  text-align: left;
-  vertical-align: middle;
-  background-color: var(--cmp-surface);
-  transition: background-color 180ms cubic-bezier(.33, .7, .4, 1), color 180ms cubic-bezier(.33, .7, .4, 1), box-shadow 180ms cubic-bezier(.33, .7, .4, 1);
-}
-
-/* Column alignment: soft dividers inside, a quiet teal seam at Adsrow. */
-.home-comparison-block .comparison-table thead th + th,
-.home-comparison-block .comparison-table tbody td + td { border-left: 1px solid var(--cmp-divider-soft); }
-.home-comparison-block .comparison-table thead th + th:last-child,
-.home-comparison-block .comparison-table tbody td + td:last-child { border-left: 1px solid var(--cmp-seam); }
-
-/* Subtle row separators; the final row closes the table. */
-.home-comparison-block .comparison-table tbody th,
-.home-comparison-block .comparison-table tbody td { border-bottom: 1px solid var(--cmp-divider); }
-.home-comparison-block .comparison-table tbody tr:last-child th,
-.home-comparison-block .comparison-table tbody tr:last-child td { border-bottom: 0; }
-
-/* Header: sophisticated light-blue band, precisely aligned labels. */
-.home-comparison-block .comparison-table thead th {
-  font-family: 'Manrope', sans-serif;
-  font-size: 11.5px;
-  font-weight: 800;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  white-space: nowrap;
-  border-bottom: 1px solid rgb(18 21 43 / 9%);
-}
-.home-comparison-block .comparison-table thead th:not(:last-child) {
-  background: linear-gradient(180deg, var(--cmp-header-a) 0%, var(--cmp-header-b) 100%);
-  color: var(--navy);
-}
-.home-comparison-block .comparison-table thead th:last-child {
-  background: linear-gradient(135deg, var(--cmp-accent-bright) 0%, var(--cmp-accent) 55%, #0da184 100%);
-  color: var(--navy);
-  border-bottom: 1px solid rgb(9 122 100 / 40%);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 30%);
-}
-
-/* Sticky row labels: context stays visible while the table scrolls. */
-.home-comparison-block .comparison-table thead th:first-child,
-.home-comparison-block .comparison-table tbody th {
-  position: sticky;
-  left: 0;
-  z-index: 1;
-  min-width: 220px;
-  padding-left: 22px;
-  border-right: 1px solid var(--cmp-divider);
-}
-.home-comparison-block .comparison-table tbody th {
-  color: var(--ink);
-  font-weight: 700;
-}
-.home-comparison-block .comparison-table tbody td { color: #3d4b63; min-width: 150px; }
-
-/* Optical padding: align to the card's rounded corners. */
-.home-comparison-block .comparison-table thead th:last-child,
-.home-comparison-block .comparison-table tbody td:last-child { padding-right: 20px; }
-
-/* Adsrow advantage column: turquoise-to-mint, confident blue, soft inner glow. */
-.home-comparison-block .comparison-table tbody td.comparison-adsrow-cell,
-.home-comparison-block .comparison-table tbody td:last-child {
-  background-image: linear-gradient(180deg, var(--cmp-tint-a), var(--cmp-tint-b));
-  color: var(--cmp-blue);
-  font-weight: 700;
-  border-bottom: 1px solid rgb(13 168 140 / 14%);
-  box-shadow: inset 12px 0 14px -14px rgb(15 174 145 / 30%);
-}
-.home-comparison-block .comparison-adsrow-value {
-  display: inline-flex;
-  align-items: flex-start;
-  gap: 8px;
-}
-.home-comparison-block .comparison-adsrow-value svg {
-  flex: 0 0 auto;
-  width: 20px;
-  height: 20px;
-  margin-top: 1px;
-  padding: 4px;
-  color: var(--cmp-accent-deep);
-  background: rgb(15 174 145 / 12%);
-  border-radius: 50%;
-}
-
-/* Highlight only the row under the cursor; everything else holds still. */
-@media (hover: hover) {
-  .home-comparison-block .comparison-table tbody tr:hover th,
-  .home-comparison-block .comparison-table tbody tr:hover td { background-color: var(--cmp-row-hover); }
-  .home-comparison-block .comparison-table tbody tr:hover th { color: var(--cmp-blue); }
-  .home-comparison-block .comparison-table tbody tr:hover td.comparison-adsrow-cell,
-  .home-comparison-block .comparison-table tbody tr:hover td:last-child {
-    background-image: linear-gradient(180deg, var(--cmp-tint-hover-a), var(--cmp-tint-hover-b));
-    box-shadow: inset 12px 0 14px -13px rgb(15 174 145 / 34%);
-  }
-}
-
-@media (max-width: 600px) {
-  .home-comparison-block .comparison-table { min-width: 640px; font-size: 13.5px; }
-  .home-comparison-block .comparison-table th,
-  .home-comparison-block .comparison-table td { padding: 13px 14px; }
-  .home-comparison-block .comparison-table thead th:first-child,
-  .home-comparison-block .comparison-table tbody th { min-width: 176px; padding-left: 18px; }
-  .home-comparison-block .comparison-table thead th:last-child,
-  .home-comparison-block .comparison-table tbody td:last-child { padding-right: 16px; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .home-comparison-block .comparison-table th,
-  .home-comparison-block .comparison-table td,
-  .home-comparison-block .comparison-table tbody tr { transition: none; }
 }
 .host-banner > .container > div > p:not(.eyebrow) {
   font-family: 'Manrope', sans-serif;
