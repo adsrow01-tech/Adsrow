@@ -5,7 +5,7 @@
 //   2. missing files with an extension -> real 404 (never SPA HTML)
 //   3. non-prerendered SPA routes (auth/protected/legacy) -> app.html
 //   4. every other extensionless path -> real HTTP 404 with 404.html body
-//   5. canonical HTTPS and apex-host redirects, plus legacy URL redirects
+//   5. canonical HTTPS redirect only when the request Host is adsrow.com
 // Usage: node scripts/preview-hostinger.mjs [--port 4173]
 
 import { createServer } from "node:http";
@@ -86,34 +86,12 @@ const notFound = async (res) => {
 
 createServer(async (req, res) => {
   const host = (req.headers.host || "").toLowerCase();
-  const forwardedHttps = req.headers["x-forwarded-proto"] === "https";
   if (req.headers["x-forwarded-proto"] !== "https" && /^(?:www\.)?adsrow\.com$/.test(host)) {
-    send(res, 301, { Location: `https://adsrow.com${req.url}` }, "");
-    return;
-  }
-  if (forwardedHttps && host === "www.adsrow.com") {
     send(res, 301, { Location: `https://adsrow.com${req.url}` }, "");
     return;
   }
 
   const pathname = decodeURIComponent((req.url || "/").split("?")[0]);
-  const search = (req.url || "").includes("?") ? (req.url || "").slice((req.url || "").indexOf("?")) : "";
-  const cleanPath = pathname.replace(/\/+$/, "") || "/";
-  const legacyDestinations = {
-    "/locations": "/network/",
-    "/package-comparison": "/packages/",
-    "/partner-form": "/contact/",
-    "/advertise/enquiry": "/contact/",
-  };
-  let legacyDestination = legacyDestinations[cleanPath];
-  if (cleanPath === "/advertise") {
-    legacyDestination = search ? "/contact/" : "/contact/?type=advertiser";
-  }
-  if (legacyDestination) {
-    send(res, 301, { Location: `${legacyDestination}${legacyDestination.includes("?") ? "" : search}` }, "");
-    return;
-  }
-
   const filePath = path.normalize(path.join(root, pathname));
   if (!filePath.startsWith(root)) {
     await notFound(res);
@@ -124,10 +102,6 @@ createServer(async (req, res) => {
   try {
     const info = await stat(filePath);
     if (info.isDirectory()) {
-      if (pathname !== "/" && !pathname.endsWith("/")) {
-        send(res, 301, { Location: `${pathname}/${search}` }, "");
-        return;
-      }
       if (await sendFile(res, 200, path.join(filePath, "index.html"))) return;
       await notFound(res);
       return;
@@ -146,7 +120,7 @@ createServer(async (req, res) => {
   }
 
   // 3. SPA shell routes (auth/protected/legacy) -> app.html
-  const clean = cleanPath.slice(1);
+  const clean = pathname.replace(/\/+$/, "").slice(1);
   if (SPA_SHELL_ROUTES.has(clean)) {
     if (await sendFile(res, 200, path.join(root, "app.html"))) return;
     await notFound(res);

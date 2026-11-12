@@ -290,19 +290,13 @@ function ContactPanel() {
 function ContactPage() {
   const location = useLocation();
   const tabRefs = useRef([]);
-  const [activeTab, setActiveTab] = useState("advertiser");
-  const [requestedCampaign, setRequestedCampaign] = useState({ requestedScreens: "", requestedDailyPrice: "" });
-  const { requestedScreens, requestedDailyPrice } = requestedCampaign;
+  const [activeTab, setActiveTab] = useState(() => requestedTab(location.search));
+  const rawScreens = new URLSearchParams(location.search).get("screens");
+  const validScreens = ["2", "4", "6", "8", "10"].includes(rawScreens);
+  const requestedScreens = validScreens ? rawScreens : "";
+  const requestedDailyPrice = validScreens ? String(campaignScreenPricing[rawScreens]) : "";
 
-  useEffect(() => {
-    setActiveTab(requestedTab(location.search));
-    const rawScreens = new URLSearchParams(location.search).get("screens");
-    const validScreens = ["2", "4", "6", "8", "10"].includes(rawScreens);
-    setRequestedCampaign({
-      requestedScreens: validScreens ? rawScreens : "",
-      requestedDailyPrice: validScreens ? String(campaignScreenPricing[rawScreens]) : "",
-    });
-  }, [location.search]);
+  useEffect(() => setActiveTab(requestedTab(location.search)), [location.search]);
 
   function handleTabKeyDown(event, index) {
     let nextIndex = index;

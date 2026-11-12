@@ -1385,7 +1385,7 @@ video.hero-image { display: block; }
 .feature-card:hover, .contact-info-card:hover { transform: translateY(-3px); border-color: #b9dff6; box-shadow: 0 12px 26px rgb(18 21 43 / 6%); }
 .feature-icon { width: 43px; height: 43px; margin-bottom: 17px; }
 .feature-number { display: inline-block; margin: 0 0 15px; color: var(--blue); font-size: 12px; font-weight: 800; letter-spacing: 1px; }
-.feature-card h2, .feature-card h3, .contact-info-card h3 { margin: 0 0 9px; color: var(--text-dark); font-family: 'Manrope', sans-serif; font-size: var(--card-heading); font-weight: var(--weight-card-headings); line-height: 1.4; }
+.feature-card h3, .contact-info-card h3 { margin: 0 0 9px; color: var(--text-dark); font-family: 'Manrope', sans-serif; font-size: var(--card-heading); font-weight: var(--weight-card-headings); line-height: 1.4; }
 .feature-card p, .contact-info-card p { margin: 0; color: var(--text-dark); font-family: var(--font-body); font-size: var(--p-card); font-weight: var(--p-weight); line-height: var(--p-line); }
 .center-link { margin-top: 26px; text-align: center; }
 .location-feature, .about-grid, .advertise-grid { display: grid; align-items: center; grid-template-columns: 1fr 1fr; gap: clamp(38px, 7vw, 80px); }

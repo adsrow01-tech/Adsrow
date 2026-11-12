@@ -67,7 +67,7 @@
 .arap-card { display: flex; flex-direction: column; min-width: 0; }
 
 .arap-card .ic { display: grid; width: 44px; height: 44px; flex: 0 0 auto; place-items: center; border: 1px solid var(--accent-line); border-radius: 12px; background: rgb(255 255 255 / 66%); color: var(--accent); }
-.arap-name { margin: 15px 0 0; color: var(--accent); font-size: 12.5px; font-weight: 800; line-height: 1.2; letter-spacing: 1.5px; text-transform: uppercase; }
+.arap-name { margin-top: 15px; color: var(--accent); font-size: 12.5px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; }
 .arap-card .arap-who { margin: 6px 0 4px; color: var(--ink); font-family: 'Manrope', sans-serif; font-size: var(--card-heading); font-weight: var(--weight-card-headings); line-height: 1.25; letter-spacing: -.4px; }
 .arap-reach { color: var(--muted); font-size: var(--supporting-text); font-weight: 500; }
 .arap-reach b { color: var(--ink); }

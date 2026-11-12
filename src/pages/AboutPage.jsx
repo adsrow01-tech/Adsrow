@@ -51,7 +51,7 @@ function AboutPage() {
           <div className="about-story-visual">
             <img
               src="/photos/supermarket-checkout.png"
-              alt="Adsrow digital advertising screen at a supermarket checkout"
+              alt="Digital Adsrow screen displayed in a real-world venue"
               width="1200"
               height="900"
               loading="lazy"

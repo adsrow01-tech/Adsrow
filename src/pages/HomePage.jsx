@@ -40,7 +40,9 @@ function formatStatistic(value, index) {
 }
 
 function HomePage() {
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(() =>
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  );
   const proofGridRef = useRef(null);
   const statisticsStartedRef = useRef(prefersReducedMotion);
   const [statisticValues, setStatisticValues] = useState(() =>
@@ -54,7 +56,6 @@ function HomePage() {
   useEffect(() => {
     const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
     const updatePreference = () => setPrefersReducedMotion(preference.matches);
-    updatePreference();
     preference.addEventListener("change", updatePreference);
     return () => preference.removeEventListener("change", updatePreference);
   }, []);
