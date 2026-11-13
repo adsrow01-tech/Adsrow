@@ -17,6 +17,7 @@ const HostAScreenPage = lazyRoute(() => import("./pages/HostAScreenPage"));
 const ContactPage = lazyRoute(() => import("./pages/ContactPage"));
 const LoginPage = lazyRoute(() => import("./pages/AuthPages").then(({ LoginPage: component }) => ({ default: component })));
 const SignupPage = lazyRoute(() => import("./pages/AuthPages").then(({ SignupPage: component }) => ({ default: component })));
+const OAuthCallbackPage = lazyRoute(() => import("./pages/OAuthCallbackPage"));
 const ForgotPasswordPage = lazyRoute(() => import("./pages/AuthRecoveryPages").then(({ ForgotPasswordPage: component }) => ({ default: component })));
 const ResetPasswordPage = lazyRoute(() => import("./pages/AuthRecoveryPages").then(({ ResetPasswordPage: component }) => ({ default: component })));
 const PrivacyPage = lazyRoute(() => import("./pages/LegalPages").then(({ PrivacyPage: component }) => ({ default: component })));
@@ -88,6 +89,7 @@ export default function App() {
         <Route path="/admin" element={<AdminPage />} />
         <Route path="/partner-form" element={<LegacyPartnerFormRedirect />} />
         <Route element={<Layout />}>
+        <Route path="/auth/callback" element={<OAuthCallbackPage />} />
         <Route path="/" element={<HomePage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/packages" element={<PackageComparisonPage />} />
@@ -122,7 +124,7 @@ export default function App() {
 const lazyRoutes = [
   HomePage, AboutPage, PackageComparisonPage, NetworkPage, HowItWorksPage,
   WhyAdsrowPage, FaqsPage, HostAScreenPage, ContactPage, LoginPage, SignupPage,
-  ForgotPasswordPage, ResetPasswordPage, PrivacyPage, RefundPolicyPage,
+  ForgotPasswordPage, ResetPasswordPage, PrivacyPage, RefundPolicyPage, OAuthCallbackPage,
   TermsPage, DashboardPage, NotFoundPage, BlogArticlePage, BlogPage, AdminPage,
 ];
 

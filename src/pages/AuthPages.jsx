@@ -5,9 +5,9 @@ import { isSupabaseConfigured, supabase } from "../lib/supabase";
 import GoogleIcon from "../components/GoogleIcon";
 import { useAuth } from "../context/AuthContext";
 import { getSafeNextPath } from "../lib/redirect";
-import { registerWithLegal } from "../lib/registration";
+import { describeFunctionError, registerWithLegal } from "../lib/registration";
 import { getPublishedLegalSections, privacySections, refundSections, termsSections } from "./LegalPages";
-import { createTermsContentHash } from "../lib/termsAcceptance";
+import { ADSROW_TERMS_VERSION, createTermsContentHash, savePendingGoogleLegalIntent, clearPendingGoogleLegalIntent } from "../lib/termsAcceptance";
 
 const PUBLISHED_TERMS_SECTIONS = getPublishedLegalSections(termsSections);
 const PUBLISHED_PRIVACY_SECTIONS = getPublishedLegalSections(privacySections);
@@ -24,6 +24,7 @@ function LegalDocumentModal({ initialDocument, onAccepted, onClose, documentHash
   const [readDocuments, setReadDocuments] = useState({});
   const [agreed, setAgreed] = useState(false);
   const [error, setError] = useState("");
+  const [accepting, setAccepting] = useState(false);
   const scrollRef = useRef(null);
   const scrollTops = useRef({});
   // Terms and Privacy are the required documents; the Refund policy is also available in the modal.
@@ -57,10 +58,22 @@ function LegalDocumentModal({ initialDocument, onAccepted, onClose, documentHash
     document.body.style.overflow = "hidden";
     return () => { document.body.style.overflow = previousOverflow; };
   }, []);
-  function accept() {
+  async function accept() {
     if (!agreed || !requiredRead || !hashesReady) return;
-    onAccepted(REQUIRED_DOCUMENTS.map((document) => ({ type: document, contentHash: LEGAL_DOCUMENTS[document].contentHash })));
-    onClose();
+    setAccepting(true);
+    setError("");
+    try {
+      const result = await onAccepted(REQUIRED_DOCUMENTS.map((document) => ({ type: document, contentHash: LEGAL_DOCUMENTS[document].contentHash })));
+      if (result?.ok === false) {
+        setError(result.message || "Google signup could not be started. Please try again.");
+        return;
+      }
+      onClose();
+    } catch (acceptError) {
+      setError(acceptError instanceof Error ? acceptError.message : "Google signup could not be started. Please try again.");
+    } finally {
+      setAccepting(false);
+    }
   }
   return <div className="terms-modal-overlay"><section className="terms-gate terms-modal" role="dialog" aria-modal="true" aria-labelledby="terms-gate-title">
     <div className="terms-gate-header"><div className="terms-modal-heading"><div><h1 id="terms-gate-title">{documentMeta.title}</h1>{activeDocument === "refund" && <button type="button" className="legal-inline-link terms-modal-back" onClick={() => switchDocument("terms")}>← Back to Terms &amp; Privacy</button>}</div><button type="button" className="terms-modal-close" onClick={onClose} aria-label="Close legal document"><X size={20} /></button></div><p>Please read each required document before creating your account.</p><p>Hyvi India Tech Realty Services (P) Limited · Adsrow · Effective date: {LEGAL_EFFECTIVE_DATE} · Last updated: {LEGAL_LAST_UPDATED}</p>
@@ -68,7 +81,7 @@ function LegalDocumentModal({ initialDocument, onAccepted, onClose, documentHash
     <div className="terms-gate-document" ref={scrollRef} onScroll={markReadToEnd} tabIndex={0} aria-label={`Adsrow ${documentMeta.title} document`}>
       {documentMeta.sections.map(([heading, text]) => <section key={heading}><h2>{heading}</h2>{text.split(/\n\n+/).map((paragraph, index) => <p key={index}>{paragraph.split("\n").map((line, lineIndex, lines) => <span key={lineIndex}>{line}{lineIndex < lines.length - 1 && <br />}</span>)}</p>)}</section>)}
     </div>
-    <div className="terms-gate-acceptance"><label><input type="checkbox" checked={agreed} onChange={(event) => setAgreed(event.target.checked)} disabled={!requiredRead || !hashesReady} /> <span>I have read and agree to the Adsrow Terms &amp; Conditions and acknowledge the Privacy Policy.</span></label><p className="terms-gate-progress">{!hashesReady ? "Loading legal documents…" : !requiredRead ? "Scroll to the end of each required document to continue." : agreed ? "You have reached the end of each required document and agreed to proceed." : "Check the box to confirm you agree."}</p>{error && <p className="form-status form-error" role="alert">{error}</p>}<button className="button terms-gate-button" type="button" disabled={!agreed || !requiredRead || !hashesReady} onClick={accept}>Accept &amp; Continue <ArrowRight size={17} /></button></div>
+    <div className="terms-gate-acceptance"><label><input type="checkbox" checked={agreed} onChange={(event) => setAgreed(event.target.checked)} disabled={!requiredRead || !hashesReady || accepting} /> <span>I have read and agree to the Adsrow Terms &amp; Conditions and Privacy Policy.</span></label><p className="terms-gate-progress">{!hashesReady ? "Loading legal documents…" : !requiredRead ? "Scroll to the end of each required document to continue." : agreed ? "You have reached the end of each required document and agreed to proceed." : "Check the box to confirm you agree."}</p>{error && <p className="form-status form-error" role="alert">{error}</p>}<button className="button terms-gate-button" type="button" disabled={!agreed || !requiredRead || !hashesReady || accepting} onClick={accept}>{accepting ? "Preparing signup…" : "Accept & Continue"} {!accepting && <ArrowRight size={17} />}</button></div>
   </section></div>;
 }
 
@@ -86,6 +99,7 @@ function AuthPage({ mode }) {
   const [message, setMessage] = useState("");
   const [acceptedDocuments, setAcceptedDocuments] = useState({});
   const [activeLegalDocument, setActiveLegalDocument] = useState(null);
+  const [googleSignupPending, setGoogleSignupPending] = useState(false);
   const [documentHashes, setDocumentHashes] = useState({ terms: "", privacy: "" });
   const hashesReady = Boolean(documentHashes.terms && documentHashes.privacy);
 
@@ -147,36 +161,83 @@ function AuthPage({ mode }) {
     }
   }
 
-  async function signInWithGoogle() {
-    if (signup) {
-      setStatus("error");
-      setMessage("Google signup is unavailable until legal acceptance is recorded. Please use email signup.");
-      return;
-    }
+  async function startGoogleOAuth() {
     if (!isSupabaseConfigured) {
-      setStatus("error");
-      setMessage("Account access is not configured yet. Please contact Adsrow.");
-      return;
+      return { ok: false, message: "Account access is not configured yet. Please contact Adsrow." };
     }
     setStatus("loading");
     setMessage("");
     try {
+      const callback = new URL("/auth/callback", window.location.origin);
+      callback.searchParams.set("mode", signup ? "signup" : "login");
+      callback.searchParams.set("next", nextPath);
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
-        options: {
-          redirectTo: new URL(nextPath, window.location.origin).toString(),
-        },
+        options: { redirectTo: callback.toString() },
       });
       if (error) throw error;
+      return { ok: true };
     } catch (error) {
       setStatus("error");
       setMessage(error instanceof Error ? error.message : "Google sign-in could not be started. Please try again.");
+      return { ok: false, message: error instanceof Error ? error.message : "Google sign-in could not be started. Please try again." };
     }
+  }
+
+  async function handleLegalAccepted(entries) {
+    setAcceptedDocuments(Object.fromEntries(entries.map((entry) => [entry.type, entry.contentHash])));
+    if (!googleSignupPending) return { ok: true };
+
+    if (!isSupabaseConfigured) return { ok: false, message: "Account access is not configured yet. Please contact Adsrow." };
+    setStatus("loading");
+    setMessage("");
+    try {
+      const { data, error } = await supabase.functions.invoke("register-with-legal", {
+        body: {
+          action: "create_google_legal_intent",
+          termsVersion: ADSROW_TERMS_VERSION,
+          termsContentHash: documentHashes.terms,
+          privacyContentHash: documentHashes.privacy,
+        },
+      });
+      if (error) throw error;
+      if (!data?.intentId || !savePendingGoogleLegalIntent(data.intentId)) {
+        throw new Error("This browser could not securely preserve the signup handoff. Please enable session storage and try again.");
+      }
+
+      const result = await startGoogleOAuth();
+      if (!result.ok) clearPendingGoogleLegalIntent();
+      setGoogleSignupPending(false);
+      return result;
+    } catch (error) {
+      clearPendingGoogleLegalIntent();
+      setGoogleSignupPending(false);
+      setStatus("error");
+      const message = await describeFunctionError(error);
+      setMessage(message);
+      return { ok: false, message };
+    }
+  }
+
+  async function signInWithGoogle() {
+    if (signup) {
+      if (!isSupabaseConfigured) {
+        setStatus("error");
+        setMessage("Account access is not configured yet. Please contact Adsrow.");
+        return;
+      }
+      setStatus("idle");
+      setMessage("");
+      setGoogleSignupPending(true);
+      setActiveLegalDocument("terms");
+      return;
+    }
+    await startGoogleOAuth();
   }
 
   return (
     <>
-    {signup && activeLegalDocument && <LegalDocumentModal initialDocument={activeLegalDocument} documentHashes={documentHashes} hashesReady={hashesReady} onAccepted={(entries) => setAcceptedDocuments(Object.fromEntries(entries.map((entry) => [entry.type, entry.contentHash])))} onClose={() => setActiveLegalDocument(null)} />}
+    {signup && activeLegalDocument && <LegalDocumentModal initialDocument={activeLegalDocument} documentHashes={documentHashes} hashesReady={hashesReady} onAccepted={handleLegalAccepted} onClose={() => { setActiveLegalDocument(null); setGoogleSignupPending(false); }} />}
     <section className="auth-page">
       <div className="auth-decoration" aria-hidden="true"><span /><span /><span /></div>
       <aside className="auth-aside">
