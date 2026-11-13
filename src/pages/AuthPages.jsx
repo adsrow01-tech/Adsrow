@@ -6,27 +6,32 @@ import GoogleIcon from "../components/GoogleIcon";
 import { useAuth } from "../context/AuthContext";
 import { getSafeNextPath } from "../lib/redirect";
 import { registerWithLegal } from "../lib/registration";
-import { privacySections, refundSections, termsSections } from "./LegalPages";
+import { getPublishedLegalSections, privacySections, refundSections, termsSections } from "./LegalPages";
 import { createTermsContentHash } from "../lib/termsAcceptance";
 
-const TERMS_READY_FOR_ACCEPTANCE = true;
-const TERMS_CONTENT_HASH = createTermsContentHash(termsSections.map(([heading, text]) => `${heading}\n${text}`).join("\n"));
-const PRIVACY_CONTENT_HASH = createTermsContentHash(privacySections.map(([heading, text]) => `${heading}\n${text}`).join("\n"));
+const PUBLISHED_TERMS_SECTIONS = getPublishedLegalSections(termsSections);
+const PUBLISHED_PRIVACY_SECTIONS = getPublishedLegalSections(privacySections);
+const PUBLISHED_REFUND_SECTIONS = getPublishedLegalSections(refundSections);
+const LEGAL_EFFECTIVE_DATE = "27/10/2026";
+const LEGAL_LAST_UPDATED = "09/11/2026";
 
-function LegalDocumentModal({ initialDocument, onAccepted, onClose }) {
+function canonicalDocumentContent(sections) {
+  return sections.map(([heading, text]) => `${heading}\n${text}`).join("\n");
+}
+
+function LegalDocumentModal({ initialDocument, onAccepted, onClose, documentHashes, hashesReady }) {
   const [activeDocument, setActiveDocument] = useState(initialDocument === "privacy" ? "privacy" : "terms");
   const [readDocuments, setReadDocuments] = useState({});
   const [agreed, setAgreed] = useState(false);
   const [error, setError] = useState("");
   const scrollRef = useRef(null);
   const scrollTops = useRef({});
-  // Terms and Privacy are the required documents; the Refund policy is viewable
-  // in the same modal as "review only" and is not part of the agreement checkbox.
+  // Terms and Privacy are the required documents; the Refund policy is also available in the modal.
   const REQUIRED_DOCUMENTS = ["terms", "privacy"];
   const LEGAL_DOCUMENTS = {
-    terms: { title: "Terms & Conditions", contentHash: TERMS_CONTENT_HASH, sections: termsSections },
-    privacy: { title: "Privacy Policy", contentHash: PRIVACY_CONTENT_HASH, sections: privacySections },
-    refund: { title: "Refund & Cancellation Policy", contentHash: null, sections: refundSections },
+    terms: { title: "Terms & Conditions", contentHash: documentHashes.terms, sections: PUBLISHED_TERMS_SECTIONS },
+    privacy: { title: "Privacy Policy", contentHash: documentHashes.privacy, sections: PUBLISHED_PRIVACY_SECTIONS },
+    refund: { title: "Refund & Cancellation Policy", contentHash: null, sections: PUBLISHED_REFUND_SECTIONS },
   };
   const documentMeta = LEGAL_DOCUMENTS[activeDocument];
   const requiredRead = REQUIRED_DOCUMENTS.every((document) => readDocuments[document]);
@@ -53,17 +58,17 @@ function LegalDocumentModal({ initialDocument, onAccepted, onClose }) {
     return () => { document.body.style.overflow = previousOverflow; };
   }, []);
   function accept() {
-    if (!agreed || !requiredRead || !TERMS_READY_FOR_ACCEPTANCE) return;
+    if (!agreed || !requiredRead || !hashesReady) return;
     onAccepted(REQUIRED_DOCUMENTS.map((document) => ({ type: document, contentHash: LEGAL_DOCUMENTS[document].contentHash })));
     onClose();
   }
   return <div className="terms-modal-overlay"><section className="terms-gate terms-modal" role="dialog" aria-modal="true" aria-labelledby="terms-gate-title">
-    <div className="terms-gate-header"><div className="terms-modal-heading"><div><h1 id="terms-gate-title">{documentMeta.title}</h1>{activeDocument === "refund" && <button type="button" className="legal-inline-link terms-modal-back" onClick={() => switchDocument("terms")}>← Back to Terms &amp; Privacy</button>}</div><button type="button" className="terms-modal-close" onClick={onClose} aria-label="Close legal document"><X size={20} /></button></div><p>Please read each required document before creating your account.</p><p>Adsrow Media Network Private Limited · Effective date: [●] · Last updated: [●]</p>
-    <div className="terms-tabs" role="tablist" aria-label="Legal documents">{Object.entries(LEGAL_DOCUMENTS).map(([key, meta]) => <button key={key} type="button" role="tab" aria-selected={activeDocument === key} data-read={readDocuments[key] ? "true" : undefined} className="terms-tab" onClick={() => key === activeDocument ? undefined : switchDocument(key)}>{meta.title}{!REQUIRED_DOCUMENTS.includes(key) && <span className="terms-tab-note">review only</span>}</button>)}</div></div>
+    <div className="terms-gate-header"><div className="terms-modal-heading"><div><h1 id="terms-gate-title">{documentMeta.title}</h1>{activeDocument === "refund" && <button type="button" className="legal-inline-link terms-modal-back" onClick={() => switchDocument("terms")}>← Back to Terms &amp; Privacy</button>}</div><button type="button" className="terms-modal-close" onClick={onClose} aria-label="Close legal document"><X size={20} /></button></div><p>Please read each required document before creating your account.</p><p>Hyvi India Tech Realty Services (P) Limited · Adsrow · Effective date: {LEGAL_EFFECTIVE_DATE} · Last updated: {LEGAL_LAST_UPDATED}</p>
+    <div className="terms-tabs" role="tablist" aria-label="Legal documents">{Object.entries(LEGAL_DOCUMENTS).map(([key, meta]) => <button key={key} type="button" role="tab" aria-selected={activeDocument === key} data-read={readDocuments[key] ? "true" : undefined} className="terms-tab" onClick={() => key === activeDocument ? undefined : switchDocument(key)}>{meta.title}</button>)}</div></div>
     <div className="terms-gate-document" ref={scrollRef} onScroll={markReadToEnd} tabIndex={0} aria-label={`Adsrow ${documentMeta.title} document`}>
       {documentMeta.sections.map(([heading, text]) => <section key={heading}><h2>{heading}</h2>{text.split(/\n\n+/).map((paragraph, index) => <p key={index}>{paragraph.split("\n").map((line, lineIndex, lines) => <span key={lineIndex}>{line}{lineIndex < lines.length - 1 && <br />}</span>)}</p>)}</section>)}
     </div>
-    <div className="terms-gate-acceptance"><label><input type="checkbox" checked={agreed} onChange={(event) => setAgreed(event.target.checked)} disabled={!requiredRead || !TERMS_READY_FOR_ACCEPTANCE} /> <span>I have read and agree to the Adsrow Terms &amp; Conditions and acknowledge the Privacy Policy.</span></label><p className="terms-gate-progress">{!TERMS_READY_FOR_ACCEPTANCE ? "Acceptance is currently unavailable." : !requiredRead ? "Scroll to the end of each required document to continue." : agreed ? "You have reached the end of each required document and agreed to proceed." : "Check the box to confirm you agree."}</p>{error && <p className="form-status form-error" role="alert">{error}</p>}<button className="button terms-gate-button" type="button" disabled={!agreed || !requiredRead || !TERMS_READY_FOR_ACCEPTANCE} onClick={accept}>Accept &amp; Continue <ArrowRight size={17} /></button></div>
+    <div className="terms-gate-acceptance"><label><input type="checkbox" checked={agreed} onChange={(event) => setAgreed(event.target.checked)} disabled={!requiredRead || !hashesReady} /> <span>I have read and agree to the Adsrow Terms &amp; Conditions and acknowledge the Privacy Policy.</span></label><p className="terms-gate-progress">{!hashesReady ? "Loading legal documents…" : !requiredRead ? "Scroll to the end of each required document to continue." : agreed ? "You have reached the end of each required document and agreed to proceed." : "Check the box to confirm you agree."}</p>{error && <p className="form-status form-error" role="alert">{error}</p>}<button className="button terms-gate-button" type="button" disabled={!agreed || !requiredRead || !hashesReady} onClick={accept}>Accept &amp; Continue <ArrowRight size={17} /></button></div>
   </section></div>;
 }
 
@@ -81,6 +86,19 @@ function AuthPage({ mode }) {
   const [message, setMessage] = useState("");
   const [acceptedDocuments, setAcceptedDocuments] = useState({});
   const [activeLegalDocument, setActiveLegalDocument] = useState(null);
+  const [documentHashes, setDocumentHashes] = useState({ terms: "", privacy: "" });
+  const hashesReady = Boolean(documentHashes.terms && documentHashes.privacy);
+
+  useEffect(() => {
+    let active = true;
+    Promise.all([
+      createTermsContentHash(canonicalDocumentContent(PUBLISHED_TERMS_SECTIONS)),
+      createTermsContentHash(canonicalDocumentContent(PUBLISHED_PRIVACY_SECTIONS)),
+    ]).then(([terms, privacy]) => {
+      if (active) setDocumentHashes({ terms, privacy });
+    });
+    return () => { active = false; };
+  }, []);
 
   useEffect(() => {
     if (!authLoading && user) {
@@ -95,7 +113,7 @@ function AuthPage({ mode }) {
 
   async function handleSubmit(event) {
     event.preventDefault();
-    const acceptedTerms = acceptedDocuments.terms === TERMS_CONTENT_HASH && acceptedDocuments.privacy === PRIVACY_CONTENT_HASH;
+    const acceptedTerms = hashesReady && acceptedDocuments.terms === documentHashes.terms && acceptedDocuments.privacy === documentHashes.privacy;
     if (signup && !acceptedTerms) {
       setStatus("error");
       setMessage("Please review and accept the Terms & Conditions and Privacy Policy before creating an account.");
@@ -130,6 +148,11 @@ function AuthPage({ mode }) {
   }
 
   async function signInWithGoogle() {
+    if (signup) {
+      setStatus("error");
+      setMessage("Google signup is unavailable until legal acceptance is recorded. Please use email signup.");
+      return;
+    }
     if (!isSupabaseConfigured) {
       setStatus("error");
       setMessage("Account access is not configured yet. Please contact Adsrow.");
@@ -153,7 +176,7 @@ function AuthPage({ mode }) {
 
   return (
     <>
-    {signup && activeLegalDocument && <LegalDocumentModal initialDocument={activeLegalDocument} onAccepted={(entries) => setAcceptedDocuments(Object.fromEntries(entries.map((entry) => [entry.type, entry.contentHash])))} onClose={() => setActiveLegalDocument(null)} />}
+    {signup && activeLegalDocument && <LegalDocumentModal initialDocument={activeLegalDocument} documentHashes={documentHashes} hashesReady={hashesReady} onAccepted={(entries) => setAcceptedDocuments(Object.fromEntries(entries.map((entry) => [entry.type, entry.contentHash])))} onClose={() => setActiveLegalDocument(null)} />}
     <section className="auth-page">
       <div className="auth-decoration" aria-hidden="true"><span /><span /><span /></div>
       <aside className="auth-aside">

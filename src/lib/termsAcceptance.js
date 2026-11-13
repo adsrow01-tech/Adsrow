@@ -12,13 +12,10 @@ export function hasLocalTermsAcceptance(hashes) {
   } catch { return false; }
 }
 
-export function createTermsContentHash(content) {
-  let hash = 2166136261;
-  for (let index = 0; index < content.length; index += 1) {
-    hash ^= content.charCodeAt(index);
-    hash = Math.imul(hash, 16777619);
-  }
-  return `fnv1a-${(hash >>> 0).toString(16).padStart(8, "0")}`;
+export async function createTermsContentHash(content) {
+  const bytes = new TextEncoder().encode(content);
+  const digest = await globalThis.crypto.subtle.digest("SHA-256", bytes);
+  return Array.from(new Uint8Array(digest), (value) => value.toString(16).padStart(2, "0")).join("");
 }
 
 // entries: [{ type: "terms" | "privacy", contentHash }] — one pending record per
