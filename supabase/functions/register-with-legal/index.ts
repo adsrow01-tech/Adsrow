@@ -8,7 +8,13 @@ function corsHeaders(request: Request) {
     .map((origin) => origin.trim())
     .filter(Boolean);
   const requestOrigin = request.headers.get("Origin") ?? "";
-  const allowed = !requestOrigin || configuredOrigins.includes(requestOrigin);
+  const allowedOrigins = new Set([
+    "https://adsrow.com",
+    "https://www.adsrow.com",
+    Deno.env.get("PUBLIC_APP_ORIGIN")?.trim() ?? "",
+    ...configuredOrigins,
+  ].filter(Boolean));
+  const allowed = !requestOrigin || allowedOrigins.has(requestOrigin);
   return {
     allowed,
     headers: {

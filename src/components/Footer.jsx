@@ -25,6 +25,7 @@ function Footer() {
             <MapPin size={15} />
             Vijayawada, Andhra Pradesh
           </p>
+          <p>Hyvi India Tech Realty Services (P) Limited<br />Support: adsrow01@gmail.com<br />+91 83746 22055</p>
         </div>
 
         <div className="footer-column">

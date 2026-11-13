@@ -19,9 +19,9 @@ const routes = {
   "/blog": ["Blog | Adsrow · Local Advertising Ideas for Vijayawada Businesses", "Guides, ideas and local marketing tips for Vijayawada businesses from the Adsrow team.", "index, follow"],
   "/contact": ["Contact Adsrow", "Contact the Adsrow team about local digital advertising campaigns and venue partnerships.", "index, follow"],
   "/host-a-screen": ["Host a Screen | Adsrow", "Join the Adsrow venue network and host a digital advertising screen.", "index, follow"],
-  "/terms": ["Terms of Service | Adsrow", "Adsrow Terms of Service draft for legal review.", "noindex, nofollow"],
-  "/privacy": ["Privacy Policy | Adsrow", "Adsrow Privacy Policy draft for legal review.", "noindex, nofollow"],
-  "/refund-policy": ["Refund and Cancellation Policy | Adsrow", "Adsrow Refund and Cancellation Policy draft for legal review.", "noindex, nofollow"],
+  "/terms": ["Terms of Service | Adsrow", "Adsrow Terms of Service.", "noindex, nofollow"],
+  "/privacy": ["Privacy Policy | Adsrow", "Adsrow Privacy Policy.", "noindex, nofollow"],
+  "/refund-policy": ["Refund and Cancellation Policy | Adsrow", "Adsrow Refund and Cancellation Policy.", "noindex, nofollow"],
 };
 
 const escapeHtml = (value) => value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;");
