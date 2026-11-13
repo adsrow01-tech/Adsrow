@@ -1,30 +1,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { corsGate } from "../_shared/cors.mjs";
 
 const MAX_ATTEMPTS = 3;
-
-function corsHeaders(request: Request) {
-  const configuredOrigins = (Deno.env.get("APP_ORIGINS") ?? "")
-    .split(",")
-    .map((origin) => origin.trim())
-    .filter(Boolean);
-  const requestOrigin = request.headers.get("Origin") ?? "";
-  const allowedOrigins = new Set([
-    "https://adsrow.com",
-    "https://www.adsrow.com",
-    Deno.env.get("PUBLIC_APP_ORIGIN")?.trim() ?? "",
-    ...configuredOrigins,
-  ].filter(Boolean));
-  const allowed = !requestOrigin || allowedOrigins.has(requestOrigin);
-  return {
-    allowed,
-    headers: {
-      "Access-Control-Allow-Origin": requestOrigin && allowed ? requestOrigin : "null",
-      "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-      "Access-Control-Allow-Methods": "POST, OPTIONS",
-      "Vary": "Origin",
-    },
-  };
-}
 
 function json(body: Record<string, unknown>, headers: Record<string, string>, status = 200) {
   return new Response(JSON.stringify(body), {
@@ -50,9 +27,12 @@ async function updateDelivery(admin: ReturnType<typeof createClient>, userId: st
 }
 
 Deno.serve(async (request) => {
-  const { allowed, headers } = corsHeaders(request);
-  if (!allowed) return json({ error: "Origin is not allowed." }, headers, 403);
-  if (request.method === "OPTIONS") return new Response("ok", { headers });
+  const cors = corsGate(request, {
+    appOrigins: Deno.env.get("APP_ORIGINS"),
+    publicAppOrigin: Deno.env.get("PUBLIC_APP_ORIGIN"),
+  });
+  if (cors.response) return cors.response;
+  const { headers } = cors;
   if (request.method !== "POST") return json({ error: "Method not allowed" }, headers, 405);
 
   const authorization = request.headers.get("Authorization");
