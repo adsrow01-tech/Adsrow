@@ -67,6 +67,11 @@ function LegacyAdvertiseRedirect() {
   return <Navigate to={`/contact${location.search || "?type=advertiser"}`} replace />;
 }
 
+function AuthReadyGate({ children }) {
+  const { loading } = useAuth();
+  return loading ? <LoadingScreen /> : children;
+}
+
 function LegacyPackagesRedirect() {
   const location = useLocation();
   return <Navigate to={`/packages${location.search}${location.hash}`} replace />;
@@ -106,10 +111,10 @@ export default function App() {
         <Route path="/dashboard" element={<ProtectedDashboardPage />} />
         <Route path="/host-a-screen" element={<HostAScreenPage />} />
         <Route path="/contact" element={<ContactPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignupPage />} />
-        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-        <Route path="/reset-password" element={<ResetPasswordPage />} />
+        <Route path="/login" element={<AuthReadyGate><LoginPage /></AuthReadyGate>} />
+        <Route path="/signup" element={<AuthReadyGate><SignupPage /></AuthReadyGate>} />
+        <Route path="/forgot-password" element={<AuthReadyGate><ForgotPasswordPage /></AuthReadyGate>} />
+        <Route path="/reset-password" element={<AuthReadyGate><ResetPasswordPage /></AuthReadyGate>} />
         <Route path="/terms" element={<TermsPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/refund-policy" element={<RefundPolicyPage />} />

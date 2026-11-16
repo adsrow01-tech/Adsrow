@@ -1,20 +1,12 @@
 import { Link } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import { ArrowUpRight, ArrowRight, Monitor, MapPin, Users, Target, Palette, ChartNoAxesCombined, Building2, UtensilsCrossed, GraduationCap, Car, ShoppingBag, Eye, X, Check } from "lucide-react";
+import { ArrowUpRight, ArrowRight, Monitor, MapPin, Users, Target, Palette, Building2, UtensilsCrossed, GraduationCap, Car, ShoppingBag, X, Check } from "lucide-react";
 import { FeatureCard, SectionHeading } from "../components/SiteComponents";
 import Adsrow99Banner from "../components/Adsrow99Banner";
 import CardDeckCarousel from "../components/CardDeckCarousel";
 import HomeHero from "../components/HomeHero";
 import CampaignPackagesComparison from "../components/CampaignPackagesComparison";
-
-const benefits = [
-  { icon: Target, title: "Target by place and mindset", description: "Pick the type of place, the area, or both. Show a new housing project in apartment communities, a protein brand in gyms and a dinner offer in restaurants." },
-  { icon: Monitor, title: "Book once. Play everywhere.", description: "One team handles 40 venues and every screen schedule. You make one call, not forty." },
-  { icon: Palette, title: "Update your Ad in minutes", description: "New offer or new price? We update your ad remotely. No reprinting and no remounting." },
-  { icon: ChartNoAxesCombined, title: "Proof you can count", description: "Get a play report by screen and date. Add QR codes and a tracked number to count real enquiries." },
-  { icon: MapPin, title: "From one lift lobby to the whole city", description: "Start with a single lobby. Plan exactly the areas where your audience lives, works and shops." },
-  { icon: Eye, title: "Full attention, no skip button", description: "Eye-level screens where people stand still: no feeds to scroll past and no button to skip, so your story plays in full." },
-];
+import SixReasonsScreenHub from "../components/SixReasonsScreenHub";
 
 const categories = [
   { icon: Building2, title: "Real estate", label: "Homes · Offices", description: "Fill site visits from families at home and professionals at work." },
@@ -50,7 +42,6 @@ function HomePage() {
   );
   const problemSectionRef = useRef(null);
   const networkSectionRef = useRef(null);
-  const benefitsSectionRef = useRef(null);
   const advertisersSectionRef = useRef(null);
   const processSectionRef = useRef(null);
   useEffect(() => {
@@ -109,19 +100,6 @@ function HomePage() {
       observer.disconnect();
       if (animationFrame !== null) cancelAnimationFrame(animationFrame);
     };
-  }, [prefersReducedMotion]);
-
-  useEffect(() => {
-    const section = benefitsSectionRef.current;
-    if (!section || prefersReducedMotion || !("IntersectionObserver" in window)) return undefined;
-
-    const observer = new IntersectionObserver(([entry]) => {
-      if (!entry.isIntersecting) return;
-      section.classList.add("is-entered");
-      observer.disconnect();
-    }, { threshold: 0.12, rootMargin: "0px 0px -24px 0px" });
-    observer.observe(section);
-    return () => observer.disconnect();
   }, [prefersReducedMotion]);
 
   useEffect(() => {
@@ -418,35 +396,10 @@ function HomePage() {
       </section>
       */}
 
-      <section ref={benefitsSectionRef} className="section section-soft home-benefits-section">
+      <section className="section section-soft home-benefits-section">
         <div className="container">
           <div className="home-benefits-heading"><SectionHeading centered className="home-section-heading" description="Everything you need to reach the right people, and prove it." title={<>One network. <span>Six</span> reasons it works harder.</>} /></div>
-          <div className="feature-grid home-benefits-grid">
-            {benefits.map(({ icon: Icon, ...benefit }, index) => (
-              <article
-                key={benefit.title}
-                tabIndex={0}
-                className={`home-card-interactive home-benefit-card home-benefit-card-${index + 1}`}
-              >
-                {index === 0 && (
-                  <span className="benefit-badge">
-                    <span className="benefit-badge-dot" aria-hidden="true" />
-                    TARGETED BY DESIGN
-                  </span>
-                )}
-                <span className="benefit-number" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
-                <h3>{benefit.title}</h3>
-                <p>{benefit.description}</p>
-                {index === 0 && (
-                  <span className="benefit-meta">
-                    <span className="benefit-meta-dots" aria-hidden="true"><i /><i /><i /></span>
-                    40 venues · 7 moments that matter
-                  </span>
-                )}
-                <Icon className="home-card-decor" aria-hidden="true" />
-              </article>
-            ))}
-          </div>
+          <SixReasonsScreenHub />
         </div>
       </section>
 
