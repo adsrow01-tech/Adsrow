@@ -13,7 +13,7 @@ const routes = {
   "/about": ["About Adsrow | Local Digital Advertising", "Learn how Adsrow helps businesses reach local audiences through digital screens.", "index, follow"],
   "/network": ["Adsrow Network | Digital Advertising Screens", "Explore Adsrow digital advertising screens across local venues and communities.", "index, follow"],
   "/packages": ["Packages | Adsrow", "Explore Adsrow campaign packages and audience options.", "index, follow"],
-  "/how-it-works": ["How It Works | Adsrow", "See how Adsrow campaigns work from planning to proof of play.", "index, follow"],
+  "/how-it-works": ["How It Works | Adsrow", "See how Adsrow helps businesses plan, launch, and manage digital screen advertising across Vijayawada.", "index, follow"],
   "/why-adsrow": ["Why Adsrow | Local Digital Advertising", "See why businesses use Adsrow to reach nearby customers.", "index, follow"],
   "/faqs": ["FAQs | Adsrow", "Answers to common questions about Adsrow advertising campaigns and screens.", "index, follow"],
   "/blog": ["Blog | Adsrow · Local Advertising Ideas for Vijayawada Businesses", "Guides, ideas and local marketing tips for Vijayawada businesses from the Adsrow team.", "index, follow"],
@@ -62,7 +62,7 @@ try {
 
   for (const [route, [title, description, robots]] of Object.entries(routes)) {
     const appHtml = renderToString(React.createElement(StaticRouter, { location: route }, React.createElement(AuthProvider, null, React.createElement(App))));
-    const canonical = `https://adsrow.com${route === "/" ? "/" : route}`;
+    const canonical = `https://adsrow.com${route === "/" ? "/" : `${route}/`}`;
     const metadata = `<title>${escapeHtml(title)}</title><meta name="description" content="${escapeHtml(description)}"><meta name="robots" content="${robots}"><link rel="canonical" href="${canonical}"><meta property="og:title" content="${escapeHtml(title)}"><meta property="og:description" content="${escapeHtml(description)}"><meta property="og:url" content="${canonical}"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${escapeHtml(title)}"><meta name="twitter:description" content="${escapeHtml(description)}">`;
     const html = cleanTemplate.replace("</head>", `${metadata}</head>`).replace(/<div id="root">[\s\S]*?<\/div>/, `<div id="root">${appHtml}</div>`);
     const directory = path.join(root, route === "/" ? "" : route.slice(1));

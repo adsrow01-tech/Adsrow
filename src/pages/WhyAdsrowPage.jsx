@@ -51,7 +51,7 @@ function WhyAdsrowPage() {
             <h2>Let's find the right approach for your business.</h2>
             <p>Tell us what you want to promote and who you want to reach.</p>
           </div>
-          <Link className="button" to="/contact">
+          <Link className="button" to="/contact/">
             Talk to Adsrow <ArrowUpRight size={16} />
           </Link>
         </div>

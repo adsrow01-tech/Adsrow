@@ -40,9 +40,7 @@ function formatStatistic(value, index) {
 }
 
 function HomePage() {
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(() =>
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches
-  );
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const proofGridRef = useRef(null);
   const statisticsStartedRef = useRef(prefersReducedMotion);
   const [statisticValues, setStatisticValues] = useState(() =>
@@ -294,7 +292,7 @@ function HomePage() {
         </div>
         <CardDeckCarousel />
 
-        <div className="container"><div className="center-link"><Link className="text-link" to="/network">See the full network: venues, areas and screen photos <ArrowRight size={16} /></Link></div></div>
+        <div className="container"><div className="center-link"><Link className="text-link" to="/network/">See the full network: venues, areas and screen photos <ArrowRight size={16} /></Link></div></div>
       </section>
 
       {/*
@@ -480,7 +478,7 @@ function HomePage() {
           <div className="feature-grid feature-grid-four home-process-cards">
             {steps.map(({ icon: Icon, ...step }, index) => <FeatureCard key={step.title} className={`home-card-interactive home-process-card home-process-card-${index + 1}`} tabIndex={0} number={`0${index + 1}`} icon={Icon} {...step} />)}
           </div>
-          <div className="center-link"><Link className="button button-outline" to="/how-it-works">See the Full Process <ArrowRight size={16} /></Link></div>
+          <div className="center-link"><Link className="button button-outline" to="/how-it-works/">See the Full Process <ArrowRight size={16} /></Link></div>
         </div>
       </section>
 
@@ -500,7 +498,7 @@ function HomePage() {
               <li>Apartments</li>
             </ul>
           </div>
-          <Link className="button button-mint" to="/host-a-screen">Host a Screen <ArrowUpRight size={16} /></Link>
+          <Link className="button button-mint" to="/host-a-screen/">Host a Screen <ArrowUpRight size={16} /></Link>
         </div>
       </section>
 
@@ -512,7 +510,7 @@ function HomePage() {
             <p>Get a free plan with venues, a schedule and a clear price. No obligation.</p>
           </div>
           <div className="cta-actions">
-            <Link className="button" to="/contact">Get My Free Plan <ArrowUpRight size={16} /></Link>
+            <Link className="button" to="/contact/">Get My Free Plan <ArrowUpRight size={16} /></Link>
             <a className="text-link" href="https://wa.me/918374622055" target="_blank" rel="noreferrer">WhatsApp Us <ArrowRight size={16} /></a>
           </div>
         </div>
