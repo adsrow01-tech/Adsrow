@@ -57,7 +57,7 @@ function FaqAccordion({ id, items }) {
                   {contactType && (
                     <>
                       {" "}
-                      <Link className="faq-contact-link" to={`/contact/?type=${contactType}`}>
+                      <Link className="faq-contact-link" to={`/contact?type=${contactType}`}>
                         {linkLabel}
                       </Link>
                       .

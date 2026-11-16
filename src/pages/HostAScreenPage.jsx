@@ -9,7 +9,7 @@ import {
   hostScreenSteps,
 } from "../lib/siteContent";
 
-const venueEnquiryLink = "/contact/?type=venue";
+const venueEnquiryLink = "/contact?type=venue";
 
 function HostFaqAccordion() {
   const [openIndex, setOpenIndex] = useState(0);
