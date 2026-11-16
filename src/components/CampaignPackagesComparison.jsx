@@ -24,12 +24,12 @@ export default function CampaignPackagesComparison() {
             <h2 id="hpk-title">Start small. <span>Scale what works.</span></h2>
             <p className="hpk-sub">Pick the people you want to reach. Every pack includes proof of every play and free first ad design.</p>
           </div>
-          <Link className="hpk-all" to="/packages/">
+          <Link className="hpk-all" to="/packages">
             See all packages &amp; pricing <ArrowRight size={17} aria-hidden="true" />
           </Link>
         </div>
 
-        <Link className="hpk-try" to="/packages/#try-it">
+        <Link className="hpk-try" to="/packages#try-it">
           <span><small>New advertisers</small>Try your first campaign for <b>₹99 a day</b></span>
           <span>See Try It <ArrowRight size={16} aria-hidden="true" /></span>
         </Link>
@@ -42,7 +42,7 @@ export default function CampaignPackagesComparison() {
               <Link
                 className={`hpk-card ads-card ads-card-interactive ads-accent-${accent}`}
                 key={pack.id}
-                to={`/packages/#${pack.id}`}
+                to={`/packages#${pack.id}`}
               >
                 <div className="ads-card-head-row">
                   <span className="ads-num" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
@@ -65,7 +65,7 @@ export default function CampaignPackagesComparison() {
         <div className="hpk-fit">
           Which pack fits me? I run a…
           {packageAudienceFilters.map((filter) => (
-            <Link key={filter.slug} to={`/packages/?for=${filter.slug}`}>
+            <Link key={filter.slug} to={`/packages?for=${filter.slug}`}>
               {filter.homeLabel}
             </Link>
           ))}

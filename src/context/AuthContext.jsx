@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { isSupabaseConfigured } from "../lib/supabaseConfig";
+import LoadingScreen from "../components/LoadingScreen";
 
 const AuthContext = createContext({ user: null, session: null, loading: true, signingOut: false, signOut: async () => {} });
 
@@ -98,7 +99,7 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider value={{ user, session, loading, signingOut, signOut }}>
-      {children}
+      {loading ? <LoadingScreen /> : children}
     </AuthContext.Provider>
   );
 }
