@@ -133,6 +133,35 @@ const lazyRoutes = [
   TermsPage, DashboardPage, NotFoundPage, BlogArticlePage, BlogPage, AdminPage,
 ];
 
+const routesByPath = {
+  "/": HomePage,
+  "/about": AboutPage,
+  "/packages": PackageComparisonPage,
+  "/blog": BlogPage,
+  "/network": NetworkPage,
+  "/how-it-works": HowItWorksPage,
+  "/why-adsrow": WhyAdsrowPage,
+  "/faqs": FaqsPage,
+  "/host-a-screen": HostAScreenPage,
+  "/contact": ContactPage,
+  "/login": LoginPage,
+  "/signup": SignupPage,
+  "/forgot-password": ForgotPasswordPage,
+  "/reset-password": ResetPasswordPage,
+  "/terms": TermsPage,
+  "/privacy": PrivacyPage,
+  "/refund-policy": RefundPolicyPage,
+  "/dashboard": DashboardPage,
+  "/admin": AdminPage,
+};
+
+export function preloadRoute(pathname) {
+  const normalizedPath = pathname === "/" ? "/" : pathname.replace(/\/+$/, "");
+  const route = routesByPath[normalizedPath]
+    || (normalizedPath.startsWith("/blog/") ? BlogArticlePage : NotFoundPage);
+  return route.preload();
+}
+
 export function preloadAppRoutes() {
   return Promise.all(lazyRoutes.map((route) => route.preload()));
 }
