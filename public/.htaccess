@@ -2,10 +2,15 @@
 # Upload the contents of dist/ (including this file) into public_html.
 RewriteEngine On
 
-# Canonical HTTPS for the production host only. Temporary hosts and local
-# previews are deliberately left untouched.
-RewriteCond %{HTTPS} !=on
+# Canonicalize directory-backed routes before Apache mod_dir adds a slash.
+# Scheme, host and slash changes happen in one redirect for these routes.
 RewriteCond %{HTTP_HOST} ^(?:www\.)?adsrow\.com$ [NC]
+RewriteRule ^(about|network|packages|how-it-works|why-adsrow|faqs|blog|contact|host-a-screen|terms|privacy|refund-policy)$ https://adsrow.com/$1/ [R=301,L,NE]
+
+# Canonical HTTPS and bare host for all other production requests.
+RewriteCond %{HTTP_HOST} ^(?:www\.)?adsrow\.com$ [NC]
+RewriteCond %{HTTPS} !=on [OR]
+RewriteCond %{HTTP_HOST} ^www\.adsrow\.com$ [NC]
 RewriteRule ^ https://adsrow.com%{REQUEST_URI} [R=301,L,NE]
 
 # Use the branded static document as Apache's actual 404 response.

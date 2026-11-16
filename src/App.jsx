@@ -54,22 +54,22 @@ class AppErrorBoundary extends React.Component {
 
 function LegacyPartnerFormRedirect() {
   const location = useLocation();
-  return <Navigate to={`/contact${location.search}`} replace />;
+  return <Navigate to={`/contact/${location.search}`} replace />;
 }
 
 function LegacyLocationsRedirect() {
   const location = useLocation();
-  return <Navigate to={`/network${location.search}`} replace />;
+  return <Navigate to={`/network/${location.search}`} replace />;
 }
 
 function LegacyAdvertiseRedirect() {
   const location = useLocation();
-  return <Navigate to={`/contact${location.search || "?type=advertiser"}`} replace />;
+  return <Navigate to={`/contact/${location.search || "?type=advertiser"}`} replace />;
 }
 
 function LegacyPackagesRedirect() {
   const location = useLocation();
-  return <Navigate to={`/packages${location.search}${location.hash}`} replace />;
+  return <Navigate to={`/packages/${location.search}${location.hash}`} replace />;
 }
 
 function ProtectedDashboardPage() {
@@ -91,28 +91,28 @@ export default function App() {
         <Route element={<Layout />}>
         <Route path="/auth/callback" element={<OAuthCallbackPage />} />
         <Route path="/" element={<HomePage />} />
-        <Route path="/about" element={<AboutPage />} />
-        <Route path="/packages" element={<PackageComparisonPage />} />
-        <Route path="/blog" element={<BlogPage />} />
+        <Route path="/about/" element={<AboutPage />} />
+        <Route path="/packages/" element={<PackageComparisonPage />} />
+        <Route path="/blog/" element={<BlogPage />} />
         <Route path="/blog/:slug" element={<BlogArticlePage />} />
         <Route path="/package-comparison" element={<LegacyPackagesRedirect />} />
-        <Route path="/network" element={<NetworkPage />} />
+        <Route path="/network/" element={<NetworkPage />} />
         <Route path="/locations" element={<LegacyLocationsRedirect />} />
-        <Route path="/how-it-works" element={<HowItWorksPage />} />
-        <Route path="/why-adsrow" element={<WhyAdsrowPage />} />
-        <Route path="/faqs" element={<FaqsPage />} />
+        <Route path="/how-it-works/" element={<HowItWorksPage />} />
+        <Route path="/why-adsrow/" element={<WhyAdsrowPage />} />
+        <Route path="/faqs/" element={<FaqsPage />} />
         <Route path="/advertise" element={<LegacyAdvertiseRedirect />} />
         <Route path="/advertise/enquiry" element={<LegacyPartnerFormRedirect />} />
         <Route path="/dashboard" element={<ProtectedDashboardPage />} />
-        <Route path="/host-a-screen" element={<HostAScreenPage />} />
-        <Route path="/contact" element={<ContactPage />} />
+        <Route path="/host-a-screen/" element={<HostAScreenPage />} />
+        <Route path="/contact/" element={<ContactPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
-        <Route path="/terms" element={<TermsPage />} />
-        <Route path="/privacy" element={<PrivacyPage />} />
-        <Route path="/refund-policy" element={<RefundPolicyPage />} />
+        <Route path="/terms/" element={<TermsPage />} />
+        <Route path="/privacy/" element={<PrivacyPage />} />
+        <Route path="/refund-policy/" element={<RefundPolicyPage />} />
         <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>

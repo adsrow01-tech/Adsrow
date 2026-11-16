@@ -140,7 +140,7 @@ function SuccessState({ kind }) {
       <p>{advertiser
         ? "Our team will follow up with suggested venues and a price."
         : "We'll contact you to fix a convenient time to see your space."}</p>
-      <Link className="button" to={advertiser ? "/network" : "/host-a-screen"}>
+      <Link className="button" to={advertiser ? "/network/" : "/host-a-screen/"}>
         {advertiser ? "Explore the Network" : "Learn About Hosting"} <ArrowUpRight size={16} />
       </Link>
     </section>

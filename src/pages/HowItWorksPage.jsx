@@ -87,7 +87,7 @@ function HowItWorksPage() {
             <h2>Step one takes two minutes.</h2>
             <p>Tell us who you want to reach, your dates and whether your ad is ready.</p>
           </div>
-          <Link className="button how-cta-button" to="/contact">
+          <Link className="button how-cta-button" to="/contact/">
             Start My Plan <ArrowUpRight size={17} aria-hidden="true" />
           </Link>
         </div>

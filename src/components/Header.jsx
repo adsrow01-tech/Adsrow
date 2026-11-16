@@ -7,7 +7,7 @@ import BrandWordmark from "./BrandWordmark";
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
-  const [isCompact, setIsCompact] = useState(() => window.scrollY > 28);
+  const [isCompact, setIsCompact] = useState(false);
   const brandRef = useRef(null);
   const partnerCtaRef = useRef(null);
   const moreWrapperRef = useRef(null);
@@ -40,17 +40,17 @@ function Header() {
 
   const primaryLinks = [
     { name: "Home", path: "/" },
-    { name: "About Us", path: "/about" },
-    { name: "Our Network", path: "/network" },
-    { name: "Packages", path: "/packages" },
-    { name: "Blog", path: "/blog" },
+    { name: "About Us", path: "/about/" },
+    { name: "Our Network", path: "/network/" },
+    { name: "Packages", path: "/packages/" },
+    { name: "Blog", path: "/blog/" },
   ];
 
   const moreLinks = [
-    { name: "How It Works", path: "/how-it-works" },
-    { name: "Host a Screen", path: "/host-a-screen" },
-    { name: "Contact Us", path: "/contact" },
-    { name: "FAQs", path: "/faqs" },
+    { name: "How It Works", path: "/how-it-works/" },
+    { name: "Host a Screen", path: "/host-a-screen/" },
+    { name: "Contact Us", path: "/contact/" },
+    { name: "FAQs", path: "/faqs/" },
   ];
 
   const moreActive = moreLinks.some((link) => pathname === link.path);
@@ -290,7 +290,7 @@ function Header() {
           ))}
 
           <Link
-            to="/contact"
+            to="/contact/"
             className="button mobile-contact"
             onClick={() => setMenuOpen(false)}
           >
@@ -317,7 +317,7 @@ function Header() {
           <Link to="/login" className="header-login">Log in</Link>
           <Link to="/signup" className="button header-signup">Sign up</Link>
         </div>}
-          <Link to="/contact" className="button desktop-contact" ref={partnerCtaRef}>
+          <Link to="/contact/" className="button desktop-contact" ref={partnerCtaRef}>
             Talk to Expert <ArrowUpRight size={16} />
           </Link>
         </div>

@@ -276,7 +276,7 @@ function AuthPage({ mode }) {
 
         {signup
           ? <p className="auth-switch">Already have an account? <Link to={`/login?next=${encodeURIComponent(nextPath)}`}>Sign in</Link></p>
-          : <p className="auth-switch">New to Adsrow? You don't need an account to enquire. <Link to="/contact">Get a free plan →</Link></p>}
+          : <p className="auth-switch">New to Adsrow? You don't need an account to enquire. <Link to="/contact/">Get a free plan →</Link></p>}
         <Link to="/" className="auth-back">← Back to Adsrow</Link>
       </div>
       </div>

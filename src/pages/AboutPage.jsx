@@ -114,8 +114,8 @@ function AboutPage() {
               <h2>Let's talk about your next campaign.</h2>
             </div>
             <div className="about-final-actions">
-              <Link className="button" to="/contact?type=advertiser">Talk to Our Team <ArrowUpRight size={16} /></Link>
-              <Link className="button button-outline" to="/contact?type=venue">Host a Screen <ArrowUpRight size={16} /></Link>
+              <Link className="button" to="/contact/?type=advertiser">Talk to Our Team <ArrowUpRight size={16} /></Link>
+              <Link className="button button-outline" to="/contact/?type=venue">Host a Screen <ArrowUpRight size={16} /></Link>
             </div>
           </div>
         </div>

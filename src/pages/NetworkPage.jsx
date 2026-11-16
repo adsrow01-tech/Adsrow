@@ -4,7 +4,7 @@ import { SectionHeading } from "../components/SiteComponents";
 import VijayawadaCoverageMap from "../components/VijayawadaCoverageMap";
 import { targetAreas, venueCategories } from "../lib/siteContent";
 
-const enquiryLink = "/contact?type=advertiser";
+const enquiryLink = "/contact/?type=advertiser";
 
 function NetworkPage() {
   return (
