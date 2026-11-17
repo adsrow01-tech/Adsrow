@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { ArrowRight, ArrowUpRight, CheckCircle2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import FourScreenShowcase from "./FourScreenShowcase";
 import "../styles/home-hero.css";
 
 const creatives = [
@@ -68,14 +69,7 @@ export default function HomeHero() {
           <p className="home-dynamic-trust"><CheckCircle2 size={18} />One booking · One invoice · One play report</p>
         </div>
 
-        <div className="home-dynamic-stage" aria-hidden="true">
-          {venues.map((venue) => <div className={`home-dynamic-photo ${venue.className}`} key={venue.label}><img src={venue.image} alt="" /><span>{venue.label}</span></div>)}
-          <div className="home-dynamic-device"><div className="home-dynamic-screen">
-            <span className="home-dynamic-live"><i />LIVE</span>
-            <div className="home-dynamic-ads">{creatives.map((creative, index) => <div className={`home-dynamic-ad ${creative.className}${index === active ? " is-active" : ""}`} key={creative.className}>{index === active && (<><small>{creative.label}</small><strong>{creative.title}</strong><em>{creative.action}</em></>)}</div>)}</div>
-          </div></div>
-          <div className="home-dynamic-price"><small>From</small>₹99/day</div>
-        </div>
+        <div className="home-dynamic-stage" aria-hidden="true"><FourScreenShowcase /></div>
       </div>
     </section>
   );
