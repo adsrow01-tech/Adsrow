@@ -4,6 +4,7 @@ import { createServer } from "vite";
 import React from "react";
 import { renderToString } from "react-dom/server";
 import { StaticRouter } from "react-router-dom";
+import { canonicalUrl } from "../src/lib/canonicalUrl.mjs";
 
 const startedAt = Date.now();
 const mark = (message) => console.log(`[prerender +${Date.now() - startedAt}ms] ${message}`);
@@ -29,7 +30,9 @@ const template = await readFile(path.join(root, "index.html"), "utf8");
 mark("Loaded Vite HTML template");
 const cleanTemplate = template
   .replace(/\s*<title>[\s\S]*?<\/title>/i, "")
-  .replace(/\s*<meta\s+name="description"[^>]*>/gi, "");
+  .replace(/\s*<meta\s+name="description"[^>]*>/gi, "")
+  .replace(/\s*<link\b(?=[^>]*\brel=["']canonical["'])[^>]*>/gi, "")
+  .replace(/\s*<meta\b(?=[^>]*\bproperty=["']og:url["'])[^>]*>/gi, "");
 
 // Components use browser APIs only in effects or event handlers. These minimal
 // render-time shims let React SSR render the same component tree without a DOM.
@@ -62,7 +65,7 @@ try {
 
   for (const [route, [title, description, robots]] of Object.entries(routes)) {
     const appHtml = renderToString(React.createElement(StaticRouter, { location: route }, React.createElement(AuthProvider, null, React.createElement(App))));
-    const canonical = `https://adsrow.com${route === "/" ? "/" : route}`;
+    const canonical = canonicalUrl(route);
     const metadata = `<title>${escapeHtml(title)}</title><meta name="description" content="${escapeHtml(description)}"><meta name="robots" content="${robots}"><link rel="canonical" href="${canonical}"><meta property="og:title" content="${escapeHtml(title)}"><meta property="og:description" content="${escapeHtml(description)}"><meta property="og:url" content="${canonical}"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${escapeHtml(title)}"><meta name="twitter:description" content="${escapeHtml(description)}">`;
     const html = cleanTemplate.replace("</head>", `${metadata}</head>`).replace(/<div id="root">[\s\S]*?<\/div>/, `<div id="root">${appHtml}</div>`);
     const directory = path.join(root, route === "/" ? "" : route.slice(1));

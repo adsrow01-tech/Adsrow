@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Search } from "lucide-react";
+import { canonicalUrl } from "../lib/canonicalUrl.mjs";
 
 const articles = [
   { slug: "99-a-day-what-to-expect", category: "guides", label: "Guides", title: "₹99 a day: what a local business can really expect", excerpt: "Plays, reach and results from the Try It plan, explained simply.", visual: "₹99", tone: "blue", read: "4 min read" },
@@ -16,6 +17,7 @@ const categories = [["all", "All"], ["guides", "Guides"], ["design", "Ad design"
 function usePageMeta(title, description, path) {
   useEffect(() => {
     document.title = title;
+    const pageUrl = canonicalUrl(path);
     const setMeta = (name, content, property = false) => {
       const selector = property ? `meta[property="${name}"]` : `meta[name="${name}"]`;
       let node = document.querySelector(selector);
@@ -24,11 +26,13 @@ function usePageMeta(title, description, path) {
     };
     setMeta("description", description);
     setMeta("robots", "index, follow");
-    setMeta("og:title", title, true); setMeta("og:description", description, true); setMeta("og:type", "website", true); setMeta("og:url", `https://adsrow.com${path}`, true);
+    setMeta("og:title", title, true); setMeta("og:description", description, true); setMeta("og:type", "website", true); setMeta("og:url", pageUrl, true);
     setMeta("twitter:card", "summary_large_image"); setMeta("twitter:title", title); setMeta("twitter:description", description);
-    let canonical = document.querySelector('link[rel="canonical"]');
+    const canonicalTags = document.querySelectorAll('link[rel="canonical"]');
+    let canonical = canonicalTags[0];
     if (!canonical) { canonical = document.createElement("link"); canonical.rel = "canonical"; document.head.appendChild(canonical); }
-    canonical.href = `https://adsrow.com${path}`;
+    canonicalTags.forEach((tag, index) => { if (index > 0) tag.remove(); });
+    canonical.href = pageUrl;
     return () => { document.title = "Adsrow | Local Digital Advertising"; };
   }, [title, description, path]);
 }
