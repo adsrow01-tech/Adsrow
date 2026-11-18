@@ -11,6 +11,12 @@
   color: #0b3d91;
 }
 
+.startup-screen-overlay {
+  position: fixed;
+  z-index: 10000;
+  inset: 0;
+}
+
 .loading-screen-content {
   display: flex;
   align-items: center;
