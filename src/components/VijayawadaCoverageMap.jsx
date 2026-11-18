@@ -3,6 +3,7 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import { targetAreas } from "../lib/siteContent";
 
 const VIJAYAWADA_CENTER = [80.6480, 16.5062];
+
 const OPEN_STREET_MAP_STYLE = {
   version: 8,
   sources: {
@@ -14,11 +15,16 @@ const OPEN_STREET_MAP_STYLE = {
       attribution: "© OpenStreetMap contributors",
     },
   },
-  layers: [{ id: "osm", type: "raster", source: "osm" }],
+  layers: [
+    {
+      id: "osm",
+      type: "raster",
+      source: "osm",
+    },
+  ],
 };
 
-// Adsrow currently stores service areas, not verified per-screen coordinates.
-// These are deliberately labelled demo area markers in the UI.
+// These are illustrative area markers, not verified screen coordinates.
 const screenAreas = [
   { name: "Bhavanipuram", lat: 16.5110, lon: 80.6400 },
   { name: "Governorpet", lat: 16.5190, lon: 80.6260 },
@@ -36,13 +42,22 @@ function areaFeatureCollection() {
     features: screenAreas.map((area) => ({
       type: "Feature",
       properties: { name: area.name },
-      geometry: { type: "Point", coordinates: [area.lon, area.lat] },
+      geometry: {
+        type: "Point",
+        coordinates: [area.lon, area.lat],
+      },
     })),
   };
 }
 
 function popupMarkup(areaName) {
-  return `<div class="adsrow-map-popup-content"><strong>${areaName}</strong><span>Demo area marker</span><small>Exact screen coordinates and status are not verified.</small></div>`;
+  return `
+    <div class="adsrow-map-popup-content">
+      <strong>${areaName}</strong>
+      <span>Demo area marker</span>
+      <small>Exact screen coordinates and status are not verified.</small>
+    </div>
+  `;
 }
 
 export default function VijayawadaCoverageMap() {
@@ -50,23 +65,33 @@ export default function VijayawadaCoverageMap() {
   const mapRef = useRef(null);
   const markersRef = useRef([]);
   const mapHasLoadedRef = useRef(false);
+
   const [mapStatus, setMapStatus] = useState("loading");
 
   useEffect(() => {
-    if (!mapContainerRef.current || mapRef.current) return undefined;
+    if (!mapContainerRef.current || mapRef.current) {
+      return undefined;
+    }
+
     let active = true;
     let map;
+    let observer;
 
     async function initializeMap() {
       const [maplibreModule, workerModule] = await Promise.all([
         import("maplibre-gl"),
         import("maplibre-gl/dist/maplibre-gl-worker.mjs?url"),
       ]);
+
       const maplibregl = maplibreModule.default || maplibreModule;
       const maplibreWorkerUrl = workerModule.default || workerModule;
-      if (!active || !mapContainerRef.current || mapRef.current) return;
+
+      if (!active || !mapContainerRef.current || mapRef.current) {
+        return;
+      }
 
       maplibregl.setWorkerUrl(maplibreWorkerUrl);
+
       map = new maplibregl.Map({
         container: mapContainerRef.current,
         style: OPEN_STREET_MAP_STYLE,
@@ -76,42 +101,80 @@ export default function VijayawadaCoverageMap() {
         maxZoom: 16,
         attributionControl: false,
       });
+
       mapRef.current = map;
-      map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
-      map.addControl(new maplibregl.AttributionControl({ compact: true, customAttribution: "© OpenStreetMap contributors" }), "bottom-right");
+
+      map.addControl(
+        new maplibregl.NavigationControl({
+          showCompass: false,
+        }),
+        "top-right"
+      );
+
+      map.addControl(
+        new maplibregl.AttributionControl({
+          compact: true,
+          customAttribution: "© OpenStreetMap contributors",
+        }),
+        "bottom-right"
+      );
 
       map.on("load", () => {
         mapHasLoadedRef.current = true;
         setMapStatus("ready");
       });
+
       map.on("error", () => {
-        if (!mapHasLoadedRef.current) setMapStatus("error");
+        if (!mapHasLoadedRef.current) {
+          setMapStatus("error");
+        }
       });
 
       const markerElements = screenAreas.map((area) => {
         const markerElement = document.createElement("button");
+
         markerElement.type = "button";
         markerElement.className = "home-maplibre-screen-marker";
         markerElement.title = `${area.name} — demo area marker`;
-        markerElement.setAttribute("aria-label", `${area.name}, demo screen area marker`);
-        markerElement.innerHTML = "<span class=\"home-maplibre-screen-glow\"></span><span class=\"home-maplibre-screen-display\"><span></span></span>";
 
-        const marker = new maplibregl.Marker({ element: markerElement, anchor: "center" })
+        markerElement.setAttribute(
+          "aria-label",
+          `${area.name}, demo screen area marker`
+        );
+
+        markerElement.innerHTML =
+          '<span class="home-maplibre-screen-glow"></span>' +
+          '<span class="home-maplibre-screen-display"><span></span></span>';
+
+        const marker = new maplibregl.Marker({
+          element: markerElement,
+          anchor: "center",
+        })
           .setLngLat([area.lon, area.lat])
           .addTo(map);
+
         markerElement.addEventListener("click", (event) => {
           event.stopPropagation();
-          new maplibregl.Popup({ closeButton: true, closeOnClick: true, offset: 22, className: "adsrow-map-popup" })
+
+          new maplibregl.Popup({
+            closeButton: true,
+            closeOnClick: true,
+            offset: 22,
+            className: "adsrow-map-popup",
+          })
             .setLngLat([area.lon, area.lat])
             .setHTML(popupMarkup(area.name))
             .addTo(map);
         });
+
         return { marker, markerElement };
       });
+
       markersRef.current = markerElements;
 
       function updateMarkerVisibility() {
         const showIndividualMarkers = map.getZoom() >= 11.5;
+
         markerElements.forEach(({ markerElement }) => {
           markerElement.style.display = showIndividualMarkers ? "grid" : "none";
         });
@@ -122,9 +185,10 @@ export default function VijayawadaCoverageMap() {
           type: "geojson",
           data: areaFeatureCollection(),
           cluster: true,
-          clusterMaxZoom: 11.4,
+          clusterMaxZoom: 11,
           clusterRadius: 60,
         });
+
         map.addLayer({
           id: "adsrow-screen-clusters",
           type: "circle",
@@ -132,45 +196,109 @@ export default function VijayawadaCoverageMap() {
           filter: ["has", "point_count"],
           paint: {
             "circle-color": "#164A9A",
-            "circle-radius": ["step", ["get", "point_count"], 22, 5, 27, 8, 32],
+            "circle-radius": [
+              "step",
+              ["get", "point_count"],
+              22,
+              5,
+              27,
+              8,
+              32,
+            ],
             "circle-stroke-color": "#00E6E2",
             "circle-stroke-width": 3,
-            "circle-opacity": .96,
+            "circle-opacity": 0.96,
           },
         });
+
         map.addLayer({
           id: "adsrow-screen-cluster-count",
           type: "symbol",
           source: "adsrow-screen-areas",
           filter: ["has", "point_count"],
-          layout: { "text-field": ["get", "point_count_abbreviated"], "text-size": 14 },
-          paint: { "text-color": "#FFFFFF" },
+          layout: {
+            "text-field": ["get", "point_count_abbreviated"],
+            "text-size": 14,
+          },
+          paint: {
+            "text-color": "#FFFFFF",
+          },
         });
+
         updateMarkerVisibility();
       });
+
       map.on("zoom", updateMarkerVisibility);
+
       map.on("click", "adsrow-screen-clusters", async (event) => {
         const feature = event.features?.[0];
+
         if (!feature) return;
+
         const clusterId = feature.properties?.cluster_id;
         const source = map.getSource("adsrow-screen-areas");
+
         if (!source || clusterId === undefined) return;
+
         const expansionZoom = await source.getClusterExpansionZoom(clusterId);
-        map.easeTo({ center: feature.geometry.coordinates, zoom: expansionZoom });
+
+        map.easeTo({
+          center: feature.geometry.coordinates,
+          zoom: expansionZoom,
+        });
       });
-      map.on("mouseenter", "adsrow-screen-clusters", () => { map.getCanvas().style.cursor = "pointer"; });
-      map.on("mouseleave", "adsrow-screen-clusters", () => { map.getCanvas().style.cursor = ""; });
+
+      map.on("mouseenter", "adsrow-screen-clusters", () => {
+        map.getCanvas().style.cursor = "pointer";
+      });
+
+      map.on("mouseleave", "adsrow-screen-clusters", () => {
+        map.getCanvas().style.cursor = "";
+      });
     }
 
-    initializeMap().catch(() => {
-      if (active) setMapStatus("error");
-    });
+    function startMap() {
+      initializeMap().catch(() => {
+        if (active) {
+          setMapStatus("error");
+        }
+      });
+    }
+
+    // Defer MapLibre until the map is within 300px of the viewport.
+    const mapElement = mapContainerRef.current;
+
+    if ("IntersectionObserver" in window && mapElement) {
+      observer = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((entry) => entry.isIntersecting)) {
+            observer.disconnect();
+            startMap();
+          }
+        },
+        {
+          rootMargin: "300px",
+          threshold: 0,
+        }
+      );
+
+      observer.observe(mapElement);
+    } else {
+      startMap();
+    }
 
     return () => {
       active = false;
+
+      observer?.disconnect();
+
       markersRef.current.forEach(({ marker }) => marker.remove());
       markersRef.current = [];
-      if (map) map.remove();
+
+      if (map) {
+        map.remove();
+      }
+
       mapRef.current = null;
     };
   }, []);
@@ -180,22 +308,65 @@ export default function VijayawadaCoverageMap() {
       <div className="container home-location-layout">
         <div className="home-location-copy">
           <p className="eyebrow">CITY COVERAGE</p>
-          <h2>Digital screens across <span>Vijayawada.</span></h2>
-          <p>Explore the Vijayawada areas that are part of the Adsrow coverage map. Specific venues and live screens in each area need confirmation.</p>
-          <p className="home-location-note"><span className="home-location-note-dot" />Screen markers are illustrative area references, not confirmed installed-screen coordinates.</p>
+
+          <h2>
+            Digital screens across <span>Vijayawada.</span>
+          </h2>
+
+          <p>
+            Explore the Vijayawada areas that are part of the Adsrow coverage
+            map. Specific venues and live screens in each area need confirmation.
+          </p>
+
+          <p className="home-location-note">
+            <span className="home-location-note-dot" />
+            Screen markers are illustrative area references, not confirmed
+            installed-screen coordinates.
+          </p>
         </div>
-        <figure className="home-location-map" aria-labelledby="network-location-map-caption">
-          <div ref={mapContainerRef} className="home-maplibre-map" aria-label="Interactive Vijayawada screen coverage map">
+
+        <figure
+          className="home-location-map"
+          aria-labelledby="network-location-map-caption"
+        >
+          <div
+            ref={mapContainerRef}
+            className="home-maplibre-map"
+            aria-label="Interactive Vijayawada screen coverage map"
+          >
             {mapStatus !== "ready" && (
-              <div className={`home-map-status home-map-status-${mapStatus}`} role={mapStatus === "error" ? "alert" : "status"}>
-                <strong>{mapStatus === "error" ? "Map tiles could not be loaded" : "Loading Vijayawada map…"}</strong>
-                <span>{mapStatus === "error" ? "Check your connection and try again." : "Loading OpenStreetMap roads and neighborhoods."}</span>
+              <div
+                className={`home-map-status home-map-status-${mapStatus}`}
+                role={mapStatus === "error" ? "alert" : "status"}
+              >
+                <strong>
+                  {mapStatus === "error"
+                    ? "Map tiles could not be loaded"
+                    : "Loading Vijayawada map…"}
+                </strong>
+
+                <span>
+                  {mapStatus === "error"
+                    ? "Check your connection and try again."
+                    : "Loading OpenStreetMap roads and neighborhoods."}
+                </span>
               </div>
             )}
           </div>
-          <figcaption id="network-location-map-caption" className="home-location-map-caption">
-            <span className="home-map-legend-item"><span className="home-map-legend-screen" />Demo screen area</span>
-            <span className="home-map-legend-item"><span className="home-map-legend-cluster" />Screen cluster</span>
+
+          <figcaption
+            id="network-location-map-caption"
+            className="home-location-map-caption"
+          >
+            <span className="home-map-legend-item">
+              <span className="home-map-legend-screen" />
+              Demo screen area
+            </span>
+
+            <span className="home-map-legend-item">
+              <span className="home-map-legend-cluster" />
+              Screen cluster
+            </span>
           </figcaption>
         </figure>
       </div>
