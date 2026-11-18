@@ -18,7 +18,7 @@
   width: 570px;
   max-width: none;
   margin: 0 auto;
-  transform: scale(.82);
+  transform: scale(.9);
   transform-origin: center center;
 }
 .home-dynamic-stage .quad .col {
@@ -292,7 +292,7 @@
 @keyframes lvProg { to { width: 100%; } }
 
 @media (max-width: 1050px) {
-  .home-dynamic-stage .quad { transform: scale(.76); }
+  .home-dynamic-stage .quad { transform: scale(.8); }
 }
 @media (max-width: 820px) {
   .home-dynamic-stage .quad {
