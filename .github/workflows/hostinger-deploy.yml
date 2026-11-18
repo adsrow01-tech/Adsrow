@@ -74,19 +74,19 @@ jobs:
           preview_pid=$!
           trap 'kill "$preview_pid" 2>/dev/null || true' EXIT
           for attempt in {1..30}; do
-            if curl --silent --fail http://127.0.0.1:4173/ -o /dev/null; then break; fi
+            if curl --silent --fail http://127.0.0 -o /dev/null; then break; fi
             sleep 1
           done
-          curl --silent --show-error --fail http://127.0.0.1:4173/ -o /tmp/home.html
+          curl --silent --show-error --fail http://127.0.0 -o /tmp/home.html
           grep -q 'Adsrow' /tmp/home.html
           for route in login signup forgot-password reset-password network about; do
-            curl --silent --show-error --fail "http://127.0.0.1:4173/$route" -o /dev/null
+            curl --silent --show-error --fail "http://127.0.0$route" -o /dev/null
           done
-          test "$(curl --silent -o /dev/null -w '%{http_code}' http://127.0.0.1:4173/__ci_unknown_route__)" = 404
-          test "$(curl --silent -o /dev/null -w '%{http_code}' http://127.0.0.1:4173/assets/missing-ci-asset.js)" = 404
+          test "$(curl --silent -o /dev/null -w '%{http_code}' http://127.0.0__ci_unknown_route__)" = 404
+          test "$(curl --silent -o /dev/null -w '%{http_code}' http://127.0.0assets/missing-ci-asset.js)" = 404
           asset=$(find dist/assets -maxdepth 1 -type f -name '*.css' -printf '%f\n' -quit)
           test -n "$asset"
-          curl --silent --show-error --fail "http://127.0.0.1:4173/assets/$asset" -o /dev/null
+          curl --silent --show-error --fail "http://127.0.0assets/$asset" -o /dev/null
       - uses: actions/upload-artifact@v4
         if: github.event_name != 'pull_request'
         with:
@@ -129,12 +129,13 @@ jobs:
       - name: Deploy verified build
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          server: ${{ secrets.HOSTINGER_FTP_SERVER }}
+          server: 82.25.121.170
           username: ${{ secrets.HOSTINGER_FTP_USERNAME }}
           password: ${{ secrets.HOSTINGER_FTP_PASSWORD }}
           protocol: ftps
           port: 21
-          security: strict
+          security: loose
+          timeout: 60000
           local-dir: dist/
           server-dir: ${{ secrets.HOSTINGER_FTP_DIRECTORY }}
           dangerous-clean-slate: false
