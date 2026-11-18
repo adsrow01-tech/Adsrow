@@ -25,7 +25,6 @@ function NetworkPage() {
               <span>Ask Adsrow to confirm current availability and participating venues.</span>
             </div>
           </div>
-          
         </div>
       </section>
 
@@ -38,10 +37,17 @@ function NetworkPage() {
           />
           <div className="network-venue-grid">
             {venueCategories.map(({ icon: Icon, title, audience, bestFor }, index) => (
-              <article className={`network-venue-card ads-card ads-card-interactive ads-accent-${(index % 6) + 1}`} key={title}>
+              <article
+                className={`network-venue-card ads-card ads-card-interactive ads-accent-${(index % 6) + 1}`}
+                key={title}
+              >
                 <div className="network-venue-card-top">
-                  <span className="network-venue-icon" aria-hidden="true"><Icon size={21} strokeWidth={1.8} /></span>
-                  <span className="network-venue-index ads-num" aria-hidden="true">0{index + 1}</span>
+                  <span className="network-venue-icon" aria-hidden="true">
+                    <Icon size={21} strokeWidth={1.8} />
+                  </span>
+                  <span className="network-venue-index ads-num" aria-hidden="true">
+                    0{index + 1}
+                  </span>
                 </div>
                 <h3>{title}</h3>
                 <div className="network-venue-detail">
@@ -69,7 +75,10 @@ function NetworkPage() {
           />
           <div className="network-area-grid">
             {targetAreas.map((area, index) => (
-              <div className={`network-area-card ads-accent-${(index % 6) + 1}`} key={area}>
+              <div
+                className={`network-area-card ads-accent-${(index % 6) + 1}`}
+                key={area}
+              >
                 <MapPin size={17} aria-hidden="true" />
                 <span>{area}</span>
               </div>
@@ -81,7 +90,9 @@ function NetworkPage() {
       <section className="section network-final-section">
         <div className="container">
           <div className="location-callout network-final-cta ads-card ads-card-featured ads-card-interactive">
-            <span className="callout-icon"><MapPin size={24} /></span>
+            <span className="callout-icon">
+              <MapPin size={24} />
+            </span>
             <div>
               <h2>Looking for a specific venue or area?</h2>
               <p>Tell us who you want to reach. We'll show you the screens that get you there.</p>
