@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { ArrowRight, ArrowUpRight, CheckCircle2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import FourScreenShowcase from "./FourScreenShowcase";
 import "../styles/home-hero.css";
 import LiveAdScreens from "./LiveAdScreen";
 
@@ -30,6 +31,8 @@ export default function HomeHero() {
           <p className="home-dynamic-trust"><CheckCircle2 size={18} />One booking · One invoice · One play report</p>
         </div>
         <LiveAdScreens reducedMotion={reducedMotion} />
+
+        <div className="home-dynamic-stage" aria-hidden="true"><FourScreenShowcase /></div>
       </div>
     </section>
   );
