@@ -67,11 +67,6 @@ function LegacyAdvertiseRedirect() {
   return <Navigate to={`/contact${location.search || "?type=advertiser"}`} replace />;
 }
 
-function AuthReadyGate({ children }) {
-  const { loading } = useAuth();
-  return loading ? <LoadingScreen /> : children;
-}
-
 function LegacyPackagesRedirect() {
   const location = useLocation();
   return <Navigate to={`/packages${location.search}${location.hash}`} replace />;
@@ -111,10 +106,10 @@ export default function App() {
         <Route path="/dashboard" element={<ProtectedDashboardPage />} />
         <Route path="/host-a-screen" element={<HostAScreenPage />} />
         <Route path="/contact" element={<ContactPage />} />
-        <Route path="/login" element={<AuthReadyGate><LoginPage /></AuthReadyGate>} />
-        <Route path="/signup" element={<AuthReadyGate><SignupPage /></AuthReadyGate>} />
-        <Route path="/forgot-password" element={<AuthReadyGate><ForgotPasswordPage /></AuthReadyGate>} />
-        <Route path="/reset-password" element={<AuthReadyGate><ResetPasswordPage /></AuthReadyGate>} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/terms" element={<TermsPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/refund-policy" element={<RefundPolicyPage />} />
@@ -132,35 +127,6 @@ const lazyRoutes = [
   ForgotPasswordPage, ResetPasswordPage, PrivacyPage, RefundPolicyPage, OAuthCallbackPage,
   TermsPage, DashboardPage, NotFoundPage, BlogArticlePage, BlogPage, AdminPage,
 ];
-
-const routesByPath = {
-  "/": HomePage,
-  "/about": AboutPage,
-  "/packages": PackageComparisonPage,
-  "/blog": BlogPage,
-  "/network": NetworkPage,
-  "/how-it-works": HowItWorksPage,
-  "/why-adsrow": WhyAdsrowPage,
-  "/faqs": FaqsPage,
-  "/host-a-screen": HostAScreenPage,
-  "/contact": ContactPage,
-  "/login": LoginPage,
-  "/signup": SignupPage,
-  "/forgot-password": ForgotPasswordPage,
-  "/reset-password": ResetPasswordPage,
-  "/terms": TermsPage,
-  "/privacy": PrivacyPage,
-  "/refund-policy": RefundPolicyPage,
-  "/dashboard": DashboardPage,
-  "/admin": AdminPage,
-};
-
-export function preloadRoute(pathname) {
-  const normalizedPath = pathname === "/" ? "/" : pathname.replace(/\/+$/, "");
-  const route = routesByPath[normalizedPath]
-    || (normalizedPath.startsWith("/blog/") ? BlogArticlePage : NotFoundPage);
-  return route.preload();
-}
 
 export function preloadAppRoutes() {
   return Promise.all(lazyRoutes.map((route) => route.preload()));
