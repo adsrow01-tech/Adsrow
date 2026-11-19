@@ -90,7 +90,7 @@ function AuthPage({ mode }) {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const requestedPath = searchParams.get("next");
-  const nextPath = getSafeNextPath(requestedPath);
+  const nextPath = requestedPath ? getSafeNextPath(requestedPath) : "/dashboard";
   const { user, loading: authLoading } = useAuth();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
