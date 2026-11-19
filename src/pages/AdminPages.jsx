@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link, Navigate, useSearchParams } from "react-router-dom";
-import { Briefcase, LayoutDashboard, LifeBuoy, MessageSquare, MonitorSmartphone, RefreshCw, Search, Settings, ShieldAlert, UsersRound } from "lucide-react";
+import { BookOpen, Briefcase, LayoutDashboard, LifeBuoy, MessageSquare, MonitorSmartphone, RefreshCw, Search, Settings, ShieldAlert, UsersRound } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { fetchAdminOverviewData, fetchAdminRequests, fetchAdminScreens, fetchAdminUsers, isCurrentUserAdmin, updateAdminRequestStatus } from "../lib/adminData";
+import AdminBlogManagement from "./AdminBlogManagement";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -13,6 +14,7 @@ const ADMIN_SECTIONS = [
   { id: "support", label: "Creative Support", icon: LifeBuoy },
   { id: "screens", label: "Screens", icon: MonitorSmartphone },
   { id: "users", label: "Users", icon: UsersRound },
+  { id: "blog", label: "Blog Management", icon: BookOpen },
   { id: "settings", label: "Settings", icon: Settings },
 ];
 const REQUEST_SECTIONS = ["contact", "partner", "support"];
@@ -478,6 +480,7 @@ function AdminDashboard({ user }) {
         {REQUEST_SECTIONS.includes(section) ? <AdminRequestsView key={section} requestType={section} userId={user.id} />
           : section === "screens" ? <AdminScreensView />
           : section === "users" ? <AdminUsersView />
+          : section === "blog" ? <AdminBlogManagement user={user} />
           : section === "settings" ? <AdminSettingsView user={user} />
           : <AdminOverviewView />}
       </main>

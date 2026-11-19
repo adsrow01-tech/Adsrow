@@ -5,6 +5,7 @@ import LoadingScreen from "./components/LoadingScreen";
 import { useAuth } from "./context/AuthContext";
 import { getCurrentPath } from "./lib/redirect";
 import { lazyRoute } from "./lib/lazyRoute";
+import { isCurrentUserAdmin } from "./lib/adminData";
 
 const HomePage = lazyRoute(() => import("./pages/HomePage"));
 const AboutPage = lazyRoute(() => import("./pages/AboutPage"));
@@ -75,9 +76,21 @@ function LegacyPackagesRedirect() {
 function ProtectedDashboardPage() {
   const { user, loading } = useAuth();
   const location = useLocation();
+  const [isAdmin, setIsAdmin] = React.useState(null);
+  React.useEffect(() => {
+    if (!user?.id || !user.email_confirmed_at) {
+      setIsAdmin(null);
+      return undefined;
+    }
+    let current = true;
+    isCurrentUserAdmin().then((result) => { if (current) setIsAdmin(result); });
+    return () => { current = false; };
+  }, [user?.id, user?.email_confirmed_at]);
   if (loading) return <section className="section"><div className="container"><p>Checking your account…</p></div></section>;
   if (!user) return <Navigate to={`/login?next=${encodeURIComponent(getCurrentPath(location))}`} replace />;
   if (!user.email_confirmed_at) return <Navigate to={`/login?message=${encodeURIComponent("Please verify your email before opening the dashboard.")}`} replace />;
+  if (isAdmin === null) return <section className="section"><div className="container"><p>Checking your account…</p></div></section>;
+  if (isAdmin) return <Navigate to="/admin" replace />;
   return <DashboardPage />;
 }
 
